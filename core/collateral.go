@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/jmoiron/sqlx/types"
 	"github.com/shopspring/decimal"
 )
 
@@ -34,7 +33,7 @@ type (
 		// the debt floor, eg 100
 		Dust decimal.Decimal `sql:"type:decimal(64,8)" json:"dust,omitempty"`
 		// Price = Gem.Price / Dai.Price
-		Price decimal.Decimal `sql:"type:decimal(32,8)" json:"price,omitempty"`
+		Price decimal.Decimal `sql:"type:decimal(32,12)" json:"price,omitempty"`
 		// Liquidation ratio, eg 150%
 		Mat decimal.Decimal `sql:"type:decimal(10,8)" json:"mat,omitempty"`
 		// stability fee, eg 110%
@@ -44,7 +43,7 @@ type (
 		// Dunk, max liquidation Quantity, eg 50000
 		Dunk decimal.Decimal `sql:"type:decimal(64,8)" json:"dunk,omitempty"`
 		// Live
-		Live types.BitBool `sql:"type:BIT(1)" json:"live,omitempty"`
+		Live int `json:"live,omitempty"`
 	}
 
 	CollateralStore interface {

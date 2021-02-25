@@ -8,9 +8,14 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
+	"github.com/fox-one/pando/pkg/maker/cat"
+	"github.com/fox-one/pando/pkg/maker/flip"
+	"github.com/fox-one/pando/pkg/maker/oracle"
+	"github.com/fox-one/pando/pkg/maker/proposal"
+	"github.com/fox-one/pando/pkg/maker/sys"
+	"github.com/fox-one/pando/pkg/maker/vat"
 	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/pkg/uuid"
-	"github.com/fox-one/pando/worker/payee/actions"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
 )
@@ -30,11 +35,36 @@ func New(
 	flips core.FlipStore,
 	property property.Store,
 	notifier core.Notifier,
-	parliament core.Parliament,
+	parliaments core.Parliament,
 	oracles core.OracleStore,
 	oraclez core.OracleService,
 	system *core.System,
 ) *Payee {
+	actions := map[core.Action]maker.HandlerFunc{
+		// sys
+		core.ActionSysWithdraw: sys.HandleWithdraw(wallets),
+		// cat
+		core.ActionCatEdit:   cat.HandleEdit(collaterals),
+		core.ActionCatFold:   cat.HandleFold(collaterals),
+		core.ActionCatInit:   cat.HandleInit(collaterals, oracles, assets, assetz),
+		core.ActionCatSupply: cat.HandleSupply(collaterals),
+		// vat
+		core.ActionVatInit: vat.HandleInit(collaterals, vaults, transactions, wallets),
+		core.ActionVatFrob: vat.HandleFrob(collaterals, vaults, transactions, wallets),
+		// flip
+		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, transactions, property),
+		core.ActionFlipTend: flip.HandleTend(collaterals, vaults, flips, transactions, wallets, property),
+		core.ActionFlipDent: flip.HandleDent(collaterals, vaults, flips, transactions, wallets, property),
+		core.ActionFlipDeal: flip.HandleDeal(collaterals, vaults, flips, transactions, wallets),
+		core.ActionFlipOpt:  flip.HandleOpt(property),
+		// oracle
+		core.ActionOracleFeed: oracle.HandleFeed(collaterals, oracles),
+		// proposal
+		core.ActionProposalInit: proposal.HandleInit(proposals, parliaments, system),
+	}
+
+	actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)
+
 	return &Payee{
 		assets:       assets,
 		assetz:       assetz,
@@ -46,10 +76,10 @@ func New(
 		proposals:    proposals,
 		property:     property,
 		notifier:     notifier,
-		parliament:   parliament,
 		oracles:      oracles,
 		oraclez:      oraclez,
 		system:       system,
+		actions:      actions,
 	}
 }
 
@@ -64,11 +94,10 @@ type Payee struct {
 	property     property.Store
 	proposals    core.ProposalStore
 	notifier     core.Notifier
-	parliament   core.Parliament
 	oracles      core.OracleStore
 	oraclez      core.OracleService
 	system       *core.System
-	actions      map[int]actions.Handler
+	actions      map[core.Action]maker.HandlerFunc
 }
 
 func (w *Payee) Run(ctx context.Context) error {
@@ -131,45 +160,99 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	message := decodeMemo(output.Memo)
 
 	// 1, parse oracle message
-	if oracle, err := w.oraclez.Parse(message); err == nil {
-		if err := w.oracles.Create(ctx, oracle); err != nil {
-			log.WithError(err).Errorln("oracles.Create")
-			return err
+	if ora, err := w.oraclez.Parse(message); err == nil {
+		asset, _ := uuid.FromString(ora.AssetID)
+		if b, err := mtg.Encode(asset, ora.Price, ora.PeekAt.Unix()); err == nil {
+			r := &maker.Request{
+				UTXO:   output,
+				Action: core.ActionOracleFeed,
+				Body:   b,
+				Gov:    true,
+			}
+
+			return w.handleRequest(ctx, r)
 		}
+
+		return nil
 	}
 
 	// 2. decode group action
 	if member, body, err := core.DecodeMemberAction(message, w.system.Members); err == nil {
-		return w.handleMemberAction(ctx, output, member, body)
+		var action core.Action
+		if body, err := mtg.Scan(body, &action); err == nil {
+			r := &maker.Request{
+				UTXO:   output,
+				Action: action,
+				Body:   body,
+				UserID: member.ClientID,
+			}
+
+			return w.handleRequest(ctx, r)
+		}
+
+		return nil
 	}
 
 	// 3. decode tx message
 	if body, err := mtg.Decrypt(message, w.system.PrivateKey); err == nil {
-		return w.handleTransaction(ctx, output, body)
+		var action core.Action
+		if body, err = mtg.Scan(body, &action); err == nil {
+			r := &maker.Request{
+				UTXO:   output,
+				Action: action,
+				Body:   body,
+				Gov:    false,
+			}
+
+			return w.handleRequest(ctx, r)
+		}
 	}
 
 	return nil
 }
 
-func (w *Payee) refundTransaction(ctx context.Context, output *core.Output, tx *core.Transaction) error {
-	msg, _ := maker.ErrorMsg(tx.Status)
+func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
+	log := logger.FromContext(ctx).WithField("action", r.Action.String())
 
-	transfer := &core.Transfer{
-		TraceID:   uuid.Modify(output.TraceID, "refund tx"),
-		Opponents: []string{tx.UserID},
-		Threshold: 1,
-		AssetID:   output.AssetID,
-		Amount:    output.UTXO.Amount,
-		Memo: core.TransferAction{
-			Module: "refund",
-			ID:     tx.FollowID,
-			Source: msg,
-		}.Encode(),
+	h, ok := w.actions[r.Action]
+	if !ok {
+		log.Debugf("handler not found")
+		return nil
 	}
 
-	if err := w.wallets.CreateTransfers(ctx, []*core.Transfer{transfer}); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorf("wallets.CreateTransfers")
-		return err
+	if err := h(ctx, r); err != nil {
+		var e maker.Error
+		if !errors.As(err, &e) {
+			return err
+		}
+
+		// refunds
+		if r.UserID != "" {
+			id := r.FollowID
+			if id == "" {
+				id = r.TraceID()
+			}
+
+			memo := core.TransferAction{
+				ID:     id,
+				Source: e.Error(),
+			}.Encode()
+
+			asset, amount := r.Payment()
+			transfer := &core.Transfer{
+				TraceID:   uuid.Modify(r.TraceID(), "Refund"),
+				AssetID:   asset,
+				Amount:    amount,
+				Memo:      memo,
+				Threshold: 1,
+				Opponents: []string{r.UserID},
+			}
+
+			if err := w.wallets.CreateTransfers(ctx, []*core.Transfer{transfer}); err != nil {
+				log.WithError(err).Errorln("wallets.CreateTransfers")
+				return err
+			}
+		}
 	}
 
 	return nil

@@ -15,7 +15,7 @@ type (
 		Version   int64     `json:"version,omitempty"`
 		TraceID   string    `sql:"size:36" json:"trace_id,omitempty"`
 		VaultID   string    `sql:"size:36" json:"vault_id,omitempty"`
-		Action    int       `json:"action,omitempty"`
+		Action    Action    `json:"action,omitempty"`
 		// bid expiry time
 		Tic time.Time `json:"tic,omitempty"`
 		// auction expiry time

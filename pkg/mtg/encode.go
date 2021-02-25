@@ -56,3 +56,30 @@ func encode(value interface{}) ([]byte, error) {
 
 	return nil, fmt.Errorf("mtg: cannot encode %T %v", value, value)
 }
+
+func EncodeStruct(s interface{}) ([]byte, error) {
+	if s == nil {
+		return nil, nil
+	}
+
+	val := reflect.ValueOf(s)
+	if val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	if val.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("function only accepts structs; got %s", val.Kind())
+	}
+
+	n := val.NumField()
+	values := make([]interface{}, 0, n)
+
+	for i := 0; i < n; i++ {
+		valueField := val.Field(i)
+		if valueField.CanInterface() {
+			values = append(values, valueField.Interface())
+		}
+	}
+
+	return Encode(values...)
+}

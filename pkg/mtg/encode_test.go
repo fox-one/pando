@@ -7,7 +7,6 @@ import (
 	"io"
 	"testing"
 
-	"github.com/fox-one/pando/pkg/routes"
 	"github.com/gofrs/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
@@ -42,7 +41,7 @@ func TestEncode(t *testing.T) {
 	})
 
 	t.Run("encode swap action", func(t *testing.T) {
-		body, err := Encode(append(values, newUUID(), routes.Routes{1, 2, 3}, decimal.NewFromFloat(2.123))...)
+		body, err := Encode(append(values, newUUID(), decimal.NewFromFloat(2.123))...)
 		require.Nil(t, err)
 
 		data, err := Encrypt(body, pri, pub)
@@ -69,5 +68,33 @@ func TestEncode(t *testing.T) {
 		t.Log(len(memo), memo)
 
 		assert.LessOrEqual(t, len(memo), 255)
+	})
+
+	t.Run("encode struct", func(t *testing.T) {
+		type Foo struct {
+			A uuid.UUID
+			B decimal.Decimal
+			C BitInt
+			D string
+		}
+
+		a := Foo{
+			A: newUUID(),
+			B: decimal.NewFromInt(10),
+			C: 10,
+			D: "bar",
+		}
+
+		b1, err := EncodeStruct(a)
+		require.Nil(t, err)
+
+		b2, err := EncodeStruct(&a)
+		require.Nil(t, err)
+
+		assert.Equal(t, b1, b2)
+
+		var v Foo
+		require.Nil(t, ScanAll(b1, &v.A, &v.B, &v.C, &v.D))
+		assert.Equal(t, a, v)
 	})
 }

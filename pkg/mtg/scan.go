@@ -37,6 +37,11 @@ func Scan(body []byte, dest ...interface{}) ([]byte, error) {
 	return ioutil.ReadAll(r)
 }
 
+func ScanAll(body []byte, dest ...interface{}) error {
+	_, err := Scan(body, dest...)
+	return err
+}
+
 func scan(data []byte, dest interface{}) (err error) {
 	defer errRecover(&err)
 
@@ -73,6 +78,33 @@ func scan(data []byte, dest interface{}) (err error) {
 	}
 
 	return nil
+}
+
+func ScanStructs(body []byte, s interface{}) error {
+	if s == nil {
+		return nil
+	}
+
+	val := reflect.ValueOf(s)
+	if val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	if val.Kind() != reflect.Struct {
+		return fmt.Errorf("function only accepts structs; got %s", val.Kind())
+	}
+
+	n := val.NumField()
+	values := make([]interface{}, 0, n)
+
+	for i := 0; i < n; i++ {
+		valueField := val.Field(i)
+		if valueField.CanAddr() {
+			values = append(values, valueField.Addr().Interface())
+		}
+	}
+
+	return ScanAll(body, values...)
 }
 
 func errRecover(errp *error) {

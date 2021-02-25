@@ -3,6 +3,7 @@ package core
 import (
 	"crypto/ed25519"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/shopspring/decimal"
 )
 
@@ -27,4 +28,8 @@ func (s *System) MemberIDs() []string {
 	}
 
 	return ids
+}
+
+func (s *System) IsMember(id string) bool {
+	return govalidator.IsIn(id, s.MemberIDs()...)
 }

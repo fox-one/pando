@@ -18,5 +18,4 @@ var (
 	ErrFlipInsufficientDecrease = maker.RegisterErr(1109, module, "insufficient-decrease")
 	ErrFlipNotLive              = maker.RegisterErr(1110, module, "not-live")
 	ErrFlipNotFinished          = maker.RegisterErr(1111, module, "not-finished")
-	ErrFlipAlreadyDeal          = maker.RegisterErr(1112, module, "already-deal")
 )

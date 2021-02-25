@@ -69,9 +69,13 @@ func (s *flipStore) Update(ctx context.Context, flip *core.Flip, version int64) 
 }
 
 func (s *flipStore) Find(ctx context.Context, traceID string) (*core.Flip, error) {
-	var flip core.Flip
+	flip := core.Flip{TraceID: traceID}
 
 	if err := s.db.View().Where("trace_id = ?", traceID).Take(&flip).Error; err != nil {
+		if db.IsErrorNotFound(err) {
+			return &flip, nil
+		}
+
 		return nil, err
 	}
 

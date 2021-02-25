@@ -69,12 +69,16 @@ func (s *collateralStore) Update(ctx context.Context, collateral *core.Collatera
 }
 
 func (s *collateralStore) Find(ctx context.Context, traceID string) (*core.Collateral, error) {
-	var collateral core.Collateral
-	if err := s.db.View().Where("trace_id = ?", traceID).Take(&collateral).Error; err != nil {
+	cat := core.Collateral{TraceID: traceID}
+	if err := s.db.View().Where("trace_id = ?", traceID).Take(&cat).Error; err != nil {
+		if db.IsErrorNotFound(err) {
+			return &cat, nil
+		}
+
 		return nil, err
 	}
 
-	return &collateral, nil
+	return &cat, nil
 }
 
 func (s *collateralStore) List(ctx context.Context) ([]*core.Collateral, error) {

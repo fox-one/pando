@@ -67,9 +67,13 @@ func (s *vaultStore) Update(ctx context.Context, vault *core.Vault, version int6
 }
 
 func (s *vaultStore) Find(ctx context.Context, traceID string) (*core.Vault, error) {
-	var vault core.Vault
+	vault := core.Vault{TraceID: traceID}
 
 	if err := s.db.View().Where("trace_id = ?", traceID).Take(&vault).Error; err != nil {
+		if db.IsErrorNotFound(err) {
+			return &vault, nil
+		}
+
 		return nil, err
 	}
 

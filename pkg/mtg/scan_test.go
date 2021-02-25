@@ -6,42 +6,56 @@ import (
 	"testing"
 
 	"github.com/bmizerany/assert"
-	"github.com/fox-one/pando/pkg/routes"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestScan(t *testing.T) {
 	var (
-		typ   int8       = 1
-		uid              = newUUID()
-		str              = "123"
-		route            = routes.Routes{1, 2, 3}
-		data  RawMessage = make([]byte, 100)
+		typ  int8       = 1
+		uid             = newUUID()
+		str             = "123"
+		data RawMessage = make([]byte, 100)
 	)
 
 	_, _ = io.ReadFull(rand.Reader, data)
 
-	body, err := Encode(typ, uid, str, route, string(data))
+	body, err := Encode(typ, uid, str, string(data))
 	require.Nil(t, err)
 
 	var (
-		dtyp   int8
-		duid   uuid.UUID
-		dstr   string
-		droute routes.Routes
-		ddata  RawMessage
+		dtyp  int8
+		duid  uuid.UUID
+		dstr  string
+		ddata RawMessage
 	)
 
 	remain, err := Scan(body, &dtyp)
 	require.Nil(t, err)
 	assert.Equal(t, dtyp, typ)
 
-	_, err = Scan(remain, &duid, &dstr, &droute, &ddata)
+	_, err = Scan(remain, &duid, &dstr, &ddata)
 	require.Nil(t, err)
 
 	assert.Equal(t, uid.String(), duid.String())
 	assert.Equal(t, str, dstr)
-	assert.Equal(t, route.String(), droute.String())
 	assert.Equal(t, data, ddata)
+}
+
+func TestScanStruct(t *testing.T) {
+	type Foo struct {
+		A uuid.UUID
+		B BitInt
+	}
+
+	var (
+		a        = newUUID()
+		b BitInt = 10
+	)
+	body, _ := Encode(a, b)
+
+	var foo Foo
+	require.Nil(t, ScanStructs(body, &foo))
+	assert.Equal(t, a, foo.A)
+	assert.Equal(t, b, foo.B)
 }

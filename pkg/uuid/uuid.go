@@ -13,6 +13,8 @@ func New() string {
 	return uuid.Must(uuid.NewV4()).String()
 }
 
+var Zero = uuid.Nil
+
 func IsUUID(id string) bool {
 	_, err := FromString(id)
 	return err == nil
