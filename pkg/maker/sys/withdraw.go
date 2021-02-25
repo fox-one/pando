@@ -17,9 +17,9 @@ func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
 		}
 
 		var (
-			opponent uuid.UUID
 			asset    uuid.UUID
 			amount   decimal.Decimal
+			opponent uuid.UUID
 		)
 
 		if err := require(r.Scan(&asset, &amount, &opponent) == nil, "bad-data"); err != nil {

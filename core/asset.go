@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/shopspring/decimal"
 )
 
@@ -15,9 +14,9 @@ type (
 		UpdatedAt time.Time       `json:"updated_at,omitempty"`
 		Version   int64           `json:"version,omitempty"`
 		Name      string          `sql:"size:64" json:"name,omitempty"`
-		Symbol    string          `sql:"size:32" json:"symbol,omitempty" valid:"required"`
+		Symbol    string          `sql:"size:32" json:"symbol,omitempty"`
 		Logo      string          `sql:"size:256" json:"logo,omitempty"`
-		ChainID   string          `sql:"size:36" json:"chain_id,omitempty" valid:"uuid,required"`
+		ChainID   string          `sql:"size:36" json:"chain_id,omitempty"`
 		Price     decimal.Decimal `sql:"type:decimal(64,20)" json:"price,omitempty"`
 	}
 
@@ -34,8 +33,3 @@ type (
 		Find(ctx context.Context, id string) (*Asset, error)
 	}
 )
-
-func (asset *Asset) Validate() error {
-	_, err := govalidator.ValidateStruct(asset)
-	return err
-}

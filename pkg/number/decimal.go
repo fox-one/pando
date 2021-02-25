@@ -3,6 +3,7 @@ package number
 import (
 	"math/cmplx"
 
+	"github.com/dustin/go-humanize"
 	"github.com/shopspring/decimal"
 )
 
@@ -39,4 +40,12 @@ func Sqrt(d decimal.Decimal) decimal.Decimal {
 
 func Ceil(d decimal.Decimal, precision int32) decimal.Decimal {
 	return d.Shift(precision).Ceil().Shift(-precision)
+}
+
+func Humanize(d decimal.Decimal) string {
+	if f, ok := d.Float64(); ok {
+		return humanize.Commaf(f)
+	}
+
+	return d.String()
 }

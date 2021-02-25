@@ -22,6 +22,8 @@ func TestCeil(t *testing.T) {
 			assert.Equal(t, v, c.String(), "should be ceil")
 		})
 	}
+
+	t.Log(Humanize(decimal.NewFromInt(1230000000)))
 }
 
 func TestSqrtN(t *testing.T) {

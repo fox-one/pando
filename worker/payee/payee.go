@@ -206,6 +206,8 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 
 			return w.handleRequest(ctx, r)
 		}
+
+		return nil
 	}
 
 	return nil

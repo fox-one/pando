@@ -2,19 +2,16 @@ package asset
 
 import (
 	"context"
-	"time"
 
 	"github.com/fox-one/pando/core"
 	"github.com/patrickmn/go-cache"
 	"golang.org/x/sync/singleflight"
 )
 
-const Forever = cache.NoExpiration
-
-func Cache(assetz core.AssetService, exp time.Duration) core.AssetService {
+func Cache(assetz core.AssetService) core.AssetService {
 	return &cacheAssets{
 		AssetService: assetz,
-		assets:       cache.New(exp, exp*5),
+		assets:       cache.New(cache.NoExpiration, cache.NoExpiration),
 		sf:           &singleflight.Group{},
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/number"
+	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
 )
@@ -21,7 +22,7 @@ func HandleFeed(
 		}
 
 		var (
-			id    decimal.Decimal
+			id    uuid.UUID
 			price decimal.Decimal
 			ts    int64
 		)

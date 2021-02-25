@@ -10,11 +10,6 @@ import (
 	"github.com/fox-one/pkg/logger"
 )
 
-type ModifyData struct {
-	Key   string `json:"key,omitempty"`
-	Value string `json:"value,omitempty"`
-}
-
 func HandleEdit(collaterals core.CollateralStore) maker.HandlerFunc {
 	return func(ctx context.Context, r *maker.Request) error {
 		log := logger.FromContext(ctx)

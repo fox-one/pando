@@ -12,16 +12,12 @@ func HandleSupply(collaterals core.CollateralStore) maker.HandlerFunc {
 	return func(ctx context.Context, r *maker.Request) error {
 		log := logger.FromContext(ctx)
 
-		if err := require(r.Gov, "not-authorized"); err != nil {
-			return err
-		}
-
 		c, err := From(ctx, collaterals, r)
 		if err != nil {
 			return err
 		}
 
-		if assetID, amount := r.Payment(); assetID == c.Dai {
+		if assetID, amount := r.Payment(); assetID == c.Dai && c.Version < r.Version() {
 			c.Line = c.Line.Add(amount)
 
 			if err := collaterals.Update(ctx, c, r.Version()); err != nil {

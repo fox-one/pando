@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/fox-one/pando/pkg/maker"
-	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
@@ -17,27 +16,6 @@ type Option struct {
 	Beg decimal.Decimal `json:"beg,omitempty"`
 	TTL time.Duration   `json:"ttl,omitempty"`
 	Tau time.Duration   `json:"tau,omitempty"`
-}
-
-func (o Option) MarshalBinary() (data []byte, err error) {
-	return mtg.Encode(o.Beg, int64(o.TTL.Seconds()), int64(o.Tau.Seconds()))
-}
-
-func (o *Option) UnmarshalBinary(data []byte) error {
-	var (
-		beg      decimal.Decimal
-		ttl, tau int64
-	)
-
-	if _, err := mtg.Scan(data, &beg, &ttl, &tau); err != nil {
-		return err
-	}
-
-	o.Beg = beg
-	o.TTL = time.Duration(ttl) * time.Second
-	o.Tau = time.Duration(tau) * time.Second
-
-	return nil
 }
 
 const (
@@ -76,9 +54,19 @@ func HandleOpt(
 			return err
 		}
 
-		var opt Option
-		if err := require(r.Scan(&opt) == nil, "bad-data"); err != nil {
+		var (
+			beg      decimal.Decimal
+			ttl, tau int64
+		)
+
+		if err := require(r.Scan(&beg, &ttl, &tau) == nil, "bad-data"); err != nil {
 			return err
+		}
+
+		opt := Option{
+			Beg: beg,
+			TTL: time.Duration(ttl) * time.Second,
+			Tau: time.Duration(tau) * time.Second,
 		}
 
 		if err := SaveOptions(ctx, properties, opt); err != nil {
