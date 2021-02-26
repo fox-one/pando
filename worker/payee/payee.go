@@ -34,7 +34,6 @@ func New(
 	vaults core.VaultStore,
 	flips core.FlipStore,
 	property property.Store,
-	notifier core.Notifier,
 	parliaments core.Parliament,
 	oracles core.OracleStore,
 	oraclez core.OracleService,
@@ -66,38 +65,22 @@ func New(
 	actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)
 
 	return &Payee{
-		assets:       assets,
-		assetz:       assetz,
-		wallets:      wallets,
-		transactions: transactions,
-		collaterals:  collaterals,
-		vaults:       vaults,
-		flips:        flips,
-		proposals:    proposals,
-		property:     property,
-		notifier:     notifier,
-		oracles:      oracles,
-		oraclez:      oraclez,
-		system:       system,
-		actions:      actions,
+		wallets:   wallets,
+		proposals: proposals,
+		property:  property,
+		oraclez:   oraclez,
+		system:    system,
+		actions:   actions,
 	}
 }
 
 type Payee struct {
-	assets       core.AssetStore
-	assetz       core.AssetService
-	wallets      core.WalletStore
-	collaterals  core.CollateralStore
-	vaults       core.VaultStore
-	flips        core.FlipStore
-	transactions core.TransactionStore
-	property     property.Store
-	proposals    core.ProposalStore
-	notifier     core.Notifier
-	oracles      core.OracleStore
-	oraclez      core.OracleService
-	system       *core.System
-	actions      map[core.Action]maker.HandlerFunc
+	wallets   core.WalletStore
+	property  property.Store
+	proposals core.ProposalStore
+	oraclez   core.OracleService
+	system    *core.System
+	actions   map[core.Action]maker.HandlerFunc
 }
 
 func (w *Payee) Run(ctx context.Context) error {
