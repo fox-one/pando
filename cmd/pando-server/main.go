@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	version = os.Getenv("PANDO_VERSION")
-	commit = os.Getenv("PANDO_VERSION")
+	commit = os.Getenv("PANDO_COMMIT")
 
 	if *debug {
 		logrus.SetLevel(logrus.DebugLevel)

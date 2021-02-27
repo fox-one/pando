@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	version = os.Getenv("PANDO_VERSION")
-	commit = os.Getenv("PANDO_VERSION")
+	commit = os.Getenv("PANDO_COMMIT")
 
 	logrus.Infof("pando worker %s(%s) launched at port %d", version, commit, *port)
 
