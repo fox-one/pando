@@ -62,6 +62,7 @@ func Viperion() (*Config, error) {
 		err = v.ReadConfig(bytes.NewReader(native))
 	} else {
 		v.SetConfigName("config")
+		v.AddConfigPath("/etc/pando/worker")
 		v.AddConfigPath("$HOME/.pando/worker")
 		v.AddConfigPath(".")
 		err = v.ReadInConfig()
