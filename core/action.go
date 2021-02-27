@@ -43,8 +43,7 @@ const (
 const (
 	ActionFlip Action = iota + 40
 	ActionFlipKick
-	ActionFlipTend
-	ActionFlipDent
+	ActionFlipBid
 	ActionFlipDeal
 	ActionFlipOpt
 )

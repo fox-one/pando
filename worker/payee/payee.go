@@ -55,8 +55,7 @@ func New(
 		core.ActionVatGenerate: vat.HandleGernerate(collaterals, vaults, transactions, wallets),
 		// flip
 		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, transactions, property),
-		core.ActionFlipTend: flip.HandleTend(collaterals, vaults, flips, transactions, wallets, property),
-		core.ActionFlipDent: flip.HandleDent(collaterals, vaults, flips, transactions, wallets, property),
+		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, transactions, wallets, property),
 		core.ActionFlipDeal: flip.HandleDeal(collaterals, vaults, flips, transactions, wallets),
 		core.ActionFlipOpt:  flip.HandleOpt(property),
 		// oracle

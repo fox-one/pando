@@ -21,13 +21,15 @@ func _() {
 	_ = x[ActionCatFold-24]
 	_ = x[ActionVat-30]
 	_ = x[ActionVatInit-31]
-	_ = x[ActionVatFrob-32]
+	_ = x[ActionVatDeposit-32]
+	_ = x[ActionVatWithdraw-33]
+	_ = x[ActionVatPayback-34]
+	_ = x[ActionVatGenerate-35]
 	_ = x[ActionFlip-40]
 	_ = x[ActionFlipKick-41]
-	_ = x[ActionFlipTend-42]
-	_ = x[ActionFlipDent-43]
-	_ = x[ActionFlipDeal-44]
-	_ = x[ActionFlipOpt-45]
+	_ = x[ActionFlipBid-42]
+	_ = x[ActionFlipDeal-43]
+	_ = x[ActionFlipOpt-44]
 	_ = x[ActionOracle-50]
 	_ = x[ActionOracleFeed-51]
 }
@@ -36,8 +38,8 @@ const (
 	_Action_name_0 = "SysSysWithdrawSysVote"
 	_Action_name_1 = "ProposalProposalInitProposalVote"
 	_Action_name_2 = "CatCatInitCatSupplyCatEditCatFold"
-	_Action_name_3 = "VatVatInitVatFrob"
-	_Action_name_4 = "FlipFlipKickFlipTendFlipDentFlipDealFlipOpt"
+	_Action_name_3 = "VatVatInitVatDepositVatWithdrawVatPaybackVatGenerate"
+	_Action_name_4 = "FlipFlipKickFlipBidFlipDealFlipOpt"
 	_Action_name_5 = "OracleOracleFeed"
 )
 
@@ -45,8 +47,8 @@ var (
 	_Action_index_0 = [...]uint8{0, 3, 14, 21}
 	_Action_index_1 = [...]uint8{0, 8, 20, 32}
 	_Action_index_2 = [...]uint8{0, 3, 10, 19, 26, 33}
-	_Action_index_3 = [...]uint8{0, 3, 10, 17}
-	_Action_index_4 = [...]uint8{0, 4, 12, 20, 28, 36, 43}
+	_Action_index_3 = [...]uint8{0, 3, 10, 20, 31, 41, 52}
+	_Action_index_4 = [...]uint8{0, 4, 12, 19, 27, 34}
 	_Action_index_5 = [...]uint8{0, 6, 16}
 )
 
@@ -60,10 +62,10 @@ func (i Action) String() string {
 	case 20 <= i && i <= 24:
 		i -= 20
 		return _Action_name_2[_Action_index_2[i]:_Action_index_2[i+1]]
-	case 30 <= i && i <= 32:
+	case 30 <= i && i <= 35:
 		i -= 30
 		return _Action_name_3[_Action_index_3[i]:_Action_index_3[i+1]]
-	case 40 <= i && i <= 45:
+	case 40 <= i && i <= 44:
 		i -= 40
 		return _Action_name_4[_Action_index_4[i]:_Action_index_4[i+1]]
 	case 50 <= i && i <= 51:
