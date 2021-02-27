@@ -67,8 +67,8 @@ func buildApp(cfg *config.Config) (app, error) {
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)
 	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer)
-	handler := provideHandler()
-	server := provideServer(handler)
+	mux := provideRoute()
+	server := provideServer(mux)
 	mainApp := app{
 		workers: v,
 		server:  server,

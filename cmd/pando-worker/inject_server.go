@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
+	"github.com/fox-one/pando/handler/hc"
 	"github.com/fox-one/pando/server"
 	"github.com/fox-one/pkg/logger"
 	"github.com/go-chi/chi"
@@ -13,11 +13,11 @@ import (
 )
 
 var serverSet = wire.NewSet(
-	provideHandler,
+	provideRoute,
 	provideServer,
 )
 
-func provideHandler() http.Handler {
+func provideRoute() *chi.Mux {
 	mux := chi.NewMux()
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.StripSlashes)
@@ -26,12 +26,14 @@ func provideHandler() http.Handler {
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.NewCompressor(5).Handler)
 
+	mux.Mount("/hc", hc.Handle(version))
+
 	return mux
 }
 
-func provideServer(handler http.Handler) *server.Server {
+func provideServer(mux *chi.Mux) *server.Server {
 	return &server.Server{
 		Addr:    fmt.Sprintf(":%d", *port),
-		Handler: handler,
+		Handler: mux,
 	}
 }
