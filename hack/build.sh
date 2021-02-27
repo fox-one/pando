@@ -12,7 +12,7 @@ export PANDO_COMMIT
 
 ENVS_GEN="$TARGET/envs_gen.go"
 if ! type "envs" > /dev/null; then
-  go install github.com/yiplee/envs@latest
+  env GO111MODULE=off go get -u github.com/yiplee/envs
 fi
 envs --prefix PANDO -o "$ENVS_GEN"
 
