@@ -48,8 +48,11 @@ func New(
 		core.ActionCatInit:   cat.HandleInit(collaterals, oracles, assets, assetz),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
-		core.ActionVatInit: vat.HandleInit(collaterals, vaults, transactions, wallets),
-		core.ActionVatFrob: vat.HandleFrob(collaterals, vaults, transactions, wallets),
+		core.ActionVatInit:     vat.HandleInit(collaterals, vaults, transactions, wallets),
+		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, transactions, wallets),
+		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, transactions, wallets),
+		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, transactions, wallets),
+		core.ActionVatGenerate: vat.HandleGernerate(collaterals, vaults, transactions, wallets),
 		// flip
 		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, transactions, property),
 		core.ActionFlipTend: flip.HandleTend(collaterals, vaults, flips, transactions, wallets, property),

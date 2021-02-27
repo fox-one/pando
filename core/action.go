@@ -34,7 +34,10 @@ const (
 const (
 	ActionVat Action = iota + 30
 	ActionVatInit
-	ActionVatFrob
+	ActionVatDeposit
+	ActionVatWithdraw
+	ActionVatPayback
+	ActionVatGenerate
 )
 
 const (
