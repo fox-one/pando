@@ -12,8 +12,8 @@ RUN make build-worker
 FROM alpine:latest
 
 WORKDIR /app
-COPY --from=builder /app/builds/pando-worker ./worker
+COPY --from=builder /app/builds/pando-worker /bin/
 
 EXPOSE 7777
 
-CMD ["./worker"]
+ENTRYPOINT ["/bin/pando-worker"]

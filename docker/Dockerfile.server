@@ -11,9 +11,8 @@ RUN make build-server
 
 FROM alpine:latest
 
-WORKDIR /app
-COPY --from=builder /app/builds/pando-server ./server
+COPY --from=builder /app/builds/pando-server /bin/
 
 EXPOSE 7778
 
-CMD ["./server"]
+ENTRYPOINT ["/bin/pando-server"]
