@@ -11,6 +11,9 @@ func _() {
 	_ = x[ActionSys-0]
 	_ = x[ActionSysWithdraw-1]
 	_ = x[ActionSysVote-2]
+	_ = x[ActionProposal-10]
+	_ = x[ActionProposalInit-11]
+	_ = x[ActionProposalVote-12]
 	_ = x[ActionCat-20]
 	_ = x[ActionCatInit-21]
 	_ = x[ActionCatSupply-22]
@@ -31,36 +34,41 @@ func _() {
 
 const (
 	_Action_name_0 = "SysSysWithdrawSysVote"
-	_Action_name_1 = "CatCatInitCatSupplyCatEditCatFold"
-	_Action_name_2 = "VatVatInitVatFrob"
-	_Action_name_3 = "FlipFlipKickFlipTendFlipDentFlipDealFlipOpt"
-	_Action_name_4 = "OracleOracleFeed"
+	_Action_name_1 = "ProposalProposalInitProposalVote"
+	_Action_name_2 = "CatCatInitCatSupplyCatEditCatFold"
+	_Action_name_3 = "VatVatInitVatFrob"
+	_Action_name_4 = "FlipFlipKickFlipTendFlipDentFlipDealFlipOpt"
+	_Action_name_5 = "OracleOracleFeed"
 )
 
 var (
 	_Action_index_0 = [...]uint8{0, 3, 14, 21}
-	_Action_index_1 = [...]uint8{0, 3, 10, 19, 26, 33}
-	_Action_index_2 = [...]uint8{0, 3, 10, 17}
-	_Action_index_3 = [...]uint8{0, 4, 12, 20, 28, 36, 43}
-	_Action_index_4 = [...]uint8{0, 6, 16}
+	_Action_index_1 = [...]uint8{0, 8, 20, 32}
+	_Action_index_2 = [...]uint8{0, 3, 10, 19, 26, 33}
+	_Action_index_3 = [...]uint8{0, 3, 10, 17}
+	_Action_index_4 = [...]uint8{0, 4, 12, 20, 28, 36, 43}
+	_Action_index_5 = [...]uint8{0, 6, 16}
 )
 
 func (i Action) String() string {
 	switch {
 	case 0 <= i && i <= 2:
 		return _Action_name_0[_Action_index_0[i]:_Action_index_0[i+1]]
+	case 10 <= i && i <= 12:
+		i -= 10
+		return _Action_name_1[_Action_index_1[i]:_Action_index_1[i+1]]
 	case 20 <= i && i <= 24:
 		i -= 20
-		return _Action_name_1[_Action_index_1[i]:_Action_index_1[i+1]]
+		return _Action_name_2[_Action_index_2[i]:_Action_index_2[i+1]]
 	case 30 <= i && i <= 32:
 		i -= 30
-		return _Action_name_2[_Action_index_2[i]:_Action_index_2[i+1]]
+		return _Action_name_3[_Action_index_3[i]:_Action_index_3[i+1]]
 	case 40 <= i && i <= 45:
 		i -= 40
-		return _Action_name_3[_Action_index_3[i]:_Action_index_3[i+1]]
+		return _Action_name_4[_Action_index_4[i]:_Action_index_4[i+1]]
 	case 50 <= i && i <= 51:
 		i -= 50
-		return _Action_name_4[_Action_index_4[i]:_Action_index_4[i+1]]
+		return _Action_name_5[_Action_index_5[i]:_Action_index_5[i+1]]
 	default:
 		return "Action(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
