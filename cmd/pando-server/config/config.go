@@ -1,7 +1,6 @@
 package config
 
 import (
-	"bytes"
 	_ "embed"
 
 	"github.com/fox-one/mixin-sdk-go"
@@ -9,9 +8,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/viper"
 )
-
-//go:embed config.yaml
-var native []byte
 
 type (
 	Config struct {
@@ -44,19 +40,12 @@ func Viperion() (*Config, error) {
 	v := viper.New()
 	v.SetConfigType("yaml")
 
-	var err error
+	v.SetConfigName("config")
+	v.AddConfigPath("/etc/pando/server")
+	v.AddConfigPath("$HOME/.pando/server")
+	v.AddConfigPath(".")
 
-	if len(native) > 0 {
-		err = v.ReadConfig(bytes.NewReader(native))
-	} else {
-		v.SetConfigName("config")
-		v.AddConfigPath("/etc/pando/server")
-		v.AddConfigPath("$HOME/.pando/server")
-		v.AddConfigPath(".")
-		err = v.ReadInConfig()
-	}
-
-	if err != nil {
+	if err := v.ReadInConfig(); err != nil {
 		return nil, err
 	}
 

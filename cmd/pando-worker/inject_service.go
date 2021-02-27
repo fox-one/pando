@@ -70,5 +70,6 @@ func provideSystem(cfg *config.Config) *core.System {
 		VoteAmount: cfg.Group.Vote.Amount,
 		PrivateKey: privateKey,
 		SignKey:    signKey,
+		Version:    version,
 	}
 }

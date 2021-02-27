@@ -67,5 +67,6 @@ func provideSystem(cfg *config.Config) *core.System {
 		Members:    members,
 		Threshold:  cfg.Group.Threshold,
 		PrivateKey: privateKey,
+		Version:    version,
 	}
 }

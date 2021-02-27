@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
 
 	"github.com/drone/signal"
 	"github.com/fox-one/pando/cmd/pando-server/config"
@@ -13,14 +14,21 @@ import (
 var (
 	debug = flag.Bool("debug", false, "debug mode")
 	port  = flag.Int("port", 7778, "server port")
+
+	version, commit string
 )
 
 func main() {
 	flag.Parse()
 
+	version = os.Getenv("PANDO_VERSION")
+	commit = os.Getenv("PANDO_VERSION")
+
 	if *debug {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
+
+	logrus.Infof("pando server %s(%s) launched at port %d", version, commit, *port)
 
 	cfg, err := config.Viperion()
 	if err != nil {
@@ -33,8 +41,6 @@ func main() {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: cannot initialize worker")
 	}
-
-	logrus.Infof("pando mtg api server with version %q launched at port %d!", "v0.0.1", *port)
 
 	ctx := signal.WithContext(context.Background())
 	if err := svr.ListenAndServe(ctx); err != nil {
