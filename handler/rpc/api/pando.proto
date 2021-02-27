@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package fox.pando.service;
+option go_package = ".;api";
+
+import "google/protobuf/timestamp.proto";
+
+message Pagination {
+    string next_cursor = 1;
+    bool has_next = 2;
+}
+
+message Asset {
+    string id = 1;
+    string name = 2;
+    string symbol = 3;
+    string logo = 4;
+    string chain_id = 5;
+    Asset chain = 6;
+    string price = 7;
+}
+
+message Collateral {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    string name = 3;
+    string gem = 4;
+    string dai = 5;
+    string art = 6;
+    string rate = 7;
+    google.protobuf.Timestamp rho = 8;
+    string debt = 9;
+    string line = 10;
+    string dust = 11;
+    string price = 12;
+    string mat = 13;
+    string duty = 14;
+    string chop = 15;
+    string dunk = 16;
+    bool live = 17;
+}
+
+message Vault {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    string collateral_id = 3;
+    string ink = 4;
+    string art = 5;
+}
+
+message Transaction {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    string target_id = 3;
+    string asset_id = 4;
+    string amount = 5;
+    int32 action = 6;
+    int32 status = 7;
+    string data = 8;
+}
+
+message Req {
+    message ReadAsset {
+        string id = 1;
+    }
+
+    message ListAssets {
+
+    }
+
+    // List All Collaterals
+    message ListCollaterals {}
+
+    // Find Collateral By TraceID
+    message FindCollateral {
+        string id = 1;
+    }
+
+    // List All Vaults
+    message ListVaults {}
+
+    message FindVault{
+        string id = 1;
+    }
+
+    // Find Tx By FollowID
+    message FindTransaction {
+        string follow = 1;
+    }
+
+    message ListTransactions {
+        string cursor = 1;
+        int64 limit = 2;
+        string target = 3;
+    }
+}
+
+message Resp {
+    message ListAssets {
+        repeated Asset assets = 1;
+    }
+
+    message ListCollaterals {
+        repeated Collateral collaterals = 1;
+    }
+
+    message ListVaults {
+        repeated Vault vaults = 1;
+    }
+
+    message ListTransactions {
+        repeated Transaction transactions = 1;
+        Pagination pagination = 2;
+    }
+}
+
+service Pando {
+    // assets
+    rpc ReadAsset(Req.ReadAsset) returns (Asset);
+    rpc ListAssets(Req.ListAssets) returns (Resp.ListAssets);
+    // collaterals
+    rpc ListCollaterals(Req.ListCollaterals) returns (Resp.ListCollaterals);
+    rpc FindCollateral(Req.FindCollateral) returns (Collateral);
+    // vaults
+    rpc ListVaults(Req.ListVaults) returns (Resp.ListVaults);
+    rpc FindVault(Req.FindVault) returns (Vault);
+    // tx
+    rpc FindTransaction(Req.FindTransaction) returns (Transaction);
+    rpc ListTransactions(Req.ListTransactions) returns (Resp.ListTransactions);
+}

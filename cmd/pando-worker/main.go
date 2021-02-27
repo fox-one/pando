@@ -37,6 +37,8 @@ func main() {
 		logger.Fatalln("main: cannot initialize worker")
 	}
 
+	logrus.Infof("pando mtg worker with version %q launched at port %d!", "v0.0.1", *port)
+
 	g, ctx := errgroup.WithContext(signal.WithContext(context.Background()))
 
 	for i := range app.workers {
