@@ -4,7 +4,7 @@ set -e
 
 TARGET=$1
 
-PANDO_VERSION=$(git describe --tags)
+PANDO_VERSION=$(git describe --tags --abbrev=0)
 PANDO_COMMIT=$(git rev-parse --short HEAD)
 
 export PANDO_VERSION
