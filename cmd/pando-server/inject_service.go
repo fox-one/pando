@@ -40,7 +40,12 @@ func provideWalletService(client *mixin.Client, cfg *config.Config, system *core
 }
 
 func provideSessions(userz core.UserService, cfg *config.Config) core.Session {
-	return session.New(userz, 2048, []string{cfg.Dapp.ClientID})
+	var issuers []string
+	for _, m := range cfg.Group.Members {
+		issuers = append(issuers, m.ClientID)
+	}
+
+	return session.New(userz, 2048, issuers)
 }
 
 func provideSystem(cfg *config.Config) *core.System {

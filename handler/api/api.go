@@ -6,6 +6,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/api/actions"
+	"github.com/fox-one/pando/handler/api/system"
 	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pando/handler/rpc"
@@ -61,6 +62,7 @@ func (s *Server) Handler() http.Handler {
 		})
 	})
 
+	r.Get("/info", system.HandleInfo(s.system))
 	r.Post("/login", auth.HandleOauth(s.system))
 
 	svr := rpc.New(s.assets, s.vaults, s.collaterals, s.transactions)

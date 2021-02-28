@@ -1,3 +1,5 @@
+TAG = $(shell git describe --tags --abbrev=0)
+
 .PHONY: build-server
 build-server:
 	sh hack/build.sh ./cmd/pando-server
@@ -6,7 +8,10 @@ build-server:
 build-worker:
 	sh hack/build.sh ./cmd/pando-worker
 
-TAG = $(shell git describe --tags --abbrev=0)
+.PHONY: install-cli
+install-cli:
+	sh hack/build.sh ./cmd/pando-cli
+	@mv ./builds/pando-cli ${GOPATH}/bin/pd
 
 .PHONY: pando/worker
 pando/worker:
