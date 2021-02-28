@@ -14,9 +14,10 @@ import (
 )
 
 var (
-	notify = flag.Bool("notify", false, "enable notifier")
-	debug  = flag.Bool("debug", false, "debug mode")
-	port   = flag.Int("port", 7777, "server port")
+	notify  = flag.Bool("notify", false, "enable notifier")
+	debug   = flag.Bool("debug", false, "debug mode")
+	port    = flag.Int("port", 7777, "server port")
+	cfgFile = flag.String("config", "", "config filename")
 
 	version, commit string
 )
@@ -33,7 +34,7 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	cfg, err := config.Viperion()
+	cfg, err := config.Viperion(*cfgFile)
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: invalid configuration")

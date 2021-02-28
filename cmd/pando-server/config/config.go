@@ -1,8 +1,6 @@
 package config
 
 import (
-	_ "embed"
-
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pkg/store/db"
 	jsoniter "github.com/json-iterator/go"
@@ -36,14 +34,18 @@ type (
 )
 
 // Viperion load config by viper
-func Viperion() (*Config, error) {
+func Viperion(cfgFile string) (*Config, error) {
 	v := viper.New()
-	v.SetConfigType("yaml")
 
-	v.SetConfigName("config")
-	v.AddConfigPath("/etc/pando/server")
-	v.AddConfigPath("$HOME/.pando/server")
-	v.AddConfigPath(".")
+	if cfgFile != "" {
+		v.SetConfigFile(cfgFile)
+	} else {
+		v.SetConfigType("yaml")
+		v.SetConfigName("config")
+		v.AddConfigPath("/etc/pando/server")
+		v.AddConfigPath("$HOME/.pando/server")
+		v.AddConfigPath(".")
+	}
 
 	if err := v.ReadInConfig(); err != nil {
 		return nil, err

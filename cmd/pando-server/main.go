@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	debug = flag.Bool("debug", false, "debug mode")
-	port  = flag.Int("port", 7778, "server port")
+	debug   = flag.Bool("debug", false, "debug mode")
+	port    = flag.Int("port", 7778, "server port")
+	cfgFile = flag.String("config", "", "config filename")
 
 	version, commit string
 )
@@ -30,7 +31,7 @@ func main() {
 
 	logrus.Infof("pando server %s(%s) launched at port %d", version, commit, *port)
 
-	cfg, err := config.Viperion()
+	cfg, err := config.Viperion(*cfgFile)
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: invalid configuration")
