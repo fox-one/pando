@@ -1,4 +1,4 @@
-package mtg
+package types
 
 import (
 	"database/sql/driver"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -65,10 +66,42 @@ const (
 	TypeUUID    = "uuid"    // UUID
 	TypeDecimal = "decimal" // Decimal
 	TypeInt     = "int"     // Int
-	TypeRaw     = "raw"     // RawMessage
 )
 
-func encodeWithType(typ, value string) ([]byte, error) {
+func UUID(v string) Value {
+	return Value{
+		typ: TypeUUID,
+		raw: v,
+	}
+}
+
+func Decimal(v string) Value {
+	return Value{
+		typ: TypeDecimal,
+		raw: v,
+	}
+}
+
+type Value struct {
+	typ string
+	raw string
+}
+
+func (v Value) MarshalBinary() ([]byte, error) {
+	b, err := castValue(v.typ, v.raw)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := mtg.Encode(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return data[1:], nil
+}
+
+func castValue(typ, value string) (interface{}, error) {
 	var v interface{}
 
 	switch typ {
@@ -102,13 +135,11 @@ func encodeWithType(typ, value string) ([]byte, error) {
 		}
 
 		v = i
-	case TypeRaw:
-		v = []byte(value)
 	default:
 		return nil, fmt.Errorf("unknown value type %q", typ)
 	}
 
-	return encode(v)
+	return v, nil
 }
 
 func EncodeWithTypes(typeValues ...string) ([]byte, error) {
@@ -116,13 +147,13 @@ func EncodeWithTypes(typeValues ...string) ([]byte, error) {
 
 	for idx := 0; idx < len(typeValues)-1; idx += 2 {
 		typ, value := typeValues[idx], typeValues[idx+1]
-		b, err := encodeWithType(typ, value)
+		v, err := castValue(typ, value)
 		if err != nil {
 			return nil, err
 		}
 
-		values = append(values, RawMessage(b))
+		values = append(values, v)
 	}
 
-	return Encode(values...)
+	return mtg.Encode(values...)
 }

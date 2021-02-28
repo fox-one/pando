@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
-	"github.com/fox-one/pando/pkg/mtg"
+	"github.com/fox-one/pando/pkg/mtg/types"
 )
 
 //go:generate stringer -type Action -trimprefix Action
@@ -14,7 +14,6 @@ type Action int
 const (
 	ActionSys Action = iota + 0
 	ActionSysWithdraw
-	ActionSysVote
 )
 
 const (
@@ -54,11 +53,11 @@ const (
 )
 
 func (i Action) MarshalBinary() (data []byte, err error) {
-	return mtg.BitInt(i).MarshalBinary()
+	return types.BitInt(i).MarshalBinary()
 }
 
 func (i *Action) UnmarshalBinary(data []byte) error {
-	var b mtg.BitInt
+	var b types.BitInt
 	if err := b.UnmarshalBinary(data); err != nil {
 		return err
 	}

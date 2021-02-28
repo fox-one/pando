@@ -10,6 +10,7 @@ import (
 	"github.com/fox-one/pando/handler/param"
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pando/pkg/mtg"
+	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
@@ -31,7 +32,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 			return
 		}
 
-		data, err := mtg.EncodeWithTypes(body.Actions...)
+		data, err := types.EncodeWithTypes(body.Actions...)
 		if err == nil {
 			key := mixin.GenerateEd25519Key()
 			pub := system.PrivateKey.Public().(ed25519.PublicKey)

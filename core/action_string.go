@@ -10,7 +10,6 @@ func _() {
 	var x [1]struct{}
 	_ = x[ActionSys-0]
 	_ = x[ActionSysWithdraw-1]
-	_ = x[ActionSysVote-2]
 	_ = x[ActionProposal-10]
 	_ = x[ActionProposalInit-11]
 	_ = x[ActionProposalVote-12]
@@ -35,7 +34,7 @@ func _() {
 }
 
 const (
-	_Action_name_0 = "SysSysWithdrawSysVote"
+	_Action_name_0 = "SysSysWithdraw"
 	_Action_name_1 = "ProposalProposalInitProposalVote"
 	_Action_name_2 = "CatCatInitCatSupplyCatEditCatFold"
 	_Action_name_3 = "VatVatInitVatDepositVatWithdrawVatPaybackVatGenerate"
@@ -44,7 +43,7 @@ const (
 )
 
 var (
-	_Action_index_0 = [...]uint8{0, 3, 14, 21}
+	_Action_index_0 = [...]uint8{0, 3, 14}
 	_Action_index_1 = [...]uint8{0, 8, 20, 32}
 	_Action_index_2 = [...]uint8{0, 3, 10, 19, 26, 33}
 	_Action_index_3 = [...]uint8{0, 3, 10, 20, 31, 41, 52}
@@ -54,7 +53,7 @@ var (
 
 func (i Action) String() string {
 	switch {
-	case 0 <= i && i <= 2:
+	case 0 <= i && i <= 1:
 		return _Action_name_0[_Action_index_0[i]:_Action_index_0[i+1]]
 	case 10 <= i && i <= 12:
 		i -= 10

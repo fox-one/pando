@@ -16,17 +16,28 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
 
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/auth"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/config"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/pay"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/proposal"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/sys"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/use"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+)
+
+var (
+	// 如果指定了 keystore 文件，那么付款的时候会直接用这个账号付款
+	// keystore 里面需要指定 pin
+	keystoreFile string
 )
 
 var rootCmd = &cobra.Command{
@@ -35,8 +46,6 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	cobra.OnInitialize(initConfig)
-
 	version := os.Getenv("PANDO_VERSION")
 	commit := os.Getenv("PANDO_COMMIT")
 	rootCmd.Version = fmt.Sprintf("%s(%s)", version, commit)
@@ -44,11 +53,19 @@ func Execute() {
 	rootCmd.AddCommand(use.NewCmd())
 	rootCmd.AddCommand(config.NewCmd())
 	rootCmd.AddCommand(auth.NewCmd())
+	rootCmd.AddCommand(proposal.NewCmd())
+	rootCmd.AddCommand(sys.NewCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	cobra.OnInitialize(initConfig, initKeystore)
+
+	rootCmd.PersistentFlags().StringVar(&keystoreFile, "keystore", "", "keystore filename")
 }
 
 func initConfig() {
@@ -64,4 +81,22 @@ func initConfig() {
 			log.Fatalf("read config file failed: %v", err)
 		}
 	}
+}
+
+func initKeystore() {
+	if keystoreFile == "" {
+		return
+	}
+
+	data, err := ioutil.ReadFile(keystoreFile)
+	if err != nil {
+		log.Fatalf("read keystore file failed: %v", err)
+	}
+
+	var store pay.Keystore
+	if err := json.Unmarshal(data, &store); err != nil {
+		log.Fatalf("decode keystore failed: %v", err)
+	}
+
+	pay.UseKeystore(&store)
 }

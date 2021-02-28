@@ -1,7 +1,7 @@
 package use
 
 import (
-	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/api"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/call"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/cfg"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,7 @@ func NewCmd() *cobra.Command {
 			host := args[0]
 			cfg.SetApiHost(host)
 
-			r, err := api.R(cmd.Context()).Get("/api/info")
+			r, err := call.R(cmd.Context()).Get("/api/info")
 			if err != nil {
 				return err
 			}
@@ -27,7 +27,7 @@ func NewCmd() *cobra.Command {
 				OauthClientID string   `json:"oauth_client_id,omitempty"`
 			}
 
-			if err := api.UnmarshalResponse(r, &body); err != nil {
+			if err := call.UnmarshalResponse(r, &body); err != nil {
 				return err
 			}
 

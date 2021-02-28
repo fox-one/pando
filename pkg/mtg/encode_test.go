@@ -7,6 +7,7 @@ import (
 	"io"
 	"testing"
 
+	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/gofrs/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,7 @@ func newUUID() uuid.UUID {
 func TestEncode(t *testing.T) {
 	pub, pri, _ := ed25519.GenerateKey(rand.Reader)
 
-	var proposal RawMessage = make([]byte, 100)
+	var proposal types.RawMessage = make([]byte, 100)
 	_, _ = io.ReadFull(rand.Reader, proposal)
 	values := []interface{}{1, newUUID(), newUUID()}
 
@@ -74,7 +75,7 @@ func TestEncode(t *testing.T) {
 		type Foo struct {
 			A uuid.UUID
 			B decimal.Decimal
-			C BitInt
+			C types.BitInt
 			D string
 		}
 

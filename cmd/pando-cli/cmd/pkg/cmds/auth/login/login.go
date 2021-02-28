@@ -5,7 +5,7 @@ import (
 	"net/url"
 
 	"github.com/fox-one/mixin-sdk-go"
-	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/api"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/call"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/internal/cfg"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
@@ -25,7 +25,7 @@ func NewCmd() *cobra.Command {
 				return requestMixinOauth(clientID)
 			}
 
-			r, err := api.R(cmd.Context()).SetBody(map[string]interface{}{
+			r, err := call.R(cmd.Context()).SetBody(map[string]interface{}{
 				"code": args[0],
 			}).Post("/login")
 			if err != nil {
@@ -36,7 +36,7 @@ func NewCmd() *cobra.Command {
 				Token string `json:"token,omitempty"`
 			}
 
-			if err := api.UnmarshalResponse(r, &body); err != nil {
+			if err := call.UnmarshalResponse(r, &body); err != nil {
 				return err
 			}
 

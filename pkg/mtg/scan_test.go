@@ -6,16 +6,17 @@ import (
 	"testing"
 
 	"github.com/bmizerany/assert"
+	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestScan(t *testing.T) {
 	var (
-		typ  int8       = 1
-		uid             = newUUID()
-		str             = "123"
-		data RawMessage = make([]byte, 100)
+		typ  int8             = 1
+		uid                   = newUUID()
+		str                   = "123"
+		data types.RawMessage = make([]byte, 100)
 	)
 
 	_, _ = io.ReadFull(rand.Reader, data)
@@ -27,7 +28,7 @@ func TestScan(t *testing.T) {
 		dtyp  int8
 		duid  uuid.UUID
 		dstr  string
-		ddata RawMessage
+		ddata types.RawMessage
 	)
 
 	remain, err := Scan(body, &dtyp)
@@ -45,12 +46,12 @@ func TestScan(t *testing.T) {
 func TestScanStruct(t *testing.T) {
 	type Foo struct {
 		A uuid.UUID
-		B BitInt
+		B types.BitInt
 	}
 
 	var (
-		a        = newUUID()
-		b BitInt = 10
+		a              = newUUID()
+		b types.BitInt = 10
 	)
 	body, _ := Encode(a, b)
 
