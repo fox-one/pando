@@ -65,7 +65,7 @@ func HandleBid(
 		}
 
 		if t.ID == 0 {
-			t := r.Tx()
+			t = r.Tx()
 			t.TargetID = f.TraceID
 
 			var transfers []*core.Transfer

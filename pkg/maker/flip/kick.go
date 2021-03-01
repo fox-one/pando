@@ -54,7 +54,7 @@ func HandleKick(
 				return err
 			}
 
-			t := r.Tx()
+			t = r.Tx()
 			t.TargetID = v.TraceID
 
 			if f, err := Kick(r, c, v, opt); err == nil {

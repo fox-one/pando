@@ -17,19 +17,18 @@ import (
 )
 
 type (
-	twirpHandler  http.Handler
 	healthHandler http.Handler
 )
 
 var serverSet = wire.NewSet(
 	api.New,
+	rpc.New,
 	provideHealth,
-	provideTwirp,
 	provideRoute,
 	provideServer,
 )
 
-func provideRoute(api *api.Server, twirp twirpHandler, hc healthHandler) *chi.Mux {
+func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session, hc healthHandler) *chi.Mux {
 	r := chi.NewMux()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.StripSlashes)
@@ -38,7 +37,7 @@ func provideRoute(api *api.Server, twirp twirpHandler, hc healthHandler) *chi.Mu
 	r.Use(middleware.Logger)
 	r.Use(middleware.NewCompressor(5).Handler)
 
-	r.Mount("/twirp", twirp)
+	r.Mount("/twirp", rpc.Handle(sessions))
 	r.Mount("/api", api.Handler())
 	r.Mount("/hc", hc)
 
@@ -48,16 +47,6 @@ func provideRoute(api *api.Server, twirp twirpHandler, hc healthHandler) *chi.Mu
 func provideHealth(system *core.System) healthHandler {
 	h := hc.Handle(system.Version)
 	return healthHandler(h)
-}
-
-func provideTwirp(
-	assets core.AssetStore,
-	vaults core.VaultStore,
-	collaterals core.CollateralStore,
-	transactions core.TransactionStore,
-) twirpHandler {
-	h := rpc.New(assets, vaults, collaterals, transactions)
-	return twirpHandler(h)
 }
 
 func provideServer(mux *chi.Mux) *server.Server {

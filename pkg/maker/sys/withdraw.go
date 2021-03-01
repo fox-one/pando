@@ -26,6 +26,11 @@ func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
 			return err
 		}
 
+		amount = amount.Truncate(8)
+		if err := require(amount.IsPositive(), "bad-data"); err != nil {
+			return err
+		}
+
 		memo := core.TransferAction{
 			ID:     r.TraceID(),
 			Source: r.Action.String(),
@@ -35,7 +40,7 @@ func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
 			CreatedAt: r.Now(),
 			TraceID:   uuid.Modify(r.TraceID(), memo),
 			AssetID:   asset.String(),
-			Amount:    decimal.Decimal{},
+			Amount:    amount,
 			Memo:      memo,
 			Threshold: 1,
 			Opponents: []string{opponent.String()},

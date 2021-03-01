@@ -48,8 +48,9 @@ func (s *transactionStore) Find(ctx context.Context, trace string) (*core.Transa
 
 	if err := s.db.View().Where("trace_id = ?", trace).Take(&tx).Error; err != nil {
 		if db.IsErrorNotFound(err) {
-			return &tx, err
+			return &tx, nil
 		}
+
 		return nil, err
 	}
 

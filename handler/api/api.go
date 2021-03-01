@@ -65,7 +65,7 @@ func (s *Server) Handler() http.Handler {
 	r.Get("/info", system.HandleInfo(s.system))
 	r.Post("/login", auth.HandleOauth(s.system))
 
-	svr := rpc.New(s.assets, s.vaults, s.collaterals, s.transactions)
+	svr := rpc.New(s.assets, s.vaults, s.collaterals, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {

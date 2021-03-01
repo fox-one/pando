@@ -213,6 +213,8 @@ func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
 			return err
 		}
 
+		log.WithError(err).Debugf("handle action %s failed", r.Action.String())
+
 		// refunds
 		if r.UserID != "" {
 			id := r.FollowID

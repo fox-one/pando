@@ -8,6 +8,7 @@ package main
 import (
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/handler/api"
+	"github.com/fox-one/pando/handler/rpc"
 	"github.com/fox-one/pando/server"
 	"github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/store/asset"
@@ -36,9 +37,9 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	system := provideSystem(cfg)
 	walletService := provideWalletService(client, cfg, system)
 	apiServer := api.New(session, assetStore, vaultStore, collateralStore, transactionStore, walletService, system)
-	mainTwirpHandler := provideTwirp(assetStore, vaultStore, collateralStore, transactionStore)
+	rpcServer := rpc.New(assetStore, vaultStore, collateralStore, transactionStore)
 	mainHealthHandler := provideHealth(system)
-	mux := provideRoute(apiServer, mainTwirpHandler, mainHealthHandler)
+	mux := provideRoute(apiServer, rpcServer, session, mainHealthHandler)
 	serverServer := provideServer(mux)
 	return serverServer, nil
 }

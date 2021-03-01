@@ -2,9 +2,11 @@ package rpc
 
 import (
 	"context"
+	"net/http"
 	"sort"
 
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/request"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/fox-one/pando/handler/rpc/view"
@@ -19,29 +21,35 @@ func New(
 	vaults core.VaultStore,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
-) api.TwirpServer {
-	svc := &service{
+) *Server {
+	return &Server{
 		assets:       assets,
 		vaults:       vaults,
 		collaterals:  collaterals,
 		transactions: transactions,
 	}
-
-	opts := []interface{}{
-		twirp.WithServerJSONSkipDefaults(false),
-	}
-
-	return api.NewPandoServer(svc, opts...)
 }
 
-type service struct {
+type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 }
 
-func (s *service) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.Asset, error) {
+func (s *Server) TwirpServer() api.TwirpServer {
+	opts := []interface{}{
+		twirp.WithServerJSONSkipDefaults(false),
+	}
+
+	return api.NewPandoServer(s, opts...)
+}
+
+func (s *Server) Handle(sessions core.Session) http.Handler {
+	return auth.HandleAuthentication(sessions)(s.TwirpServer())
+}
+
+func (s *Server) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.Asset, error) {
 	asset, err := s.assets.Find(ctx, req.Id)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Errorf("rpc: assets.Find(%s)", req.Id)
@@ -60,7 +68,7 @@ func (s *service) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.A
 	return view.Asset(asset, chain), nil
 }
 
-func (s *service) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Resp_ListAssets, error) {
+func (s *Server) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Resp_ListAssets, error) {
 	assets, err := s.assets.List(ctx)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: assets.ListAll")
@@ -86,7 +94,7 @@ func (s *service) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.R
 	return resp, nil
 }
 
-func (s *service) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals) (*api.Resp_ListCollaterals, error) {
+func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals) (*api.Resp_ListCollaterals, error) {
 	cats, err := s.collaterals.List(ctx)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: collaterals.List")
@@ -101,7 +109,7 @@ func (s *service) ListCollaterals(ctx context.Context, _ *api.Req_ListCollateral
 	return resp, nil
 }
 
-func (s *service) FindCollateral(ctx context.Context, req *api.Req_FindCollateral) (*api.Collateral, error) {
+func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral) (*api.Collateral, error) {
 	cat, err := s.collaterals.Find(ctx, req.Id)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: collaterals.Find")
@@ -111,7 +119,7 @@ func (s *service) FindCollateral(ctx context.Context, req *api.Req_FindCollatera
 	return view.Collateral(cat), nil
 }
 
-func (s *service) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Resp_ListVaults, error) {
+func (s *Server) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Resp_ListVaults, error) {
 	user, ok := request.UserFrom(ctx)
 	if !ok {
 		logger.FromContext(ctx).Debugln("rpc: authentication required")
@@ -132,7 +140,7 @@ func (s *service) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.R
 	return resp, nil
 }
 
-func (s *service) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Vault, error) {
+func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Vault, error) {
 	user, ok := request.UserFrom(ctx)
 	if !ok {
 		logger.FromContext(ctx).Debugln("rpc: authentication required")
@@ -152,7 +160,7 @@ func (s *service) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.V
 	return view.Vault(vat), nil
 }
 
-func (s *service) FindTransaction(ctx context.Context, req *api.Req_FindTransaction) (*api.Transaction, error) {
+func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransaction) (*api.Transaction, error) {
 	user, ok := request.UserFrom(ctx)
 	if !ok {
 		logger.FromContext(ctx).Debugln("rpc: authentication required")
@@ -171,7 +179,7 @@ func (s *service) FindTransaction(ctx context.Context, req *api.Req_FindTransact
 	return view.Transaction(tx), nil
 }
 
-func (s *service) ListTransactions(ctx context.Context, req *api.Req_ListTransactions) (*api.Resp_ListTransactions, error) {
+func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransactions) (*api.Resp_ListTransactions, error) {
 	fromID := cast.ToInt64(req.Cursor)
 	limit := 50
 	if l := int(req.Limit); l > 0 && l < limit {
