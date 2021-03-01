@@ -27,9 +27,9 @@ func Member(args ...interface{}) (string, error) {
 	return base64.StdEncoding.EncodeToString(data), nil
 }
 
-func InitProposal(action core.Action, args ...interface{}) (string, error) {
+func MakeProposal(action core.Action, args ...interface{}) (string, error) {
 	values := []interface{}{
-		core.ActionProposalInit,
+		core.ActionProposalMake,
 		types.UUID(uuid.New()),
 		action,
 	}

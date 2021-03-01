@@ -14,11 +14,12 @@ func NewCmd() *cobra.Command {
 		Use:  "create <gem> <dai> <name>",
 		Args: cobra.ExactValidArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			memo, err := actions.InitProposal(
-				core.ActionCatInit,
+			memo, err := actions.MakeProposal(
+				core.ActionCatCreate,
 				types.UUID(args[0]),
-				types.Decimal(args[1]),
-				types.UUID(args[2]))
+				types.UUID(args[1]),
+				args[2],
+			)
 
 			if err != nil {
 				return err

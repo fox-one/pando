@@ -10,7 +10,7 @@ import (
 	"github.com/fox-one/pkg/logger"
 )
 
-func HandleInit(
+func HandleMake(
 	proposals core.ProposalStore,
 	parliaments core.Parliament,
 	system *core.System,

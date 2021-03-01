@@ -130,7 +130,7 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 	data, _ := base64.StdEncoding.DecodeString(p.Data)
 
 	switch p.Action {
-	case core.ActionCatInit:
+	case core.ActionCatCreate:
 		var (
 			gem, dai uuid.UUID
 			name     string

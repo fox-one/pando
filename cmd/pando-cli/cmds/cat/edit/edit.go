@@ -19,7 +19,7 @@ func NewCmd() *cobra.Command {
 				values = append(values, v)
 			}
 
-			memo, err := actions.InitProposal(core.ActionCatEdit, values...)
+			memo, err := actions.MakeProposal(core.ActionCatEdit, values...)
 			if err != nil {
 				return err
 			}

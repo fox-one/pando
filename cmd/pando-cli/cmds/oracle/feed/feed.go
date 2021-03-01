@@ -13,12 +13,12 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "feed",
+		Use:  "feed <asset_id> <price>",
 		Args: cobra.ExactValidArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, price := args[0], args[1]
 
-			memo, err := actions.InitProposal(
+			memo, err := actions.MakeProposal(
 				core.ActionOracleFeed,
 				types.UUID(id),
 				types.Decimal(price),

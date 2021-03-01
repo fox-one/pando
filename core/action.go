@@ -18,13 +18,13 @@ const (
 
 const (
 	ActionProposal Action = iota + 10
-	ActionProposalInit
+	ActionProposalMake
 	ActionProposalVote
 )
 
 const (
 	ActionCat Action = iota + 20
-	ActionCatInit
+	ActionCatCreate
 	ActionCatSupply
 	ActionCatEdit
 	ActionCatFold
@@ -32,7 +32,7 @@ const (
 
 const (
 	ActionVat Action = iota + 30
-	ActionVatInit
+	ActionVatOpen
 	ActionVatDeposit
 	ActionVatWithdraw
 	ActionVatPayback

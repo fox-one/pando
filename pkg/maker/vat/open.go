@@ -15,7 +15,7 @@ type InitData struct {
 	Debt decimal.Decimal `json:"debt,omitempty"`
 }
 
-func HandleInit(
+func HandleOpen(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	transactions core.TransactionStore,

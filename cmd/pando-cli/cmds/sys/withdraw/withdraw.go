@@ -14,7 +14,7 @@ func NewCmd() *cobra.Command {
 		Use:  "withdraw <asset> <amount> <opponent>",
 		Args: cobra.ExactValidArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			memo, err := actions.InitProposal(
+			memo, err := actions.MakeProposal(
 				core.ActionSysWithdraw,
 				types.UUID(args[0]),
 				types.Decimal(args[1]),

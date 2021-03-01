@@ -45,10 +45,10 @@ func New(
 		// cat
 		core.ActionCatEdit:   cat.HandleEdit(collaterals),
 		core.ActionCatFold:   cat.HandleFold(collaterals),
-		core.ActionCatInit:   cat.HandleInit(collaterals, oracles, assets, assetz),
+		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles, assets, assetz),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
-		core.ActionVatInit:     vat.HandleInit(collaterals, vaults, transactions, wallets),
+		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, transactions, wallets),
 		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, transactions, wallets),
 		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, transactions, wallets),
 		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, transactions, wallets),
@@ -61,7 +61,7 @@ func New(
 		// oracle
 		core.ActionOracleFeed: oracle.HandleFeed(collaterals, oracles),
 		// proposal
-		core.ActionProposalInit: proposal.HandleInit(proposals, parliaments, system),
+		core.ActionProposalMake: proposal.HandleMake(proposals, parliaments, system),
 	}
 
 	actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)

@@ -38,7 +38,7 @@ func NewCmd() *cobra.Command {
 			dink := number.Decimal(args[1])
 			debt := number.Decimal(args[2])
 			memo, err := actions.Tx(
-				core.ActionVatInit,
+				core.ActionVatOpen,
 				types.UUID(user.UserID),
 				types.UUID(follow),
 				types.UUID(catID),

@@ -8,9 +8,10 @@ import (
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
+	"github.com/shopspring/decimal"
 )
 
-func HandleInit(
+func HandleCreate(
 	collaterals core.CollateralStore,
 	oracles core.OracleStore,
 	assets core.AssetStore,
@@ -72,7 +73,8 @@ func HandleInit(
 			Name:      name,
 			Gem:       gem.String(),
 			Dai:       dai.String(),
-			Art:       number.Decimal("1"),
+			Art:       decimal.Zero,
+			Rate:      number.Decimal("1"),
 			Rho:       r.Now(),
 			Dust:      number.Decimal("100"),
 			Mat:       number.Decimal("1.5"),

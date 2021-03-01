@@ -11,15 +11,15 @@ func _() {
 	_ = x[ActionSys-0]
 	_ = x[ActionSysWithdraw-1]
 	_ = x[ActionProposal-10]
-	_ = x[ActionProposalInit-11]
+	_ = x[ActionProposalMake-11]
 	_ = x[ActionProposalVote-12]
 	_ = x[ActionCat-20]
-	_ = x[ActionCatInit-21]
+	_ = x[ActionCatCreate-21]
 	_ = x[ActionCatSupply-22]
 	_ = x[ActionCatEdit-23]
 	_ = x[ActionCatFold-24]
 	_ = x[ActionVat-30]
-	_ = x[ActionVatInit-31]
+	_ = x[ActionVatOpen-31]
 	_ = x[ActionVatDeposit-32]
 	_ = x[ActionVatWithdraw-33]
 	_ = x[ActionVatPayback-34]
@@ -35,9 +35,9 @@ func _() {
 
 const (
 	_Action_name_0 = "SysSysWithdraw"
-	_Action_name_1 = "ProposalProposalInitProposalVote"
-	_Action_name_2 = "CatCatInitCatSupplyCatEditCatFold"
-	_Action_name_3 = "VatVatInitVatDepositVatWithdrawVatPaybackVatGenerate"
+	_Action_name_1 = "ProposalProposalMakeProposalVote"
+	_Action_name_2 = "CatCatCreateCatSupplyCatEditCatFold"
+	_Action_name_3 = "VatVatOpenVatDepositVatWithdrawVatPaybackVatGenerate"
 	_Action_name_4 = "FlipFlipKickFlipBidFlipDealFlipOpt"
 	_Action_name_5 = "OracleOracleFeed"
 )
@@ -45,7 +45,7 @@ const (
 var (
 	_Action_index_0 = [...]uint8{0, 3, 14}
 	_Action_index_1 = [...]uint8{0, 8, 20, 32}
-	_Action_index_2 = [...]uint8{0, 3, 10, 19, 26, 33}
+	_Action_index_2 = [...]uint8{0, 3, 12, 21, 28, 35}
 	_Action_index_3 = [...]uint8{0, 3, 10, 20, 31, 41, 52}
 	_Action_index_4 = [...]uint8{0, 4, 12, 19, 27, 34}
 	_Action_index_5 = [...]uint8{0, 6, 16}
