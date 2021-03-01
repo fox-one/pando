@@ -17,7 +17,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "payback",
-		Args: cobra.ExactValidArgs(2),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			token := cfg.GetAuthToken()
 			ctx := call.WithToken(cmd.Context(), token)

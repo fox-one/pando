@@ -12,7 +12,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "follow",
-		Args: cobra.ExactValidArgs(1),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			token := cfg.GetAuthToken()
 			ctx := call.WithToken(cmd.Context(), token)

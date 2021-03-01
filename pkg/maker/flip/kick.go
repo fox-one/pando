@@ -14,6 +14,7 @@ import (
 )
 
 type KickData struct {
+	Art decimal.Decimal `json:"art,omitempty"`
 	Tab decimal.Decimal `json:"tab,omitempty"`
 	Lot decimal.Decimal `json:"lot,omitempty"`
 	Bid decimal.Decimal `json:"bid,omitempty"`
@@ -64,6 +65,7 @@ func HandleKick(
 				}
 
 				t.Write(core.TxStatusSuccess, KickData{
+					Art: f.Art,
 					Tab: f.Tab,
 					Lot: f.Lot,
 					Bid: f.Bid,
@@ -85,10 +87,8 @@ func HandleKick(
 		var data KickData
 		_ = t.Data.Unmarshal(&data)
 
-		dart := data.Tab.Div(c.Chop).Div(c.Rate)
-
 		if v.Version < r.Version() {
-			v.Art = v.Art.Sub(dart)
+			v.Art = v.Art.Sub(data.Art)
 			v.Ink = v.Ink.Sub(data.Lot)
 
 			if err := vaults.Update(ctx, v, r.Version()); err != nil {
@@ -98,7 +98,7 @@ func HandleKick(
 		}
 
 		if c.Version < r.Version() {
-			c.Art = c.Art.Sub(dart)
+			c.Art = c.Art.Sub(data.Art)
 			c.Debt = c.Debt.Sub(data.Bid)
 			c.Ink = c.Ink.Sub(data.Lot)
 
@@ -150,6 +150,7 @@ func Kick(r *maker.Request, c *core.Collateral, v *core.Vault, opt *Option) (*co
 		Bid:          bid,
 		Lot:          dink,
 		Tab:          tab,
+		Art:          dart,
 		Guy:          r.UserID,
 	}, nil
 }

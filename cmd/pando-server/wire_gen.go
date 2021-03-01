@@ -16,6 +16,7 @@ import (
 	"github.com/fox-one/pando/store/flip"
 	"github.com/fox-one/pando/store/transaction"
 	"github.com/fox-one/pando/store/vault"
+	"github.com/fox-one/pkg/store/property"
 )
 
 // Injectors from wire.go:
@@ -34,12 +35,13 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	assetStore := asset.New(db)
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
+	store := propertystore.New(db)
 	collateralStore := Collateral.New(db)
 	transactionStore := transaction.New(db)
 	system := provideSystem(cfg)
 	walletService := provideWalletService(client, cfg, system)
-	apiServer := api.New(session, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, system)
-	rpcServer := rpc.New(assetStore, vaultStore, flipStore, collateralStore, transactionStore)
+	apiServer := api.New(session, assetStore, vaultStore, flipStore, store, collateralStore, transactionStore, walletService, system)
+	rpcServer := rpc.New(assetStore, vaultStore, flipStore, store, collateralStore, transactionStore)
 	mainHealthHandler := provideHealth(system)
 	mux := provideRoute(apiServer, rpcServer, session, mainHealthHandler)
 	serverServer := provideServer(mux)

@@ -27,6 +27,8 @@ type (
 		Lot decimal.Decimal `sql:"type:decimal(64,8)" json:"lot,omitempty"`
 		// total pUSD wanted
 		Tab decimal.Decimal `sql:"type:decimal(64,8)" json:"tab,omitempty"`
+		// Art
+		Art decimal.Decimal `sql:"type:decimal(64,16)" json:"art,omitempty"`
 		// high bidder
 		Guy string `sql:"size:36" json:"guy,omitempty"`
 	}

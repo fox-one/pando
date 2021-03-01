@@ -1,4 +1,4 @@
-package edit
+package deal
 
 import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/actions"
@@ -11,15 +11,11 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "edit <collateral id> <key> <value>",
-		Args: cobra.MinimumNArgs(3),
+		Use:  "deal <flip id>",
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			values := []interface{}{types.UUID(args[0])}
-			for _, v := range args[1:] {
-				values = append(values, v)
-			}
-
-			memo, err := actions.MakeProposal(core.ActionCatEdit, values...)
+			flipID := args[0]
+			memo, err := actions.Tx(core.ActionFlipDeal, types.UUID(flipID))
 			if err != nil {
 				return err
 			}

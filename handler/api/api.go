@@ -11,6 +11,7 @@ import (
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pando/handler/rpc"
 	"github.com/fox-one/pando/pkg/reversetwirp"
+	"github.com/fox-one/pkg/property"
 	"github.com/go-chi/chi"
 	"github.com/twitchtv/twirp"
 )
@@ -20,6 +21,7 @@ func New(
 	assets core.AssetStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
+	properties property.Store,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 	walletz core.WalletService,
@@ -30,6 +32,7 @@ func New(
 		assets:       assets,
 		vaults:       vaults,
 		flips:        flips,
+		properties:   properties,
 		collaterals:  collaterals,
 		transactions: transactions,
 		walletz:      walletz,
@@ -42,6 +45,7 @@ type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	flips        core.FlipStore
+	properties   property.Store
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 	walletz      core.WalletService
@@ -68,7 +72,7 @@ func (s *Server) Handler() http.Handler {
 	r.Get("/info", system.HandleInfo(s.system))
 	r.Post("/login", auth.HandleOauth(s.system))
 
-	svr := rpc.New(s.assets, s.vaults, s.flips, s.collaterals, s.transactions).TwirpServer()
+	svr := rpc.New(s.assets, s.vaults, s.flips, s.properties, s.collaterals, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {
@@ -88,7 +92,8 @@ func (s *Server) Handler() http.Handler {
 
 	r.Route("/flips", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListFlips", nil))
-		r.Get("/{id}", rt.Handle("ListFlip", nil))
+		r.Get("/options", rt.Handle("ReadFlipOption", nil))
+		r.Get("/{id}", rt.Handle("FindFlip", nil))
 	})
 
 	r.Route("/transactions", func(r chi.Router) {

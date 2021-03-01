@@ -16,7 +16,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "generate <collateral id> <debt>",
-		Args: cobra.ExactValidArgs(2),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			token := cfg.GetAuthToken()
 			ctx := call.WithToken(cmd.Context(), token)
@@ -43,7 +43,7 @@ func NewCmd() *cobra.Command {
 			}
 
 			cmd.Println("tx follow id:", follow)
-			return pay.Request(ctx, pay.CNB, number.One, memo)
+			return pay.Request(ctx, pay.DefaultAsset, number.One, memo)
 		},
 	}
 

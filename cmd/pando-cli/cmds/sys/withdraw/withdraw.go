@@ -12,7 +12,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "withdraw <asset> <amount> <opponent>",
-		Args: cobra.ExactValidArgs(3),
+		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			memo, err := actions.MakeProposal(
 				core.ActionSysWithdraw,
@@ -26,7 +26,7 @@ func NewCmd() *cobra.Command {
 
 			return pay.Request(
 				cmd.Context(),
-				pay.CNB,
+				pay.DefaultAsset,
 				number.One,
 				memo,
 			)

@@ -12,14 +12,14 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "fold <collateral id>",
-		Args: cobra.ExactValidArgs(1),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			memo, err := actions.Tx(core.ActionCatFold, types.UUID(args[0]))
 			if err != nil {
 				return err
 			}
 
-			return pay.Request(cmd.Context(), pay.CNB, number.One, memo)
+			return pay.Request(cmd.Context(), pay.DefaultAsset, number.One, memo)
 		},
 	}
 

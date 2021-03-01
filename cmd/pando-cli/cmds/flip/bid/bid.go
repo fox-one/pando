@@ -1,4 +1,4 @@
-package deposit
+package bid
 
 import (
 	"github.com/fox-one/mixin-sdk-go"
@@ -15,46 +15,56 @@ import (
 )
 
 func NewCmd() *cobra.Command {
+	var (
+		lot string
+	)
+
 	cmd := &cobra.Command{
-		Use:  "deposit <vault id> <deposit>",
+		Use:  "bid <flip id> <bid>",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			token := cfg.GetAuthToken()
-			ctx := call.WithToken(cmd.Context(), token)
 
-			user, err := mixin.UserMe(ctx, token)
+			user, err := mixin.UserMe(cmd.Context(), token)
 			if err != nil {
 				return err
 			}
 			// follow id
 			follow := uuid.New()
 
-			vatID := args[0]
-			vat, err := call.RPC().FindVault(ctx, &api.Req_FindVault{Id: vatID})
+			flipID := args[0]
+			flip, err := call.RPC().FindFlip(cmd.Context(), &api.Req_FindFlip{Id: flipID})
 			if err != nil {
 				return err
 			}
 
-			cat, err := call.RPC().FindCollateral(ctx, &api.Req_FindCollateral{Id: vat.CollateralId})
+			cat, err := call.RPC().FindCollateral(cmd.Context(), &api.Req_FindCollateral{Id: flip.CollateralId})
 			if err != nil {
 				return err
 			}
 
-			dink := number.Decimal(args[1])
+			bid := number.Decimal(args[1])
+			lot := number.Decimal(lot)
+			if lot.IsZero() {
+				lot = number.Decimal(flip.Lot)
+			}
+
 			memo, err := actions.Tx(
-				core.ActionVatDeposit,
+				core.ActionFlipBid,
 				types.UUID(user.UserID),
 				types.UUID(follow),
-				types.UUID(vatID),
+				types.UUID(flipID),
+				lot,
 			)
 			if err != nil {
 				return err
 			}
 
 			cmd.Println("tx follow id:", follow)
-			return pay.Request(ctx, cat.Gem, dink, memo)
+			return pay.Request(cmd.Context(), cat.Dai, bid, memo)
 		},
 	}
 
+	cmd.Flags().StringVar(&lot, "lot", "0", "gem amount for return")
 	return cmd
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/rpc/api"
+	"github.com/fox-one/pando/pkg/maker/flip"
 )
 
 func Flip(flip *core.Flip) *api.Flip {
@@ -23,5 +24,13 @@ func Flip(flip *core.Flip) *api.Flip {
 		CollateralId: flip.CollateralID,
 		VaultId:      flip.VaultID,
 		Guy:          flip.Guy,
+	}
+}
+
+func FlipOption(opt *flip.Option) *api.FlipOption {
+	return &api.FlipOption{
+		Beg: opt.Beg.String(),
+		Ttl: opt.TTL.Seconds(),
+		Tau: opt.Tau.Seconds(),
 	}
 }

@@ -12,7 +12,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "vote",
-		Args: cobra.ExactValidArgs(1),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 			memo, err := actions.Member(core.ActionProposalVote, types.UUID(id))
@@ -23,7 +23,7 @@ func NewCmd() *cobra.Command {
 
 			return pay.Request(
 				cmd.Context(),
-				pay.CNB,
+				pay.DefaultAsset,
 				number.One,
 				memo,
 			)

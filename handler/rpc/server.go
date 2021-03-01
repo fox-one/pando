@@ -10,7 +10,9 @@ import (
 	"github.com/fox-one/pando/handler/request"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/fox-one/pando/handler/rpc/view"
+	"github.com/fox-one/pando/pkg/maker/flip"
 	"github.com/fox-one/pkg/logger"
+	"github.com/fox-one/pkg/property"
 	"github.com/fox-one/pkg/store"
 	"github.com/spf13/cast"
 	"github.com/twitchtv/twirp"
@@ -20,6 +22,7 @@ func New(
 	assets core.AssetStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
+	properties property.Store,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 ) *Server {
@@ -27,6 +30,7 @@ func New(
 		assets:       assets,
 		vaults:       vaults,
 		flips:        flips,
+		properties:   properties,
 		collaterals:  collaterals,
 		transactions: transactions,
 	}
@@ -36,6 +40,7 @@ type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	flips        core.FlipStore
+	properties   property.Store
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 }
@@ -152,20 +157,14 @@ func (s *Server) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Re
 }
 
 func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Vault, error) {
-	user, ok := request.UserFrom(ctx)
-	if !ok {
-		logger.FromContext(ctx).Debugln("rpc: authentication required")
-		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
-	}
-
 	vat, err := s.vaults.Find(ctx, req.Id)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: vaults.Find")
 		return nil, err
 	}
 
-	if vat.UserID != user.MixinID {
-		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
+	if vat.ID == 0 {
+		return nil, twirp.NotFoundError("vat not init")
 	}
 
 	return view.Vault(vat), nil
@@ -218,6 +217,15 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 	}
 
 	return resp, nil
+}
+
+func (s *Server) ReadFlipOption(ctx context.Context, _ *api.Req_ReadFlipOption) (*api.FlipOption, error) {
+	opt, err := flip.ReadOptions(ctx, s.properties)
+	if err != nil {
+		return nil, err
+	}
+
+	return view.FlipOption(opt), nil
 }
 
 func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransaction) (*api.Transaction, error) {

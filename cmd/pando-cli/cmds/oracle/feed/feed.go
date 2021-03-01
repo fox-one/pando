@@ -14,7 +14,7 @@ import (
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "feed <asset_id> <price>",
-		Args: cobra.ExactValidArgs(2),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, price := args[0], args[1]
 
@@ -28,7 +28,7 @@ func NewCmd() *cobra.Command {
 				return err
 			}
 
-			return pay.Request(cmd.Context(), pay.CNB, number.One, memo)
+			return pay.Request(cmd.Context(), pay.DefaultAsset, number.One, memo)
 		},
 	}
 

@@ -31,13 +31,13 @@ func HandleBid(
 			return err
 		}
 
-		var lot decimal.Decimal
-		if err := require(r.Scan(&lot) == nil, "bad-data"); err != nil {
+		f, err := From(ctx, flips, r)
+		if err != nil {
 			return err
 		}
 
-		f, err := From(ctx, flips, r)
-		if err != nil {
+		var lot decimal.Decimal
+		if err := require(r.Scan(&lot) == nil, "bad-data"); err != nil {
 			return err
 		}
 

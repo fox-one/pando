@@ -26,6 +26,7 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/auth"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/cat"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/config"
+	"github.com/fox-one/pando/cmd/pando-cli/cmds/flip"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/oracle"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/pay"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/proposal"
@@ -74,6 +75,7 @@ func init() {
 	rootCmd.AddCommand(vat.NewCmd())
 	rootCmd.AddCommand(oracle.NewCmd())
 	rootCmd.AddCommand(tx.NewCmd())
+	rootCmd.AddCommand(flip.NewCmd())
 
 	rootCmd.PersistentFlags().StringVar(&keystoreFile, "keystore", "", "keystore filename")
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug mode")

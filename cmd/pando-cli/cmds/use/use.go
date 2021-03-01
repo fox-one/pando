@@ -10,7 +10,7 @@ func NewCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "use {<host>}",
 		Short: "use api host",
-		Args:  cobra.ExactValidArgs(1),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			host := args[0]
 			cfg.SetApiHost(host)
