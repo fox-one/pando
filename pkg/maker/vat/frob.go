@@ -61,11 +61,11 @@ func HandleFrob(
 			debt = debt.Truncate(8)
 
 			assetID, amount := r.Payment()
-			if err := require(dink.IsNegative() || (assetID == c.Gem && dink.Equal(amount)), "bad-data"); err != nil {
+			if err := require(!dink.IsPositive() || (assetID == c.Gem && dink.Equal(amount)), "bad-data"); err != nil {
 				return err
 			}
 
-			if err := require(debt.IsPositive() || (assetID == c.Dai && debt.Neg().Equal(amount)), "bad-data"); err != nil {
+			if err := require(!debt.IsNegative() || (assetID == c.Dai && debt.Neg().Equal(amount)), "bad-data"); err != nil {
 				return err
 			}
 

@@ -68,8 +68,6 @@ func (w *SpentSync) run(ctx context.Context) error {
 func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("trace", transfer.TraceID)
 
-	log.Debugf("handle transfer")
-
 	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID)
 	if err != nil {
 		log.WithError(err).Errorln("wallets.ListSpentBy")
@@ -77,19 +75,16 @@ func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer)
 	}
 
 	if len(outputs) == 0 {
-		log.Debugln("no outputs spent, skip")
 		return nil
 	}
 
 	output := outputs[0]
 	if output.State != mixin.UTXOStateSpent {
-		log.Debugln("utxo is not spent, skip")
 		return nil
 	}
 
 	signedTx := output.UTXO.SignedTx
 	if signedTx == "" {
-		log.Debugln("signed tx is empty, skip")
 		return nil
 	}
 

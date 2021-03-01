@@ -38,7 +38,7 @@ type (
 	}
 )
 
-func (tx Transaction) Write(status int, data interface{}) {
+func (tx *Transaction) Write(status int, data interface{}) {
 	tx.Status = status
 
 	b, err := json.Marshal(data)
