@@ -35,5 +35,6 @@ type (
 		Create(ctx context.Context, flip *Flip) error
 		Update(ctx context.Context, flip *Flip, version int64) error
 		Find(ctx context.Context, traceID string) (*Flip, error)
+		List(ctx context.Context, from int64, limit int) ([]*Flip, error)
 	}
 )

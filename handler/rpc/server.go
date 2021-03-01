@@ -19,12 +19,14 @@ import (
 func New(
 	assets core.AssetStore,
 	vaults core.VaultStore,
+	flips core.FlipStore,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 ) *Server {
 	return &Server{
 		assets:       assets,
 		vaults:       vaults,
+		flips:        flips,
 		collaterals:  collaterals,
 		transactions: transactions,
 	}
@@ -33,6 +35,7 @@ func New(
 type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
+	flips        core.FlipStore
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 }
@@ -52,6 +55,10 @@ func (s *Server) Handle(sessions core.Session) http.Handler {
 func (s *Server) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.Asset, error) {
 	asset, err := s.assets.Find(ctx, req.Id)
 	if err != nil {
+		if store.IsErrNotFound(err) {
+			return nil, twirp.NotFoundError("asset not found")
+		}
+
 		logger.FromContext(ctx).WithError(err).Errorf("rpc: assets.Find(%s)", req.Id)
 		return nil, err
 	}
@@ -116,6 +123,10 @@ func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral
 		return nil, err
 	}
 
+	if cat.ID == 0 {
+		return nil, twirp.NotFoundError("cat not init")
+	}
+
 	return view.Collateral(cat), nil
 }
 
@@ -158,6 +169,55 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 	}
 
 	return view.Vault(vat), nil
+}
+
+func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip, error) {
+	flip, err := s.flips.Find(ctx, req.Id)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: flips.Find")
+		return nil, err
+	}
+
+	if flip.ID == 0 {
+		return nil, twirp.NotFoundError("flip not init")
+	}
+
+	if user, ok := request.UserFrom(ctx); !ok || user.MixinID != flip.Guy {
+		flip.Guy = ""
+	}
+
+	return view.Flip(flip), nil
+}
+
+func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Resp_ListFlips, error) {
+	fromID := cast.ToInt64(req.Cursor)
+	limit := 50
+	if l := int(req.Limit); l > 0 && l < limit {
+		limit = l
+	}
+
+	flips, err := s.flips.List(ctx, fromID, limit+1)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: flips.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListFlips{
+		Pagination: &api.Pagination{},
+	}
+
+	for idx, f := range flips {
+		f.Guy = ""
+		resp.Flips = append(resp.Flips, view.Flip(f))
+
+		if idx == limit-1 {
+			resp.Pagination.NextCursor = cast.ToString(f.ID)
+			resp.Pagination.HasNext = true
+			break
+		}
+	}
+
+	return resp, nil
 }
 
 func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransaction) (*api.Transaction, error) {

@@ -81,3 +81,18 @@ func (s *flipStore) Find(ctx context.Context, traceID string) (*core.Flip, error
 
 	return &flip, nil
 }
+
+func (s *flipStore) List(ctx context.Context, from int64, limit int) ([]*core.Flip, error) {
+	tx := s.db.View()
+
+	if from > 0 {
+		tx = tx.Where("id < ?", from)
+	}
+
+	var flips []*core.Flip
+	if err := tx.Limit(limit).Order("id DESC").Find(&flips).Error; err != nil {
+		return nil, err
+	}
+
+	return flips, nil
+}

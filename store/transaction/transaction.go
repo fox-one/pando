@@ -71,11 +71,11 @@ func (s *transactionStore) ListTarget(ctx context.Context, targetID string, from
 	tx := s.db.View().Where("target_id = ?", targetID)
 
 	if from > 0 {
-		tx = tx.Where("id > ?", from)
+		tx = tx.Where("id < ?", from)
 	}
 
 	var transactions []*core.Transaction
-	if err := tx.Limit(limit).Find(&transactions).Error; err != nil {
+	if err := tx.Limit(limit).Order("id DESC").Find(&transactions).Error; err != nil {
 		return nil, err
 	}
 

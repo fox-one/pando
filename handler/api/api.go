@@ -19,6 +19,7 @@ func New(
 	sessions core.Session,
 	assets core.AssetStore,
 	vaults core.VaultStore,
+	flips core.FlipStore,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 	walletz core.WalletService,
@@ -28,6 +29,7 @@ func New(
 		sessions:     sessions,
 		assets:       assets,
 		vaults:       vaults,
+		flips:        flips,
 		collaterals:  collaterals,
 		transactions: transactions,
 		walletz:      walletz,
@@ -39,6 +41,7 @@ type Server struct {
 	sessions     core.Session
 	assets       core.AssetStore
 	vaults       core.VaultStore
+	flips        core.FlipStore
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 	walletz      core.WalletService
@@ -65,7 +68,7 @@ func (s *Server) Handler() http.Handler {
 	r.Get("/info", system.HandleInfo(s.system))
 	r.Post("/login", auth.HandleOauth(s.system))
 
-	svr := rpc.New(s.assets, s.vaults, s.collaterals, s.transactions).TwirpServer()
+	svr := rpc.New(s.assets, s.vaults, s.flips, s.collaterals, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {
@@ -81,6 +84,11 @@ func (s *Server) Handler() http.Handler {
 	r.Route("/vats", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListVaults", nil))
 		r.Get("/{id}", rt.Handle("FindVault", nil))
+	})
+
+	r.Route("/flips", func(r chi.Router) {
+		r.Get("/", rt.Handle("ListFlips", nil))
+		r.Get("/{id}", rt.Handle("ListFlip", nil))
 	})
 
 	r.Route("/transactions", func(r chi.Router) {
