@@ -15,7 +15,7 @@ func init() {
 			return err
 		}
 
-		if err := tx.AddUniqueIndex("idx_transactions_trace").Error; err != nil {
+		if err := tx.AddUniqueIndex("idx_transactions_trace", "trace_id").Error; err != nil {
 			return err
 		}
 

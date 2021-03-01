@@ -33,6 +33,7 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/tx"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/use"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/vat"
+	"github.com/fox-one/pando/cmd/pando-cli/internal/call"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -42,6 +43,7 @@ var (
 	// 如果指定了 keystore 文件，那么付款的时候会直接用这个账号付款
 	// keystore 里面需要指定 pin
 	keystoreFile string
+	debug        bool
 )
 
 var rootCmd = &cobra.Command{
@@ -74,6 +76,7 @@ func init() {
 	rootCmd.AddCommand(tx.NewCmd())
 
 	rootCmd.PersistentFlags().StringVar(&keystoreFile, "keystore", "", "keystore filename")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug mode")
 }
 
 func initConfig() {
@@ -89,6 +92,8 @@ func initConfig() {
 			log.Fatalf("read config file failed: %v", err)
 		}
 	}
+
+	call.SetDebug(debug)
 }
 
 func initKeystore() {

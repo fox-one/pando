@@ -78,7 +78,7 @@ func (s *Server) Handler() http.Handler {
 		r.Get("/{id}", rt.Handle("FindCollateral", nil))
 	})
 
-	r.Route("vats", func(r chi.Router) {
+	r.Route("/vats", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListVaults", nil))
 		r.Get("/{id}", rt.Handle("FindVault", nil))
 	})
@@ -88,7 +88,7 @@ func (s *Server) Handler() http.Handler {
 		r.Get("/{id}", rt.Handle("FindTransaction", nil))
 	})
 
-	r.Route("actions", func(r chi.Router) {
+	r.Route("/actions", func(r chi.Router) {
 		r.Post("/", actions.HandleCreate(s.walletz, s.system))
 	})
 

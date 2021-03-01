@@ -27,7 +27,7 @@ func NewCmd() *cobra.Command {
 
 			r, err := call.R(cmd.Context()).SetBody(map[string]interface{}{
 				"code": args[0],
-			}).Post("/login")
+			}).Post("/api/login")
 			if err != nil {
 				return err
 			}
@@ -45,8 +45,7 @@ func NewCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("%s welcome!", u.FullName)
-
+			cmd.Printf("%s welcome!\n", u.FullName)
 			cfg.SetAuthToken(body.Token)
 			return cfg.Save()
 		},

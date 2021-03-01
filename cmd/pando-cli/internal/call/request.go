@@ -10,6 +10,10 @@ import (
 
 var client = resty.New()
 
+func SetDebug(debug bool) {
+	client.SetDebug(debug)
+}
+
 func R(ctx context.Context) *resty.Request {
 	r := client.SetHostURL(cfg.GetApiHost()).NewRequest()
 	r = r.SetContext(ctx)
@@ -20,8 +24,8 @@ func R(ctx context.Context) *resty.Request {
 
 func DecodeResponse(r *resty.Response) ([]byte, error) {
 	var body struct {
-		Error `json:"error,omitempty"`
-		Data  json.RawMessage `json:"data,omitempty"`
+		Error
+		Data json.RawMessage `json:"data,omitempty"`
 	}
 
 	if err := json.Unmarshal(r.Body(), &body); err != nil {

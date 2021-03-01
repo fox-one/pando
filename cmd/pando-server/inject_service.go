@@ -68,10 +68,11 @@ func provideSystem(cfg *config.Config) *core.System {
 	}
 
 	return &core.System{
-		ClientID:   cfg.Dapp.ClientID,
-		Members:    members,
-		Threshold:  cfg.Group.Threshold,
-		PrivateKey: privateKey,
-		Version:    version,
+		ClientID:     cfg.Dapp.ClientID,
+		ClientSecret: cfg.Dapp.ClientSecret,
+		Members:      members,
+		Threshold:    cfg.Group.Threshold,
+		PrivateKey:   privateKey,
+		Version:      version,
 	}
 }

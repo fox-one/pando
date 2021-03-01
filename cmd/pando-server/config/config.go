@@ -16,7 +16,8 @@ type (
 
 	Dapp struct {
 		mixin.Keystore
-		Pin string `json:"pin"`
+		ClientSecret string `json:"client_secret,omitempty"`
+		Pin          string `json:"pin"`
 	}
 
 	Member struct {
