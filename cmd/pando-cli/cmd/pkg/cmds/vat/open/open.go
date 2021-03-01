@@ -1,4 +1,4 @@
-package init
+package open
 
 import (
 	"github.com/fox-one/mixin-sdk-go"
@@ -16,7 +16,7 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "init <collateral id> <deposit> <generate>",
+		Use:  "open <collateral id> <deposit> <generate>",
 		Args: cobra.ExactValidArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

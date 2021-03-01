@@ -11,12 +11,10 @@ export PANDO_VERSION
 export PANDO_COMMIT
 
 ENVS_GEN="$TARGET/envs_gen.go"
+trap 'rm -f $ENVS_GEN' EXIT
 if ! type "envs" > /dev/null 2>/dev/null; then
   env GO111MODULE=off go get -u github.com/yiplee/envs
 fi
 envs --prefix PANDO -o "$ENVS_GEN"
 
 CGO_ENABLED=0 go build -o builds/ "$TARGET"
-
-# clean envs
-rm "$ENVS_GEN"

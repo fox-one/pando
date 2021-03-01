@@ -1,4 +1,4 @@
-package init
+package create
 
 import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/actions"
@@ -11,7 +11,7 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "init <gem> <dai> <name>",
+		Use:  "create <gem> <dai> <name>",
 		Args: cobra.ExactValidArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			memo, err := actions.InitProposal(
