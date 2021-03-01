@@ -24,11 +24,14 @@ import (
 	"path"
 
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/auth"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/cat"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/config"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/oracle"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/pay"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/proposal"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/sys"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/use"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/vat"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -50,12 +53,6 @@ func Execute() {
 	commit := os.Getenv("PANDO_COMMIT")
 	rootCmd.Version = fmt.Sprintf("%s(%s)", version, commit)
 
-	rootCmd.AddCommand(use.NewCmd())
-	rootCmd.AddCommand(config.NewCmd())
-	rootCmd.AddCommand(auth.NewCmd())
-	rootCmd.AddCommand(proposal.NewCmd())
-	rootCmd.AddCommand(sys.NewCmd())
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -64,6 +61,15 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig, initKeystore)
+
+	rootCmd.AddCommand(use.NewCmd())
+	rootCmd.AddCommand(config.NewCmd())
+	rootCmd.AddCommand(auth.NewCmd())
+	rootCmd.AddCommand(proposal.NewCmd())
+	rootCmd.AddCommand(sys.NewCmd())
+	rootCmd.AddCommand(cat.NewCmd())
+	rootCmd.AddCommand(vat.NewCmd())
+	rootCmd.AddCommand(oracle.NewCmd())
 
 	rootCmd.PersistentFlags().StringVar(&keystoreFile, "keystore", "", "keystore filename")
 }

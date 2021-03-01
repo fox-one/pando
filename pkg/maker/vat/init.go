@@ -36,11 +36,6 @@ func HandleInit(
 			return err
 		}
 
-		var debt decimal.Decimal
-		if err := require(r.Scan(&debt) == nil, "bad-data"); err != nil {
-			return err
-		}
-
 		t, err := transactions.Find(ctx, r.TraceID())
 		if err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("transactions.Find")
