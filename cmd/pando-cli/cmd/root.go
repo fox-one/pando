@@ -30,6 +30,7 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/pay"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/proposal"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/sys"
+	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/tx"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/use"
 	"github.com/fox-one/pando/cmd/pando-cli/cmd/pkg/cmds/vat"
 	"github.com/mitchellh/go-homedir"
@@ -70,6 +71,7 @@ func init() {
 	rootCmd.AddCommand(cat.NewCmd())
 	rootCmd.AddCommand(vat.NewCmd())
 	rootCmd.AddCommand(oracle.NewCmd())
+	rootCmd.AddCommand(tx.NewCmd())
 
 	rootCmd.PersistentFlags().StringVar(&keystoreFile, "keystore", "", "keystore filename")
 }
