@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/store/asset"
-	Collateral "github.com/fox-one/pando/store/collateral"
+	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
 	"github.com/fox-one/pando/store/oracle"
 	"github.com/fox-one/pando/store/proposal"
@@ -19,7 +19,7 @@ import (
 var storeSet = wire.NewSet(
 	provideDatabase,
 	asset.New,
-	Collateral.New,
+	collateral.New,
 	flip.New,
 	proposal.New,
 	transaction.New,

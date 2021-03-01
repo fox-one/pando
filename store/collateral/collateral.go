@@ -1,4 +1,4 @@
-package Collateral
+package collateral
 
 import (
 	"context"

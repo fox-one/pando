@@ -36,7 +36,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
 	store := propertystore.New(db)
-	collateralStore := Collateral.New(db)
+	collateralStore := collateral.New(db)
 	transactionStore := transaction.New(db)
 	system := provideSystem(cfg)
 	walletService := provideWalletService(client, cfg, system)

@@ -52,7 +52,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	assetService := asset2.New(client)
 	transactionStore := transaction.New(db)
 	proposalStore := proposal.New(db)
-	collateralStore := Collateral.New(db)
+	collateralStore := collateral.New(db)
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
 	store := propertystore.New(db)
