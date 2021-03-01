@@ -3,39 +3,38 @@ package list
 import (
 	"encoding/json"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/call"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/column"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/jq"
-	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/spf13/cobra"
 )
-
-var defaultFields = []string{
-	"name",
-	"debt",
-	"line",
-	"price",
-}
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "list",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			r, err := call.RPC().ListCollaterals(cmd.Context(), &api.Req_ListCollaterals{})
+			r, err := call.R(cmd.Context()).Get("/api/cats")
 			if err != nil {
 				return err
 			}
 
-			data, _ := json.Marshal(r.Collaterals)
-
-			fields := []string{"id"}
-			if len(args) > 0 {
-				fields = append(fields, args...)
-			} else {
-				fields = append(fields, defaultFields...)
+			var body struct {
+				Collaterals json.RawMessage `json:"collaterals,omitempty"`
 			}
 
-			lines, err := jq.ParseObjects(data, fields...)
+			if err := call.UnmarshalResponse(r, &body); err != nil {
+				return err
+			}
+
+			fields := []string{"id", "name", "ink", "debt", "price"}
+			for _, arg := range args {
+				if !govalidator.IsIn(arg, fields...) {
+					fields = append(fields, arg)
+				}
+			}
+
+			lines, err := jq.ParseObjects(body.Collaterals, fields...)
 			if err != nil {
 				return err
 			}

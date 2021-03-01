@@ -6,7 +6,6 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/maker/cat"
-	"github.com/fox-one/pando/pkg/maker/vat"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
@@ -30,13 +29,7 @@ func HandleDeal(
 			return err
 		}
 
-		vid, _ := uuid.FromString(f.VaultID)
-		v, err := vat.From(ctx, vaults, r.WithBody(vid))
-		if err != nil {
-			return err
-		}
-
-		cid, _ := uuid.FromString(v.CollateralID)
+		cid, _ := uuid.FromString(f.CollateralID)
 		c, err := cat.From(ctx, collaterals, r.WithBody(cid))
 		if err != nil {
 			return err

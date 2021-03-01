@@ -26,18 +26,19 @@ message Collateral {
     string name = 3;
     string gem = 4;
     string dai = 5;
-    string art = 6;
-    string rate = 7;
-    google.protobuf.Timestamp rho = 8;
-    string debt = 9;
-    string line = 10;
-    string dust = 11;
-    string price = 12;
-    string mat = 13;
-    string duty = 14;
-    string chop = 15;
-    string dunk = 16;
-    bool live = 17;
+    string ink = 6;
+    string art = 7;
+    string rate = 8;
+    google.protobuf.Timestamp rho = 9;
+    string debt = 10;
+    string line = 11;
+    string dust = 12;
+    string price = 13;
+    string mat = 14;
+    string duty = 15;
+    string chop = 16;
+    string dunk = 17;
+    bool live = 18;
 }
 
 message Vault {

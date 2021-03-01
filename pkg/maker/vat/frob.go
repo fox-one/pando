@@ -146,9 +146,10 @@ func HandleFrob(
 		}
 
 		// update cat
-		if !(dart.IsZero() && data.Debt.IsZero()) && c.Version < r.Version() {
+		if !(dart.IsZero() && data.Debt.IsZero() && data.Dink.IsZero()) && c.Version < r.Version() {
 			c.Art = c.Art.Add(dart)
 			c.Debt = c.Debt.Add(data.Debt)
+			c.Ink = c.Ink.Add(data.Dink)
 
 			if err := collaterals.Update(ctx, c, r.Version()); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")

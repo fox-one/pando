@@ -9,13 +9,14 @@ import (
 
 type (
 	Flip struct {
-		ID        int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
-		CreatedAt time.Time `json:"created_at,omitempty"`
-		UpdatedAt time.Time `json:"updated_at,omitempty"`
-		Version   int64     `json:"version,omitempty"`
-		TraceID   string    `sql:"size:36" json:"trace_id,omitempty"`
-		VaultID   string    `sql:"size:36" json:"vault_id,omitempty"`
-		Action    Action    `json:"action,omitempty"`
+		ID           int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
+		CreatedAt    time.Time `json:"created_at,omitempty"`
+		UpdatedAt    time.Time `json:"updated_at,omitempty"`
+		Version      int64     `json:"version,omitempty"`
+		TraceID      string    `sql:"size:36" json:"trace_id,omitempty"`
+		CollateralID string    `sql:"size:36" json:"collateral_id,omitempty"`
+		VaultID      string    `sql:"size:36" json:"vault_id,omitempty"`
+		Action       Action    `json:"action,omitempty"`
 		// bid expiry time
 		Tic time.Time `json:"tic,omitempty"`
 		// auction expiry time

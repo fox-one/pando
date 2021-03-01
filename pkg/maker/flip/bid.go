@@ -123,8 +123,9 @@ func HandleBid(
 		var data BidData
 		_ = t.Data.Unmarshal(&data)
 
-		if c.Version < r.Version() && data.Bid.GreaterThan(f.Bid) {
+		if c.Version < r.Version() {
 			c.Debt = c.Debt.Sub(data.Bid.Sub(f.Bid))
+			c.Ink = c.Ink.Add(f.Lot.Sub(data.Lot))
 
 			if err := collaterals.Update(ctx, c, r.Version()); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")

@@ -11,7 +11,8 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type InitData struct {
+type OpenData struct {
+	Ink  decimal.Decimal `json:"ink,omitempty"`
 	Debt decimal.Decimal `json:"debt,omitempty"`
 }
 
@@ -70,7 +71,10 @@ func HandleOpen(
 			var transfers []*core.Transfer
 
 			if err := frob(c, v, dink, dart); err == nil {
-				t.Write(core.TxStatusSuccess, InitData{Debt: debt})
+				t.Write(core.TxStatusSuccess, OpenData{
+					Ink:  dink,
+					Debt: debt,
+				})
 
 				v.Ink, v.Art = dink, dart
 
@@ -112,13 +116,14 @@ func HandleOpen(
 			return err
 		}
 
-		var data InitData
+		var data OpenData
 		_ = t.Data.Unmarshal(&data)
 
 		dart := data.Debt.Div(c.Rate)
-		if !(dart.IsZero() && data.Debt.IsZero()) && c.Version < r.Version() {
+		if c.Version < r.Version() {
 			c.Art = c.Art.Add(dart)
 			c.Debt = c.Debt.Add(data.Debt)
+			c.Ink = c.Ink.Add(data.Ink)
 
 			if err := collaterals.Update(ctx, c, r.Version()); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")

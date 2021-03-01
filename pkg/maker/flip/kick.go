@@ -100,6 +100,7 @@ func HandleKick(
 		if c.Version < r.Version() {
 			c.Art = c.Art.Sub(dart)
 			c.Debt = c.Debt.Sub(data.Bid)
+			c.Ink = c.Ink.Sub(data.Lot)
 
 			if err := collaterals.Update(ctx, c, r.Version()); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")
@@ -138,16 +139,17 @@ func Kick(r *maker.Request, c *core.Collateral, v *core.Vault, opt *Option) (*co
 	}
 
 	return &core.Flip{
-		CreatedAt: r.Now(),
-		Version:   r.Version(),
-		TraceID:   r.TraceID(),
-		VaultID:   v.TraceID,
-		Action:    r.Action,
-		Tic:       r.Now().Add(opt.TTL),
-		End:       r.Now().Add(opt.Tau),
-		Bid:       bid,
-		Lot:       dink,
-		Tab:       tab,
-		Guy:       r.UserID,
+		CreatedAt:    r.Now(),
+		Version:      r.Version(),
+		TraceID:      r.TraceID(),
+		CollateralID: v.CollateralID,
+		VaultID:      v.TraceID,
+		Action:       r.Action,
+		Tic:          r.Now().Add(opt.TTL),
+		End:          r.Now().Add(opt.Tau),
+		Bid:          bid,
+		Lot:          dink,
+		Tab:          tab,
+		Guy:          r.UserID,
 	}, nil
 }

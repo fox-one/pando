@@ -37,6 +37,7 @@ func (s *collateralStore) Create(ctx context.Context, collateral *core.Collatera
 
 func toUpdateParams(collateral *core.Collateral) map[string]interface{} {
 	return map[string]interface{}{
+		"ink":   collateral.Ink,
 		"art":   collateral.Art,
 		"rate":  collateral.Rate,
 		"rho":   collateral.Rho,

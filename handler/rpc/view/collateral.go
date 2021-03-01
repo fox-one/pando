@@ -12,6 +12,7 @@ func Collateral(cat *core.Collateral) *api.Collateral {
 		Name:      cat.Name,
 		Gem:       cat.Gem,
 		Dai:       cat.Dai,
+		Ink:       cat.Ink.String(),
 		Art:       cat.Art.String(),
 		Rate:      cat.Rate.String(),
 		Rho:       Time(&cat.Rho),

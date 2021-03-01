@@ -20,6 +20,8 @@ type (
 		Gem string `sql:"size:36" json:"gem,omitempty"`
 		// Dai represent debt asset id
 		Dai string `sql:"size:36" json:"dai,omitempty"`
+		// Ink represent All Locked Collateral
+		Ink decimal.Decimal `sql:"type:decimal(64,8)" json:"ink,omitempty"`
 		// Total Normalised Debt
 		Art decimal.Decimal `sql:"type:decimal(64,16)" json:"art,omitempty"`
 		// Accumulated Rates
