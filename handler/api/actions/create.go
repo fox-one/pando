@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"crypto/ed25519"
 	"encoding/base64"
 	"net/http"
 
@@ -35,8 +34,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 		data, err := types.EncodeWithTypes(body.Actions...)
 		if err == nil {
 			key := mixin.GenerateEd25519Key()
-			pub := system.PrivateKey.Public().(ed25519.PublicKey)
-			data, err = mtg.Encrypt(data, key, pub)
+			data, err = mtg.Encrypt(data, key, system.PublicKey)
 		}
 
 		if err != nil {

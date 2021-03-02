@@ -30,9 +30,9 @@ type (
 
 	Group struct {
 		// 节点共享的用户解密的私钥
-		PrivateKey string   `json:"private_key,omitempty"`
-		Members    []Member `json:"members,omitempty"`
-		Threshold  uint8    `json:"threshold,omitempty"`
+		PublicKey string   `json:"public_key,omitempty"`
+		Members   []string `json:"members,omitempty"`
+		Threshold uint8    `json:"threshold,omitempty"`
 	}
 
 	I18n struct {

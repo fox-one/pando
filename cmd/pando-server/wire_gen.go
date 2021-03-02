@@ -57,8 +57,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, localizer)
 	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, store, collateralStore, transactionStore, walletService, coreNotifier, system)
 	rpcServer := rpc.New(assetStore, vaultStore, flipStore, store, collateralStore, transactionStore)
-	mainHealthHandler := provideHealth(system)
-	mux := provideRoute(apiServer, rpcServer, coreSession, mainHealthHandler)
+	mux := provideRoute(apiServer, rpcServer, coreSession)
 	serverServer := provideServer(mux)
 	return serverServer, nil
 }

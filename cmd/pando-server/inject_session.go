@@ -15,7 +15,7 @@ var sessionSet = wire.NewSet(
 func provideSessionConfig(cfg *config.Config) session.Config {
 	var issuers []string
 	for _, m := range cfg.Group.Members {
-		issuers = append(issuers, m.ClientID)
+		issuers = append(issuers, m)
 	}
 
 	if !govalidator.IsIn(cfg.Dapp.ClientID, issuers...) {

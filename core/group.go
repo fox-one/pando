@@ -9,9 +9,9 @@ import (
 )
 
 type Member struct {
-	ClientID  string
-	Name      string
-	VerifyKey ed25519.PublicKey
+	ClientID  string            `json:"client_id,omitempty"`
+	Name      string            `json:"name,omitempty"`
+	VerifyKey ed25519.PublicKey `json:"verify_key,omitempty"`
 }
 
 func DecodeMemberAction(message []byte, members []*Member) (*Member, []byte, error) {

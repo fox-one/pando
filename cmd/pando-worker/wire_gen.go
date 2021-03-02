@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/fox-one/pando/cmd/pando-worker/config"
+	"github.com/fox-one/pando/handler/node"
 	"github.com/fox-one/pando/parliament"
 	asset2 "github.com/fox-one/pando/service/asset"
 	message2 "github.com/fox-one/pando/service/message"
@@ -75,11 +76,12 @@ func buildApp(cfg *config.Config) (app, error) {
 	syncerSyncer := syncer.New(walletStore, walletService, store)
 	eventsEvents := events.New(transactionStore, notifier, store)
 	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents)
-	mux := provideRoute()
-	server := provideServer(mux)
+	server := node.New(system)
+	mux := provideRoute(server)
+	serverServer := provideServer(mux)
 	mainApp := app{
 		workers: v,
-		server:  server,
+		server:  serverServer,
 	}
 	return mainApp, nil
 }

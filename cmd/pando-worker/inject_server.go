@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fox-one/pando/handler/hc"
+	"github.com/fox-one/pando/handler/node"
 	"github.com/fox-one/pando/server"
 	"github.com/fox-one/pkg/logger"
 	"github.com/go-chi/chi"
@@ -13,11 +14,12 @@ import (
 )
 
 var serverSet = wire.NewSet(
+	node.New,
 	provideRoute,
 	provideServer,
 )
 
-func provideRoute() *chi.Mux {
+func provideRoute(node *node.Server) *chi.Mux {
 	mux := chi.NewMux()
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.StripSlashes)
@@ -27,6 +29,7 @@ func provideRoute() *chi.Mux {
 	mux.Use(middleware.NewCompressor(5).Handler)
 
 	mux.Mount("/hc", hc.Handle(version))
+	mux.Mount("/node", node.Handler())
 
 	return mux
 }

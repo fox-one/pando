@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/api"
@@ -16,19 +15,14 @@ import (
 	"github.com/rs/cors"
 )
 
-type (
-	healthHandler http.Handler
-)
-
 var serverSet = wire.NewSet(
 	api.New,
 	rpc.New,
-	provideHealth,
 	provideRoute,
 	provideServer,
 )
 
-func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session, hc healthHandler) *chi.Mux {
+func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session) *chi.Mux {
 	r := chi.NewMux()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.StripSlashes)
@@ -39,14 +33,9 @@ func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session, hc he
 
 	r.Mount("/twirp", rpc.Handle(sessions))
 	r.Mount("/api", api.Handler())
-	r.Mount("/hc", hc)
+	r.Mount("/hc", hc.Handle(version))
 
 	return r
-}
-
-func provideHealth(system *core.System) healthHandler {
-	h := hc.Handle(system.Version)
-	return healthHandler(h)
 }
 
 func provideServer(mux *chi.Mux) *server.Server {

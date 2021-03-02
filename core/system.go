@@ -17,6 +17,7 @@ type System struct {
 	VoteAsset    string
 	VoteAmount   decimal.Decimal
 	PrivateKey   ed25519.PrivateKey
+	PublicKey    ed25519.PublicKey
 	SignKey      ed25519.PrivateKey
 	Version      string
 }
