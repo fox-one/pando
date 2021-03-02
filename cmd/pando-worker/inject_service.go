@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/ed25519"
 	"fmt"
 
 	"github.com/fox-one/mixin-sdk-go"
@@ -73,6 +74,7 @@ func provideSystem(cfg *config.Config) *core.System {
 		VoteAsset:  cfg.Group.Vote.Asset,
 		VoteAmount: cfg.Group.Vote.Amount,
 		PrivateKey: privateKey,
+		PublicKey:  privateKey.Public().(ed25519.PublicKey),
 		SignKey:    signKey,
 		Version:    version,
 	}
