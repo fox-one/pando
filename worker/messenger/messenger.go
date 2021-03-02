@@ -5,20 +5,23 @@ import (
 	"errors"
 	"time"
 
+	"github.com/bluele/gcache"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/logger"
 )
 
 func New(messages core.MessageStore, messagez core.MessageService) *Messenger {
 	return &Messenger{
-		messages: messages,
-		messagez: messagez,
+		messages:      messages,
+		messagez:      messagez,
+		conversations: gcache.New(1024).LRU().Build(),
 	}
 }
 
 type Messenger struct {
-	messages core.MessageStore
-	messagez core.MessageService
+	messages      core.MessageStore
+	messagez      core.MessageService
+	conversations gcache.Cache
 }
 
 func (w *Messenger) Run(ctx context.Context) error {
@@ -33,7 +36,7 @@ func (w *Messenger) Run(ctx context.Context) error {
 			return ctx.Err()
 		case <-time.After(dur):
 			if err := w.run(ctx); err == nil {
-				dur = 100 * time.Millisecond
+				dur = 300 * time.Millisecond
 			} else {
 				dur = time.Second
 			}
@@ -62,6 +65,15 @@ func (w *Messenger) run(ctx context.Context) error {
 	for _, msg := range messages {
 		if filter[msg.UserID] {
 			continue
+		}
+
+		if !w.conversations.Has(msg.UserID) {
+			if err := w.messagez.Meet(ctx, msg.UserID); err != nil {
+				log.WithError(err).Errorf("messagez.Meet(%q)", msg.UserID)
+				return err
+			}
+
+			_ = w.conversations.Set(msg.UserID, nil)
 		}
 
 		messages[idx] = msg
