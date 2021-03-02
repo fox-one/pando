@@ -35,6 +35,8 @@ type (
 		FindFollow(ctx context.Context, userID, followID string) (*Transaction, error)
 		// ListTarget list transactions with given target_id (order by id desc)
 		ListTarget(ctx context.Context, targetID string, from int64, limit int) ([]*Transaction, error)
+		// List list transactions in asc order
+		List(ctx context.Context, from int64, limit int) ([]*Transaction, error)
 	}
 )
 

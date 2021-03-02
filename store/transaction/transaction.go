@@ -81,3 +81,18 @@ func (s *transactionStore) ListTarget(ctx context.Context, targetID string, from
 
 	return transactions, nil
 }
+
+func (s *transactionStore) List(ctx context.Context, from int64, limit int) ([]*core.Transaction, error) {
+	tx := s.db.View()
+
+	if from > 0 {
+		tx = tx.Where("id > ?", from)
+	}
+
+	var transactions []*core.Transaction
+	if err := tx.Limit(limit).Order("id").Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
+}

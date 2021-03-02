@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/fox-one/pando/cmd/pando-worker/config"
+	"github.com/fox-one/pando/parliament"
 	asset2 "github.com/fox-one/pando/service/asset"
 	message2 "github.com/fox-one/pando/service/message"
 	oracle2 "github.com/fox-one/pando/service/oracle"
@@ -21,6 +22,7 @@ import (
 	"github.com/fox-one/pando/store/vault"
 	"github.com/fox-one/pando/store/wallet"
 	"github.com/fox-one/pando/worker/cashier"
+	"github.com/fox-one/pando/worker/events"
 	"github.com/fox-one/pando/worker/messenger"
 	"github.com/fox-one/pando/worker/payee"
 	"github.com/fox-one/pando/worker/pricesync"
@@ -58,10 +60,10 @@ func buildApp(cfg *config.Config) (app, error) {
 	store := propertystore.New(db)
 	userConfig := user.Config{}
 	userService := user.New(client, userConfig)
-	parliament := provideParliament(messageStore, userService, assetService, walletService, collateralStore, system)
+	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New()
-	payeePayee := payee.New(assetStore, assetService, walletStore, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, parliament, oracleStore, oracleService, system)
+	payeePayee := payee.New(assetStore, assetService, walletStore, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
 	sync := pricesync.New(assetStore, assetService)
 	localizer, err := provideLocalizer(cfg)
 	if err != nil {
@@ -71,7 +73,8 @@ func buildApp(cfg *config.Config) (app, error) {
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer)
+	eventsEvents := events.New(transactionStore, notifier, store)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents)
 	mux := provideRoute()
 	server := provideServer(mux)
 	mainApp := app{

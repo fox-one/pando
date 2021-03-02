@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/notifier"
-	"github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pkg/text/localizer"
 	"github.com/google/wire"
 )
@@ -23,7 +22,7 @@ func provideNotifier(
 	if *notify {
 		return notifier.New(
 			system,
-			asset.Cache(assetz),
+			assetz,
 			messages,
 			vats,
 			cats,

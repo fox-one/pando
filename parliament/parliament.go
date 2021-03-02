@@ -12,6 +12,7 @@ import (
 	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
+	"github.com/fox-one/pando/service/asset"
 	"github.com/shopspring/decimal"
 )
 
@@ -26,7 +27,7 @@ func New(
 	return &parliament{
 		messages:    messages,
 		userz:       userz,
-		assetz:      assetz,
+		assetz:      asset.Cache(assetz),
 		walletz:     walletz,
 		collaterals: collaterals,
 		system:      system,

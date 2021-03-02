@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/fox-one/pando/worker"
 	"github.com/fox-one/pando/worker/cashier"
+	"github.com/fox-one/pando/worker/events"
 	"github.com/fox-one/pando/worker/messenger"
 	"github.com/fox-one/pando/worker/payee"
 	"github.com/fox-one/pando/worker/pricesync"
@@ -20,6 +21,7 @@ var workerSet = wire.NewSet(
 	spentsync.New,
 	syncer.New,
 	txsender.New,
+	events.New,
 	provideWorkers,
 )
 
@@ -31,6 +33,7 @@ func provideWorkers(
 	e *spentsync.SpentSync,
 	f *txsender.Sender,
 	g *syncer.Syncer,
+	h *events.Events,
 ) []worker.Worker {
-	return []worker.Worker{a, b, c, d, e, f, g}
+	return []worker.Worker{a, b, c, d, e, f, g, h}
 }
