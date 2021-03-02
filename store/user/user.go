@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
@@ -36,6 +37,7 @@ func toUpdateParams(user *core.User) map[string]interface{} {
 		"name":         user.Name,
 		"avatar":       user.Avatar,
 		"access_token": user.AccessToken,
+		"version":      time.Now().UnixNano(),
 	}
 }
 

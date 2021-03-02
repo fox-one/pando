@@ -12,17 +12,21 @@ import (
 	"github.com/fox-one/pando/service/oracle"
 	"github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
+	"github.com/fox-one/pkg/text/localizer"
 	"github.com/google/wire"
+	"golang.org/x/text/language"
 )
 
 var serviceSet = wire.NewSet(
 	provideMixinClient,
 	asset.New,
 	message.New,
+	wire.Struct(new(user.Config)),
 	user.New,
 	oracle.New,
 	provideSystem,
 	provideWalletService,
+	provideLocalizer,
 )
 
 func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
@@ -72,4 +76,18 @@ func provideSystem(cfg *config.Config) *core.System {
 		SignKey:    signKey,
 		Version:    version,
 	}
+}
+
+func provideLocalizer(cfg *config.Config) (*localizer.Localizer, error) {
+	files, err := localizer.FindMessageFiles(cfg.I18n.Path)
+	if err != nil {
+		return nil, err
+	}
+
+	lang, err := language.Parse(cfg.I18n.Language)
+	if err != nil {
+		return nil, err
+	}
+
+	return localizer.New(lang, files...), nil
 }

@@ -12,6 +12,8 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	wire.Build(
 		storeSet,
 		serviceSet,
+		notifierSet,
+		sessionSet,
 		serverSet,
 	)
 

@@ -12,19 +12,21 @@ import (
 	"github.com/fox-one/pando/service/oracle"
 	"github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
-	"github.com/fox-one/pando/session"
+	"github.com/fox-one/pkg/text/localizer"
 	"github.com/google/wire"
+	"golang.org/x/text/language"
 )
 
 var serviceSet = wire.NewSet(
 	provideMixinClient,
 	asset.New,
 	message.New,
+	provideUserServiceConfig,
 	user.New,
 	oracle.New,
 	provideSystem,
-	provideSessions,
 	provideWalletService,
+	provideLocalizer,
 )
 
 func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
@@ -37,15 +39,6 @@ func provideWalletService(client *mixin.Client, cfg *config.Config, system *core
 		Members:   system.MemberIDs(),
 		Threshold: system.Threshold,
 	})
-}
-
-func provideSessions(userz core.UserService, cfg *config.Config) core.Session {
-	var issuers []string
-	for _, m := range cfg.Group.Members {
-		issuers = append(issuers, m.ClientID)
-	}
-
-	return session.New(userz, 2048, issuers)
 }
 
 func provideSystem(cfg *config.Config) *core.System {
@@ -75,4 +68,24 @@ func provideSystem(cfg *config.Config) *core.System {
 		PrivateKey:   privateKey,
 		Version:      version,
 	}
+}
+
+func provideUserServiceConfig(cfg *config.Config) user.Config {
+	return user.Config{
+		ClientSecret: cfg.Dapp.ClientSecret,
+	}
+}
+
+func provideLocalizer(cfg *config.Config) (*localizer.Localizer, error) {
+	files, err := localizer.FindMessageFiles(cfg.I18n.Path)
+	if err != nil {
+		return nil, err
+	}
+
+	lang, err := language.Parse(cfg.I18n.Language)
+	if err != nil {
+		return nil, err
+	}
+
+	return localizer.New(lang, files...), nil
 }

@@ -12,17 +12,23 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
-func New(userz core.UserService, capacity int, issuers []string) core.Session {
+type Config struct {
+	Capacity int
+	Issuers  []string
+}
+
+func New(userz core.UserService, users core.UserStore, cfg Config) core.Session {
 	var s core.Session = &session{
+		users:   users,
 		userz:   userz,
-		issuers: issuers,
+		issuers: cfg.Issuers,
 		sf:      &singleflight.Group{},
 	}
 
-	if capacity > 0 {
+	if cfg.Capacity > 0 {
 		s = &cacheSession{
 			Session: s,
-			tokens:  gcache.New(capacity).LRU().Build(),
+			tokens:  gcache.New(cfg.Capacity).LRU().Build(),
 		}
 	}
 
@@ -30,6 +36,7 @@ func New(userz core.UserService, capacity int, issuers []string) core.Session {
 }
 
 type session struct {
+	users   core.UserStore
 	userz   core.UserService
 	sf      *singleflight.Group
 	issuers []string
@@ -53,6 +60,10 @@ func (s *session) Login(ctx context.Context, accessToken string) (*core.User, er
 
 		user, err := s.userz.Login(ctx, accessToken)
 		if err != nil {
+			return nil, err
+		}
+
+		if err := s.users.Save(ctx, user); err != nil {
 			return nil, err
 		}
 

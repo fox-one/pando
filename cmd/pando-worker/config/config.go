@@ -6,6 +6,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/shopspring/decimal"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
 )
 
 type (
@@ -13,6 +14,7 @@ type (
 		DB    db.Config `json:"db"`
 		Dapp  Dapp      `json:"dapp"`
 		Group Group     `json:"group,omitempty"`
+		I18n  I18n      `json:"i18n,omitempty"`
 	}
 
 	Dapp struct {
@@ -42,6 +44,12 @@ type (
 		Threshold  uint8    `json:"threshold,omitempty"`
 
 		Vote Vote `json:"vote,omitempty"`
+	}
+
+	I18n struct {
+		Path string `json:"path,omitempty"`
+		// default language
+		Language string `json:"language,omitempty"`
 	}
 )
 
@@ -74,6 +82,8 @@ func Viperion(cfgFile string) (*Config, error) {
 	}
 
 	defaultVote(&cfg)
+	defaultI18n(&cfg)
+
 	return &cfg, nil
 }
 
@@ -84,5 +94,15 @@ func defaultVote(cfg *Config) {
 
 	if cfg.Group.Vote.Amount.IsZero() {
 		cfg.Group.Vote.Amount = decimal.NewFromInt(1)
+	}
+}
+
+func defaultI18n(cfg *Config) {
+	if cfg.I18n.Path == "" {
+		cfg.I18n.Path = "./assets/i18n"
+	}
+
+	if cfg.I18n.Language == "" {
+		cfg.I18n.Language = language.Chinese.String()
 	}
 }

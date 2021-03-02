@@ -9,12 +9,17 @@ import (
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/handler/api"
 	"github.com/fox-one/pando/handler/rpc"
+	"github.com/fox-one/pando/notifier"
 	"github.com/fox-one/pando/server"
+	asset2 "github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pando/service/user"
+	"github.com/fox-one/pando/session"
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
+	"github.com/fox-one/pando/store/message"
 	"github.com/fox-one/pando/store/transaction"
+	user2 "github.com/fox-one/pando/store/user"
 	"github.com/fox-one/pando/store/vault"
 	"github.com/fox-one/pkg/store/property"
 )
@@ -26,12 +31,15 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	userService := user.New(client)
-	session := provideSessions(userService, cfg)
+	userConfig := provideUserServiceConfig(cfg)
+	userService := user.New(client, userConfig)
 	db, err := provideDatabase(cfg)
 	if err != nil {
 		return nil, err
 	}
+	userStore := user2.New(db)
+	sessionConfig := provideSessionConfig(cfg)
+	coreSession := session.New(userService, userStore, sessionConfig)
 	assetStore := asset.New(db)
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
@@ -40,10 +48,17 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	transactionStore := transaction.New(db)
 	system := provideSystem(cfg)
 	walletService := provideWalletService(client, cfg, system)
-	apiServer := api.New(session, assetStore, vaultStore, flipStore, store, collateralStore, transactionStore, walletService, system)
+	assetService := asset2.New(client)
+	messageStore := message.New(db)
+	localizer, err := provideLocalizer(cfg)
+	if err != nil {
+		return nil, err
+	}
+	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, localizer)
+	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, store, collateralStore, transactionStore, walletService, coreNotifier, system)
 	rpcServer := rpc.New(assetStore, vaultStore, flipStore, store, collateralStore, transactionStore)
 	mainHealthHandler := provideHealth(system)
-	mux := provideRoute(apiServer, rpcServer, session, mainHealthHandler)
+	mux := provideRoute(apiServer, rpcServer, coreSession, mainHealthHandler)
 	serverServer := provideServer(mux)
 	return serverServer, nil
 }

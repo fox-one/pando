@@ -7,9 +7,14 @@ import (
 	"github.com/fox-one/pando/core"
 )
 
-func New(client *mixin.Client) core.UserService {
+type Config struct {
+	ClientSecret string
+}
+
+func New(client *mixin.Client, cfg Config) core.UserService {
 	return &userService{
 		client: client,
+		secret: cfg.ClientSecret,
 	}
 }
 
@@ -45,4 +50,9 @@ func (s *userService) Login(ctx context.Context, token string) (*core.User, erro
 		AccessToken: token,
 	}
 	return user, nil
+}
+
+func (s *userService) Auth(ctx context.Context, code string) (string, error) {
+	token, _, err := mixin.AuthorizeToken(ctx, s.client.ClientID, s.secret, code, "")
+	return token, err
 }

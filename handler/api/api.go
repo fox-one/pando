@@ -18,6 +18,7 @@ import (
 
 func New(
 	sessions core.Session,
+	userz core.UserService,
 	assets core.AssetStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
@@ -25,10 +26,12 @@ func New(
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 	walletz core.WalletService,
+	notifier core.Notifier,
 	system *core.System,
 ) *Server {
 	return &Server{
 		sessions:     sessions,
+		userz:        userz,
 		assets:       assets,
 		vaults:       vaults,
 		flips:        flips,
@@ -36,12 +39,14 @@ func New(
 		collaterals:  collaterals,
 		transactions: transactions,
 		walletz:      walletz,
+		notifier:     notifier,
 		system:       system,
 	}
 }
 
 type Server struct {
 	sessions     core.Session
+	userz        core.UserService
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	flips        core.FlipStore
@@ -49,6 +54,7 @@ type Server struct {
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 	walletz      core.WalletService
+	notifier     core.Notifier
 	system       *core.System
 }
 
@@ -70,7 +76,7 @@ func (s *Server) Handler() http.Handler {
 	})
 
 	r.Get("/info", system.HandleInfo(s.system))
-	r.Post("/login", auth.HandleOauth(s.system))
+	r.Post("/login", auth.HandleOauth(s.userz, s.sessions, s.notifier))
 
 	svr := rpc.New(s.assets, s.vaults, s.flips, s.properties, s.collaterals, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)

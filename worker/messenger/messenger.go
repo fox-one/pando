@@ -59,7 +59,7 @@ func (w *Messenger) run(ctx context.Context) error {
 		return errors.New("list messages: EOF")
 	}
 
-	filter := make(map[string]bool)
+	filter := make(map[string]bool, 10)
 	var idx int
 
 	for _, msg := range messages {

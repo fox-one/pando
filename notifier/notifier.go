@@ -2,27 +2,32 @@ package notifier
 
 import (
 	"context"
-	"crypto/md5"
 	"encoding/base64"
 	"encoding/json"
-	"io"
-	"math/big"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/pkg/uuid"
+	"github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pkg/logger"
-	"github.com/gofrs/uuid"
+	"github.com/fox-one/pkg/text/localizer"
 )
 
 func New(
 	system *core.System,
 	assetz core.AssetService,
 	messages core.MessageStore,
+	vats core.VaultStore,
+	cats core.CollateralStore,
+	i18n *localizer.Localizer,
 ) core.Notifier {
 	return &notifier{
 		system:   system,
-		assetz:   assetz,
+		assetz:   asset.Cache(assetz),
 		messages: messages,
+		vats:     vats,
+		cats:     cats,
+		i18n:     i18n,
 	}
 }
 
@@ -30,6 +35,39 @@ type notifier struct {
 	system   *core.System
 	assetz   core.AssetService
 	messages core.MessageStore
+	vats     core.VaultStore
+	cats     core.CollateralStore
+	i18n     *localizer.Localizer
+}
+
+func (n *notifier) localize(id string, args ...interface{}) string {
+	return n.i18n.LocalizeOr(id, id, args...)
+}
+
+func (n *notifier) Auth(ctx context.Context, user *core.User) error {
+	msg := n.localize("login_done")
+	req := &mixin.MessageRequest{
+		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+		RecipientID:    user.MixinID,
+		MessageID:      uuid.Modify(user.MixinID, user.AccessToken),
+		Category:       mixin.MessageCategoryPlainText,
+		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	}
+
+	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+}
+
+func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error {
+	if tx.UserID == "" {
+		return nil
+	}
+
+	switch tx.Action {
+	case core.ActionVatOpen, core.ActionVatDeposit, core.ActionVatWithdraw, core.ActionVatPayback, core.ActionVatGenerate:
+		return n.handleVatTx(ctx, tx)
+	}
+
+	return nil
 }
 
 func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signedTx string) error {
@@ -77,20 +115,4 @@ func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signed
 	}
 
 	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
-}
-
-func mixinRawTransactionTraceId(hash string, index uint8) string {
-	h := md5.New()
-	_, _ = io.WriteString(h, hash)
-	b := new(big.Int).SetInt64(int64(index))
-	h.Write(b.Bytes())
-	s := h.Sum(nil)
-	s[6] = (s[6] & 0x0f) | 0x30
-	s[8] = (s[8] & 0x3f) | 0x80
-	sid, err := uuid.FromBytes(s)
-	if err != nil {
-		panic(err)
-	}
-
-	return sid.String()
 }

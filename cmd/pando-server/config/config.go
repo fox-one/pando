@@ -5,6 +5,7 @@ import (
 	"github.com/fox-one/pkg/store/db"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
 )
 
 type (
@@ -12,6 +13,7 @@ type (
 		DB    db.Config `json:"db"`
 		Dapp  Dapp      `json:"dapp"`
 		Group Group     `json:"group,omitempty"`
+		I18n  I18n      `json:"i18n,omitempty"`
 	}
 
 	Dapp struct {
@@ -31,6 +33,12 @@ type (
 		PrivateKey string   `json:"private_key,omitempty"`
 		Members    []Member `json:"members,omitempty"`
 		Threshold  uint8    `json:"threshold,omitempty"`
+	}
+
+	I18n struct {
+		Path string `json:"path,omitempty"`
+		// default language
+		Language string `json:"language,omitempty"`
 	}
 )
 
@@ -62,5 +70,16 @@ func Viperion(cfgFile string) (*Config, error) {
 		return nil, err
 	}
 
+	defaultI18n(&cfg)
 	return &cfg, nil
+}
+
+func defaultI18n(cfg *Config) {
+	if cfg.I18n.Path == "" {
+		cfg.I18n.Path = "./assets/i18n"
+	}
+
+	if cfg.I18n.Language == "" {
+		cfg.I18n.Language = language.Chinese.String()
+	}
 }

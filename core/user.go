@@ -10,6 +10,7 @@ type (
 		ID          int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt   time.Time `json:"created_at,omitempty"`
 		UpdatedAt   time.Time `json:"updated_at,omitempty"`
+		Version     int64     `json:"version,omitempty"`
 		MixinID     string    `sql:"size:36" json:"mixin_id,omitempty"`
 		Role        string    `sql:"size:24" json:"role,omitempty"`
 		Lang        string    `sql:"size:36" json:"lang,omitempty"`
@@ -26,5 +27,6 @@ type (
 	UserService interface {
 		Find(ctx context.Context, mixinID string) (*User, error)
 		Login(ctx context.Context, token string) (*User, error)
+		Auth(ctx context.Context, code string) (string, error)
 	}
 )

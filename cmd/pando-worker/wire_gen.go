@@ -56,13 +56,18 @@ func buildApp(cfg *config.Config) (app, error) {
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
 	store := propertystore.New(db)
-	userService := user.New(client)
+	userConfig := user.Config{}
+	userService := user.New(client, userConfig)
 	parliament := provideParliament(messageStore, userService, assetService, walletService, collateralStore, system)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New()
 	payeePayee := payee.New(assetStore, assetService, walletStore, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, parliament, oracleStore, oracleService, system)
 	sync := pricesync.New(assetStore, assetService)
-	notifier := provideNotifier(system, assetService, messageStore)
+	localizer, err := provideLocalizer(cfg)
+	if err != nil {
+		return app{}, err
+	}
+	notifier := provideNotifier(system, assetService, messageStore, vaultStore, collateralStore, localizer)
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)

@@ -11,11 +11,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type FrobData struct {
-	Dink decimal.Decimal `json:"dink,omitempty"`
-	Debt decimal.Decimal `json:"debt,omitempty"`
-}
-
 func HandleFrob(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
@@ -73,9 +68,10 @@ func HandleFrob(
 
 			dart := debt.Div(c.Rate)
 			if err := frob(c, v, dink, dart); err == nil {
-				t.Write(core.TxStatusSuccess, FrobData{
+				t.Write(core.TxStatusSuccess, Data{
 					Dink: dink,
 					Debt: debt,
+					Dart: dart,
 				})
 
 				// 提取抵押物
@@ -130,13 +126,12 @@ func HandleFrob(
 			return err
 		}
 
-		var data FrobData
+		var data Data
 		_ = t.Data.Unmarshal(&data)
 
-		dart := data.Debt.Div(c.Rate)
 		// update vat
-		if !(dart.IsZero() && data.Dink.IsZero()) && v.Version < r.Version() {
-			v.Art = v.Art.Add(dart)
+		if v.Version < r.Version() {
+			v.Art = v.Art.Add(data.Dart)
 			v.Ink = v.Ink.Add(data.Dink)
 
 			if err := vaults.Update(ctx, v, r.Version()); err != nil {
@@ -146,8 +141,8 @@ func HandleFrob(
 		}
 
 		// update cat
-		if !(dart.IsZero() && data.Debt.IsZero() && data.Dink.IsZero()) && c.Version < r.Version() {
-			c.Art = c.Art.Add(dart)
+		if c.Version < r.Version() {
+			c.Art = c.Art.Add(data.Dart)
 			c.Debt = c.Debt.Add(data.Debt)
 			c.Ink = c.Ink.Add(data.Dink)
 

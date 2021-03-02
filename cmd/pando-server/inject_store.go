@@ -5,6 +5,7 @@ import (
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
+	"github.com/fox-one/pando/store/message"
 	"github.com/fox-one/pando/store/oracle"
 	"github.com/fox-one/pando/store/proposal"
 	"github.com/fox-one/pando/store/transaction"
@@ -28,6 +29,7 @@ var storeSet = wire.NewSet(
 	oracle.New,
 	wallet.New,
 	propertystore.New,
+	message.New,
 )
 
 func provideDatabase(cfg *config.Config) (*db.DB, error) {
