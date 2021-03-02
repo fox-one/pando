@@ -14,7 +14,7 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /app/builds/pando-server .
-Add assets .
+Add assets assets
 
 EXPOSE 7778
 
