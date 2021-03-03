@@ -4,7 +4,7 @@ login_done: |
 vat_open_success: |
   ✅ 创建抵押仓库成功 {{.CatName}}
 
-  - 💰 注入 {{.Ink}} {{.GemSymbol}}
+  - 💰 注入 {{.Dink}} {{.GemSymbol}}
   - 💰 借出 {{.Debt}} {{.DaiSymbol}}
 
 vat_open_failed: |
@@ -15,7 +15,7 @@ vat_open_failed: |
 vat_deposit_success: |
   ✅ 注入抵押物成功 {{.CatName}}
 
-  - 💰 注入 {{.Ink}} {{.GemSymbol}}
+  - 💰 注入 {{.Dink}} {{.GemSymbol}}
 
 vat_deposit_failed: |
   ❌ 注入抵押物失败 {{.CatName}}
@@ -25,7 +25,7 @@ vat_deposit_failed: |
 vat_withdraw_success: |
   ✅ 提取抵押物成功 {{.CatName}}
 
-  - 💰 提取 {{.Ink}} {{.GemSymbol}}
+  - 💰 提取 {{.Dink}} {{.GemSymbol}}
 
 vat_withdraw_failed: |
   ❌ 提取抵押物失败 {{.CatName}}

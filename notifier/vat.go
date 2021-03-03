@@ -12,11 +12,12 @@ import (
 )
 
 type VatData struct {
+	vat.Data
+
 	CatName   string
 	GemSymbol string
 	DaiSymbol string
-	vat.Data
-	Msg string
+	Msg       string
 }
 
 func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction) error {
