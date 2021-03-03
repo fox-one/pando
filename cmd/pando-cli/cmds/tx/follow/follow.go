@@ -17,8 +17,8 @@ func NewCmd() *cobra.Command {
 			token := cfg.GetAuthToken()
 			ctx := call.WithToken(cmd.Context(), token)
 
-			follow := args[0]
-			tx, err := call.RPC().FindTransaction(ctx, &api.Req_FindTransaction{Follow: follow})
+			id := args[0]
+			tx, err := call.RPC().FindTransaction(ctx, &api.Req_FindTransaction{Id: id})
 			if err != nil {
 				return err
 			}
