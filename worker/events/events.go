@@ -33,7 +33,7 @@ type Events struct {
 }
 
 func (w *Events) Run(ctx context.Context) error {
-	log := logger.FromContext(ctx).WithField("worker", "notify")
+	log := logger.FromContext(ctx).WithField("worker", "events")
 	ctx = logger.WithContext(ctx, log)
 
 	dur := time.Millisecond

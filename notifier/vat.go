@@ -3,6 +3,7 @@ package notifier
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
@@ -24,26 +25,26 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction) error 
 
 	v, err := n.vats.Find(ctx, tx.TargetID)
 	if err != nil {
-		return err
+		return fmt.Errorf("vats.Find(%q) %w", tx.TargetID, err)
 	}
 
 	c, err := n.cats.Find(ctx, v.CollateralID)
 	if err != nil {
-		return err
+		return fmt.Errorf("cats.Find(%q) %w", v.CollateralID, err)
 	}
 
 	data.CatName = c.Name
 
 	gem, err := n.assetz.Find(ctx, c.Gem)
 	if err != nil {
-		return err
+		return fmt.Errorf("assetz.Find(%q) %w", c.Gem, err)
 	}
 
 	data.GemSymbol = gem.Symbol
 
 	dai, err := n.assetz.Find(ctx, c.Dai)
 	if err != nil {
-		return err
+		return fmt.Errorf("assetz.Find(%q) %w", c.Dai, err)
 	}
 
 	data.DaiSymbol = dai.Symbol
