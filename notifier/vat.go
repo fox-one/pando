@@ -23,31 +23,33 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction) error 
 	var data VatData
 	_ = tx.Data.Unmarshal(&data)
 
-	v, err := n.vats.Find(ctx, tx.TargetID)
-	if err != nil {
-		return fmt.Errorf("vats.Find(%q) %w", tx.TargetID, err)
+	if tx.TargetID != "" {
+		v, err := n.vats.Find(ctx, tx.TargetID)
+		if err != nil {
+			return fmt.Errorf("vats.Find(%q) %w", tx.TargetID, err)
+		}
+
+		c, err := n.cats.Find(ctx, v.CollateralID)
+		if err != nil {
+			return fmt.Errorf("cats.Find(%q) %w", v.CollateralID, err)
+		}
+
+		data.CatName = c.Name
+
+		gem, err := n.assetz.Find(ctx, c.Gem)
+		if err != nil {
+			return fmt.Errorf("assetz.Find(%q) %w", c.Gem, err)
+		}
+
+		data.GemSymbol = gem.Symbol
+
+		dai, err := n.assetz.Find(ctx, c.Dai)
+		if err != nil {
+			return fmt.Errorf("assetz.Find(%q) %w", c.Dai, err)
+		}
+
+		data.DaiSymbol = dai.Symbol
 	}
-
-	c, err := n.cats.Find(ctx, v.CollateralID)
-	if err != nil {
-		return fmt.Errorf("cats.Find(%q) %w", v.CollateralID, err)
-	}
-
-	data.CatName = c.Name
-
-	gem, err := n.assetz.Find(ctx, c.Gem)
-	if err != nil {
-		return fmt.Errorf("assetz.Find(%q) %w", c.Gem, err)
-	}
-
-	data.GemSymbol = gem.Symbol
-
-	dai, err := n.assetz.Find(ctx, c.Dai)
-	if err != nil {
-		return fmt.Errorf("assetz.Find(%q) %w", c.Dai, err)
-	}
-
-	data.DaiSymbol = dai.Symbol
 
 	id := "vat"
 	switch tx.Action {
