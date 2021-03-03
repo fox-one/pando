@@ -19,6 +19,10 @@ type messageService struct {
 func (s *messageService) Send(ctx context.Context, messages []*core.Message) error {
 	raws := make([]json.RawMessage, 0, len(messages))
 	for _, msg := range messages {
+		if msg.UserID == s.c.ClientID {
+			continue
+		}
+
 		raws = append(raws, json.RawMessage(msg.Raw))
 	}
 
@@ -35,6 +39,10 @@ func (s *messageService) Send(ctx context.Context, messages []*core.Message) err
 }
 
 func (s *messageService) Meet(ctx context.Context, userID string) error {
+	if userID == s.c.ClientID {
+		return nil
+	}
+
 	_, err := s.c.CreateContactConversation(ctx, userID)
 	return err
 }
