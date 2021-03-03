@@ -59,10 +59,12 @@ func (w *Events) run(ctx context.Context) error {
 		return err
 	}
 
-	from := v.Int64()
-	const Limit = 100
+	req := &core.ListTransactionReq{
+		FromID: v.Int64(),
+		Limit:  100,
+	}
 
-	transactions, err := w.transactions.List(ctx, from, Limit)
+	transactions, err := w.transactions.List(ctx, req)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Errorln("transactions.List")
 		return err
@@ -78,11 +80,11 @@ func (w *Events) run(ctx context.Context) error {
 			return err
 		}
 
-		from = tx.ID
+		req.FromID = tx.ID
 	}
 
-	if err := w.properties.Save(ctx, checkpoint, from); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorf("properties.Save(%q,%v)", checkpoint, from)
+	if err := w.properties.Save(ctx, checkpoint, req.FromID); err != nil {
+		logger.FromContext(ctx).WithError(err).Errorf("properties.Save(%q,%v)", checkpoint, req.FromID)
 		return err
 	}
 

@@ -7,13 +7,15 @@ import (
 
 func Transaction(tx *core.Transaction) *api.Transaction {
 	return &api.Transaction{
-		Id:        tx.TraceID,
-		CreatedAt: Time(&tx.CreatedAt),
-		TargetId:  tx.TargetID,
-		AssetId:   tx.AssetID,
-		Amount:    tx.Amount.String(),
-		Action:    int32(tx.Action),
-		Status:    int32(tx.Status),
-		Data:      string(tx.Data),
+		Id:           tx.TraceID,
+		CreatedAt:    Time(&tx.CreatedAt),
+		AssetId:      tx.AssetID,
+		Amount:       tx.Amount.String(),
+		Action:       int32(tx.Action),
+		CollateralId: tx.CollateralID,
+		VaultId:      tx.VaultID,
+		FlipId:       tx.FlipID,
+		Status:       int32(tx.Status),
+		Data:         string(tx.Data),
 	}
 }

@@ -23,15 +23,10 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction) error 
 	var data VatData
 	_ = tx.Data.Unmarshal(&data)
 
-	if tx.TargetID != "" {
-		v, err := n.vats.Find(ctx, tx.TargetID)
+	if tx.CollateralID != "" {
+		c, err := n.cats.Find(ctx, tx.CollateralID)
 		if err != nil {
-			return fmt.Errorf("vats.Find(%q) %w", tx.TargetID, err)
-		}
-
-		c, err := n.cats.Find(ctx, v.CollateralID)
-		if err != nil {
-			return fmt.Errorf("cats.Find(%q) %w", v.CollateralID, err)
+			return fmt.Errorf("cats.Find(%q) %w", tx.CollateralID, err)
 		}
 
 		data.CatName = c.Name

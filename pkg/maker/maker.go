@@ -10,7 +10,11 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type HandlerFunc func(ctx context.Context, r *Request) error
+type (
+	HandlerFunc func(ctx context.Context, r *Request) error
+
+	H map[string]interface{}
+)
 
 type Request struct {
 	UTXO   *core.Output

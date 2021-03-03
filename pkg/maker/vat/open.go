@@ -60,8 +60,7 @@ func HandleOpen(
 				CollateralID: c.TraceID,
 			}
 
-			t = r.Tx()
-			t.TargetID = v.TraceID
+			t = r.Tx().WithVault(v)
 
 			var transfers []*core.Transfer
 

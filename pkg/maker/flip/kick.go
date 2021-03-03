@@ -55,8 +55,7 @@ func HandleKick(
 				return err
 			}
 
-			t = r.Tx()
-			t.TargetID = v.TraceID
+			t = r.Tx().WithVault(v)
 
 			if f, err := Kick(r, c, v, opt); err == nil {
 				if err := flips.Create(ctx, f); err != nil {
@@ -64,7 +63,7 @@ func HandleKick(
 					return err
 				}
 
-				t.Write(core.TxStatusSuccess, KickData{
+				t.WithFlip(f).Write(core.TxStatusSuccess, KickData{
 					Art: f.Art,
 					Tab: f.Tab,
 					Lot: f.Lot,

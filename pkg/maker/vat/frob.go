@@ -44,8 +44,7 @@ func HandleFrob(
 		}
 
 		if t.ID == 0 {
-			t = r.Tx()
-			t.TargetID = v.TraceID
+			t = r.Tx().WithVault(v)
 
 			var dink, debt decimal.Decimal
 			if err := require(r.Scan(&dink, &debt) == nil, "bad-data"); err != nil {

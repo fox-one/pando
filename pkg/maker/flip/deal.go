@@ -42,8 +42,7 @@ func HandleDeal(
 		}
 
 		if t.ID == 0 {
-			t = r.Tx()
-			t.TargetID = f.TraceID
+			t = r.Tx().WithFlip(f)
 
 			var transfers []*core.Transfer
 

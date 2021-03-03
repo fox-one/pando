@@ -73,12 +73,14 @@ message FlipOption {
 message Transaction {
     string id = 1;
     google.protobuf.Timestamp created_at = 2;
-    string target_id = 3;
-    string asset_id = 4;
-    string amount = 5;
-    int32 action = 6;
-    int32 status = 7;
-    string data = 8;
+    string asset_id = 3;
+    string amount = 4;
+    int32 action = 5;
+    string collateral_id = 6;
+    string vault_id = 7;
+    string flip_id = 8;
+    int32 status = 9;
+    string data = 10;
 }
 
 message Req {
@@ -116,13 +118,15 @@ message Req {
 
     // Find Tx By FollowID
     message FindTransaction {
-        string follow = 1;
+        string id = 1;
     }
 
     message ListTransactions {
         string cursor = 1;
         int64 limit = 2;
-        string target = 3;
+        string collateral_id = 3;
+        string vault_id = 4;
+        string flip_id = 5;
     }
 }
 

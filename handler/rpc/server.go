@@ -10,7 +10,7 @@ import (
 	"github.com/fox-one/pando/handler/request"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/fox-one/pando/handler/rpc/view"
-	"github.com/fox-one/pando/pkg/maker/flip"
+	makerflip "github.com/fox-one/pando/pkg/maker/flip"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
 	"github.com/fox-one/pkg/store"
@@ -220,7 +220,7 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 }
 
 func (s *Server) ReadFlipOption(ctx context.Context, _ *api.Req_ReadFlipOption) (*api.FlipOption, error) {
-	opt, err := flip.ReadOptions(ctx, s.properties)
+	opt, err := makerflip.ReadOptions(ctx, s.properties)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +235,7 @@ func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransacti
 		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
 	}
 
-	tx, err := s.transactions.FindFollow(ctx, user.MixinID, req.Follow)
+	tx, err := s.transactions.FindFollow(ctx, user.MixinID, req.Id)
 	if err != nil {
 		if store.IsErrNotFound(err) {
 			return nil, twirp.NotFoundError("transaction not found")
@@ -254,7 +254,43 @@ func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransact
 		limit = l
 	}
 
-	transactions, err := s.transactions.ListTarget(ctx, req.Target, fromID, limit+1)
+	q := &core.ListTransactionReq{
+		CollateralID: req.CollateralId,
+		VaultID:      req.VaultId,
+		FlipID:       req.FlipId,
+		Desc:         true,
+		FromID:       fromID,
+		Limit:        limit + 1,
+	}
+
+	if q.FlipID != "" && q.VaultID == "" {
+		flip, err := s.flips.Find(ctx, q.FlipID)
+		if err != nil {
+			return nil, err
+		}
+
+		if flip.ID == 0 {
+			return nil, twirp.NotFoundError("flip not init")
+		}
+
+		q.VaultID = flip.VaultID
+		q.CollateralID = flip.CollateralID
+	}
+
+	if q.VaultID != "" && q.CollateralID == "" {
+		vat, err := s.vaults.Find(ctx, q.VaultID)
+		if err != nil {
+			return nil, err
+		}
+
+		if vat.ID == 0 {
+			return nil, twirp.NotFoundError("vat not init")
+		}
+
+		q.CollateralID = vat.CollateralID
+	}
+
+	transactions, err := s.transactions.List(ctx, q)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: transactions.ListTarget")
 		return nil, err

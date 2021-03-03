@@ -23,7 +23,7 @@ func init() {
 			return err
 		}
 
-		if err := tx.AddIndex("idx_transactions_target", "target_id").Error; err != nil {
+		if err := tx.AddIndex("idx_transactions_cat_vat_flip", "collateral_id", "vault_id", "flip_id").Error; err != nil {
 			return err
 		}
 
@@ -67,26 +67,36 @@ func (s *transactionStore) FindFollow(ctx context.Context, userID, followID stri
 	return &tx, nil
 }
 
-func (s *transactionStore) ListTarget(ctx context.Context, targetID string, from int64, limit int) ([]*core.Transaction, error) {
-	tx := s.db.View().Where("target_id = ?", targetID)
-
-	if from > 0 {
-		tx = tx.Where("id < ?", from)
-	}
-
-	var transactions []*core.Transaction
-	if err := tx.Limit(limit).Order("id DESC").Find(&transactions).Error; err != nil {
-		return nil, err
-	}
-
-	return transactions, nil
-}
-
-func (s *transactionStore) List(ctx context.Context, from int64, limit int) ([]*core.Transaction, error) {
+func (s *transactionStore) List(ctx context.Context, req *core.ListTransactionReq) ([]*core.Transaction, error) {
 	tx := s.db.View()
 
-	if from > 0 {
-		tx = tx.Where("id > ?", from)
+	limit := 100
+	if req != nil {
+		if req.CollateralID != "" {
+			tx = tx.Where("collateral_id = ?", req.CollateralID)
+
+			if req.VaultID != "" {
+				tx = tx.Where("vault_id = ?", req.VaultID)
+
+				if req.FlipID != "" {
+					tx = tx.Where("flip_id = ?", req.FlipID)
+				}
+			}
+		}
+
+		if req.Desc {
+			if req.FromID > 0 {
+				tx = tx.Where("id < ?", req.FromID)
+			}
+
+			tx = tx.Order("id DESC")
+		} else {
+			if req.FromID > 0 {
+				tx = tx.Where("id > ?", req.FromID)
+			}
+		}
+
+		limit = req.Limit
 	}
 
 	var transactions []*core.Transaction

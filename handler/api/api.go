@@ -103,8 +103,12 @@ func (s *Server) Handler() http.Handler {
 	})
 
 	r.Route("/transactions", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListTransactions", nil))
 		r.Get("/{id}", rt.Handle("FindTransaction", nil))
+		r.Get("/", rt.Handle("ListTransactions", nil))
+		r.Get("/cats/{collateral_id}", rt.Handle("ListTransactions", nil))
+		r.Get("/vats/{vault_id}", rt.Handle("ListTransactions", nil))
+		r.Get("/flips/{flip_id}", rt.Handle("ListTransactions", nil))
+
 	})
 
 	r.Route("/actions", func(r chi.Router) {
