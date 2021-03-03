@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  node1:
+    image: pando/worker
+    restart: always
+    command: --notify
+    depends_on:
+      - db
+    volumes:
+      - ./node1.yaml:/app/config.yaml
+    ports:
+      - "7777:7777"
+
+  node2:
+    image: pando/worker
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./node2.yaml:/app/config.yaml
+    ports:
+      - "7776:7777"
+
+  api:
+    image: pando/server
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./server.yaml:/app/config.yaml
+    ports:
+      - "7778:7778"
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=pando
+      - MYSQL_USER=pando
+      - MYSQL_PASSWORD=pando
+
+volumes:
+  data:
