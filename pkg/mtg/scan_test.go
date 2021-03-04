@@ -1,57 +1,49 @@
 package mtg
 
 import (
-	"crypto/rand"
-	"io"
 	"testing"
 
 	"github.com/bmizerany/assert"
-	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestScan(t *testing.T) {
 	var (
-		typ  int8             = 1
-		uid                   = newUUID()
-		str                   = "123"
-		data types.RawMessage = make([]byte, 100)
+		typ int8 = 1
+		uid      = newUUID()
+		str      = "123"
 	)
 
-	_, _ = io.ReadFull(rand.Reader, data)
-
-	body, err := Encode(typ, uid, str, string(data))
+	body, err := Encode(typ, uid, str)
 	require.Nil(t, err)
 
 	var (
-		dtyp  int8
-		duid  uuid.UUID
-		dstr  string
-		ddata types.RawMessage
+		dtyp int8
+		duid uuid.UUID
+		dstr string
 	)
 
 	remain, err := Scan(body, &dtyp)
 	require.Nil(t, err)
 	assert.Equal(t, dtyp, typ)
 
-	_, err = Scan(remain, &duid, &dstr, &ddata)
+	_, err = Scan(remain, &duid, &dstr)
 	require.Nil(t, err)
 
 	assert.Equal(t, uid.String(), duid.String())
 	assert.Equal(t, str, dstr)
-	assert.Equal(t, data, ddata)
 }
 
 func TestScanStruct(t *testing.T) {
 	type Foo struct {
 		A uuid.UUID
-		B types.BitInt
+		B int
 	}
 
 	var (
-		a              = newUUID()
-		b types.BitInt = 10
+		a = newUUID()
+		b = 10
 	)
 	body, _ := Encode(a, b)
 

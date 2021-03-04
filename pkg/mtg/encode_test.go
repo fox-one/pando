@@ -4,10 +4,8 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/base64"
-	"io"
 	"testing"
 
-	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/gofrs/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
@@ -21,9 +19,6 @@ func newUUID() uuid.UUID {
 
 func TestEncode(t *testing.T) {
 	pub, pri, _ := ed25519.GenerateKey(rand.Reader)
-
-	var proposal types.RawMessage = make([]byte, 100)
-	_, _ = io.ReadFull(rand.Reader, proposal)
 	values := []interface{}{1, newUUID(), newUUID()}
 
 	t.Run("encode add action", func(t *testing.T) {
@@ -56,26 +51,11 @@ func TestEncode(t *testing.T) {
 		assert.LessOrEqual(t, len(memo), 255)
 	})
 
-	t.Run("encode proposal", func(t *testing.T) {
-		body, err := Encode(append(values, string(proposal))...)
-		require.Nil(t, err)
-
-		data, err := Encrypt(body, pri, pub)
-		require.Nil(t, err)
-
-		t.Log(len(data))
-
-		memo := base64.StdEncoding.EncodeToString(data)
-		t.Log(len(memo), memo)
-
-		assert.LessOrEqual(t, len(memo), 255)
-	})
-
 	t.Run("encode struct", func(t *testing.T) {
 		type Foo struct {
 			A uuid.UUID
 			B decimal.Decimal
-			C types.BitInt
+			C int
 			D string
 		}
 
