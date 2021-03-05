@@ -83,7 +83,7 @@ func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer)
 		return nil
 	}
 
-	signedTx := output.UTXO.SignedTx
+	signedTx := output.SignedTx
 	if signedTx == "" {
 		return nil
 	}

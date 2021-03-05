@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/fox-one/pando/core"
-	"github.com/fox-one/pando/internal/mixinet"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
 )
@@ -100,7 +99,7 @@ func (w *Syncer) run(ctx context.Context) error {
 		return errors.New("EOF")
 	}
 
-	mixinet.SortOutputs(outputs)
+	core.SortOutputs(outputs)
 	if err := w.wallets.Save(ctx, outputs); err != nil {
 		log.WithError(err).Errorln("wallets.Save")
 		return err

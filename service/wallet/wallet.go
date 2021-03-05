@@ -2,7 +2,8 @@ package wallet
 
 import (
 	"context"
-	"encoding/json"
+	"crypto/ed25519"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -14,9 +15,10 @@ import (
 )
 
 type Config struct {
-	Pin       string   `valid:"required"`
-	Members   []string `valid:"required"`
-	Threshold uint8    `valid:"required"`
+	Pin        string   `valid:"required"`
+	Members    []string `valid:"required"`
+	Threshold  uint8    `valid:"required"`
+	PrivateKey string   `valid:"required"`
 }
 
 func New(client *mixin.Client, cfg Config) core.WalletService {
@@ -24,11 +26,14 @@ func New(client *mixin.Client, cfg Config) core.WalletService {
 		panic(err)
 	}
 
+	key, _ := base64.StdEncoding.DecodeString(cfg.PrivateKey)
+
 	return &walletService{
 		client:    client,
 		members:   cfg.Members,
 		threshold: cfg.Threshold,
 		pin:       cfg.Pin,
+		key:       key,
 	}
 }
 
@@ -37,6 +42,7 @@ type walletService struct {
 	members   []string
 	threshold uint8
 	pin       string
+	key       ed25519.PrivateKey
 }
 
 func (s *walletService) Pull(ctx context.Context, offset time.Time, limit int) ([]*core.Output, error) {
@@ -47,7 +53,12 @@ func (s *walletService) Pull(ctx context.Context, offset time.Time, limit int) (
 
 	results := make([]*core.Output, 0, len(outputs))
 	for _, output := range outputs {
-		results = append(results, convertUTXO(output))
+		result := convertToOutput(output)
+		if result.Sender == "" {
+			result.Memo, result.Sender = extractSender(s.key, output.Memo)
+		}
+
+		results = append(results, result)
 	}
 
 	return results, nil
@@ -161,16 +172,16 @@ func (s *walletService) signTransaction(ctx context.Context, outputs []*core.Out
 	}
 
 	state := outputs[0].State
-	signedTx := outputs[0].UTXO.SignedTx
+	signedTx := outputs[0].SignedTx
 	sum := decimal.Zero
 
 	for _, output := range outputs[0:] {
 		st := output.State
-		tx := output.UTXO.SignedTx
-		sum = sum.Add(output.UTXO.Amount)
+		tx := output.SignedTx
+		sum = sum.Add(output.Amount)
 
 		if st == state && tx == signedTx {
-			input.AppendUTXO(output.UTXO)
+			input.AppendUTXO(convertToUTXO(output, s.members, s.threshold))
 			continue
 		}
 
@@ -189,25 +200,6 @@ func (s *walletService) signTransaction(ctx context.Context, outputs []*core.Out
 
 	signedTx, _ = tx.DumpTransaction()
 	return mixin.UTXOStateSigned, signedTx, nil
-}
-
-func convertUTXO(raw *mixin.MultisigUTXO) *core.Output {
-	data, err := json.Marshal(raw)
-	if err != nil {
-		panic(err)
-	}
-
-	return &core.Output{
-		CreatedAt: raw.CreatedAt,
-		UpdatedAt: raw.UpdatedAt,
-		TraceID:   raw.UTXOID,
-		AssetID:   raw.AssetID,
-		Amount:    raw.Amount,
-		Memo:      raw.Memo,
-		State:     raw.State,
-		Data:      data,
-		UTXO:      raw,
-	}
 }
 
 // validateMultisig validate multisig request
