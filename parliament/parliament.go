@@ -223,28 +223,6 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 				Action: userAction(opponent.String()),
 			},
 		}
-	case core.ActionFlipOpt:
-		var (
-			beg      decimal.Decimal
-			ttl, tau int64
-		)
-
-		_, _ = mtg.Scan(data, &beg, &ttl, &tau)
-
-		view.Meta = []Item{
-			{
-				Key:   "beg",
-				Value: beg.String(),
-			},
-			{
-				Key:   "ttl",
-				Value: (time.Duration(ttl) * time.Second).String(),
-			},
-			{
-				Key:   "Tau",
-				Value: (time.Duration(tau) * time.Second).String(),
-			},
-		}
 	}
 
 	items := append(view.Info, view.Meta...)

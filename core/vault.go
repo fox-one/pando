@@ -37,11 +37,19 @@ type (
 		Debt decimal.Decimal `sql:"type:decimal(64,8)" json:"debt,omitempty"`
 	}
 
+	ListVaultRequest struct {
+		CollateralID string
+		UserID       string
+		Desc         bool
+		FromID       int64
+		Limit        int
+	}
+
 	VaultStore interface {
 		Create(ctx context.Context, vault *Vault) error
 		Update(ctx context.Context, vault *Vault, version int64) error
 		Find(ctx context.Context, traceID string) (*Vault, error)
-		ListUser(ctx context.Context, userID string) ([]*Vault, error)
+		List(ctx context.Context, req ListVaultRequest) ([]*Vault, error)
 		// Events
 		CreateEvent(ctx context.Context, event *VaultEvent) error
 		FindEvent(ctx context.Context, vaultID string, version int64) (*VaultEvent, error)

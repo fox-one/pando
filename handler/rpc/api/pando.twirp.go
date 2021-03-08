@@ -41,9 +41,14 @@ const _ = twirp.TwirpPackageIsVersion7
 
 type Pando interface {
 	// assets
-	ReadAsset(context.Context, *Req_ReadAsset) (*Asset, error)
+	FindAsset(context.Context, *Req_FindAsset) (*Asset, error)
 
 	ListAssets(context.Context, *Req_ListAssets) (*Resp_ListAssets, error)
+
+	// oracles
+	FindOracle(context.Context, *Req_FindOracle) (*Oracle, error)
+
+	ListOracles(context.Context, *Req_ListOracles) (*Resp_ListOracles, error)
 
 	// collaterals
 	ListCollaterals(context.Context, *Req_ListCollaterals) (*Resp_ListCollaterals, error)
@@ -51,16 +56,20 @@ type Pando interface {
 	FindCollateral(context.Context, *Req_FindCollateral) (*Collateral, error)
 
 	// vaults
+	FindVault(context.Context, *Req_FindVault) (*Vault, error)
+
 	ListVaults(context.Context, *Req_ListVaults) (*Resp_ListVaults, error)
 
-	FindVault(context.Context, *Req_FindVault) (*Vault, error)
+	ListMyVaults(context.Context, *Req_ListMyVaults) (*Resp_ListVaults, error)
+
+	ListVaultEvents(context.Context, *Req_ListVaultEvents) (*Resp_ListVaultEvents, error)
 
 	// flips
 	FindFlip(context.Context, *Req_FindFlip) (*Flip, error)
 
 	ListFlips(context.Context, *Req_ListFlips) (*Resp_ListFlips, error)
 
-	ReadFlipOption(context.Context, *Req_ReadFlipOption) (*FlipOption, error)
+	ListFlipEvents(context.Context, *Req_ListFlipEvents) (*Resp_ListFlipEvents, error)
 
 	// tx
 	FindTransaction(context.Context, *Req_FindTransaction) (*Transaction, error)
@@ -74,7 +83,7 @@ type Pando interface {
 
 type pandoProtobufClient struct {
 	client      HTTPClient
-	urls        [11]string
+	urls        [15]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -94,16 +103,20 @@ func NewPandoProtobufClient(baseURL string, client HTTPClient, opts ...twirp.Cli
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(clientOpts.PathPrefix(), "fox.pando.service", "Pando")
-	urls := [11]string{
-		serviceURL + "ReadAsset",
+	urls := [15]string{
+		serviceURL + "FindAsset",
 		serviceURL + "ListAssets",
+		serviceURL + "FindOracle",
+		serviceURL + "ListOracles",
 		serviceURL + "ListCollaterals",
 		serviceURL + "FindCollateral",
-		serviceURL + "ListVaults",
 		serviceURL + "FindVault",
+		serviceURL + "ListVaults",
+		serviceURL + "ListMyVaults",
+		serviceURL + "ListVaultEvents",
 		serviceURL + "FindFlip",
 		serviceURL + "ListFlips",
-		serviceURL + "ReadFlipOption",
+		serviceURL + "ListFlipEvents",
 		serviceURL + "FindTransaction",
 		serviceURL + "ListTransactions",
 	}
@@ -116,20 +129,20 @@ func NewPandoProtobufClient(baseURL string, client HTTPClient, opts ...twirp.Cli
 	}
 }
 
-func (c *pandoProtobufClient) ReadAsset(ctx context.Context, in *Req_ReadAsset) (*Asset, error) {
+func (c *pandoProtobufClient) FindAsset(ctx context.Context, in *Req_FindAsset) (*Asset, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ReadAsset")
-	caller := c.callReadAsset
+	ctx = ctxsetters.WithMethodName(ctx, "FindAsset")
+	caller := c.callFindAsset
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ReadAsset) (*Asset, error) {
+		caller = func(ctx context.Context, req *Req_FindAsset) (*Asset, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadAsset)
+					typedReq, ok := req.(*Req_FindAsset)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadAsset) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindAsset) when calling interceptor")
 					}
-					return c.callReadAsset(ctx, typedReq)
+					return c.callFindAsset(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
@@ -145,7 +158,7 @@ func (c *pandoProtobufClient) ReadAsset(ctx context.Context, in *Req_ReadAsset) 
 	return caller(ctx, in)
 }
 
-func (c *pandoProtobufClient) callReadAsset(ctx context.Context, in *Req_ReadAsset) (*Asset, error) {
+func (c *pandoProtobufClient) callFindAsset(ctx context.Context, in *Req_FindAsset) (*Asset, error) {
 	out := new(Asset)
 	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
@@ -208,6 +221,98 @@ func (c *pandoProtobufClient) callListAssets(ctx context.Context, in *Req_ListAs
 	return out, nil
 }
 
+func (c *pandoProtobufClient) FindOracle(ctx context.Context, in *Req_FindOracle) (*Oracle, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "FindOracle")
+	caller := c.callFindOracle
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_FindOracle) (*Oracle, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindOracle)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindOracle) when calling interceptor")
+					}
+					return c.callFindOracle(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Oracle)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Oracle) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoProtobufClient) callFindOracle(ctx context.Context, in *Req_FindOracle) (*Oracle, error) {
+	out := new(Oracle)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoProtobufClient) ListOracles(ctx context.Context, in *Req_ListOracles) (*Resp_ListOracles, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListOracles")
+	caller := c.callListOracles
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListOracles) (*Resp_ListOracles, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListOracles)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListOracles) when calling interceptor")
+					}
+					return c.callListOracles(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListOracles)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListOracles) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoProtobufClient) callListOracles(ctx context.Context, in *Req_ListOracles) (*Resp_ListOracles, error) {
+	out := new(Resp_ListOracles)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
 func (c *pandoProtobufClient) ListCollaterals(ctx context.Context, in *Req_ListCollaterals) (*Resp_ListCollaterals, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
@@ -239,7 +344,7 @@ func (c *pandoProtobufClient) ListCollaterals(ctx context.Context, in *Req_ListC
 
 func (c *pandoProtobufClient) callListCollaterals(ctx context.Context, in *Req_ListCollaterals) (*Resp_ListCollaterals, error) {
 	out := new(Resp_ListCollaterals)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -285,53 +390,7 @@ func (c *pandoProtobufClient) FindCollateral(ctx context.Context, in *Req_FindCo
 
 func (c *pandoProtobufClient) callFindCollateral(ctx context.Context, in *Req_FindCollateral) (*Collateral, error) {
 	out := new(Collateral)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
-	if err != nil {
-		twerr, ok := err.(twirp.Error)
-		if !ok {
-			twerr = twirp.InternalErrorWith(err)
-		}
-		callClientError(ctx, c.opts.Hooks, twerr)
-		return nil, err
-	}
-
-	callClientResponseReceived(ctx, c.opts.Hooks)
-
-	return out, nil
-}
-
-func (c *pandoProtobufClient) ListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
-	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
-	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ListVaults")
-	caller := c.callListVaults
-	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ListVaults) (*Resp_ListVaults, error) {
-			resp, err := c.interceptor(
-				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ListVaults)
-					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaults) when calling interceptor")
-					}
-					return c.callListVaults(ctx, typedReq)
-				},
-			)(ctx, req)
-			if resp != nil {
-				typedResp, ok := resp.(*Resp_ListVaults)
-				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
-				}
-				return typedResp, err
-			}
-			return nil, err
-		}
-	}
-	return caller(ctx, in)
-}
-
-func (c *pandoProtobufClient) callListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
-	out := new(Resp_ListVaults)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -377,7 +436,145 @@ func (c *pandoProtobufClient) FindVault(ctx context.Context, in *Req_FindVault) 
 
 func (c *pandoProtobufClient) callFindVault(ctx context.Context, in *Req_FindVault) (*Vault, error) {
 	out := new(Vault)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoProtobufClient) ListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaults")
+	caller := c.callListVaults
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListVaults) (*Resp_ListVaults, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaults)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaults) when calling interceptor")
+					}
+					return c.callListVaults(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaults)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoProtobufClient) callListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
+	out := new(Resp_ListVaults)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoProtobufClient) ListMyVaults(ctx context.Context, in *Req_ListMyVaults) (*Resp_ListVaults, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListMyVaults")
+	caller := c.callListMyVaults
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListMyVaults) (*Resp_ListVaults, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListMyVaults)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListMyVaults) when calling interceptor")
+					}
+					return c.callListMyVaults(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaults)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoProtobufClient) callListMyVaults(ctx context.Context, in *Req_ListMyVaults) (*Resp_ListVaults, error) {
+	out := new(Resp_ListVaults)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[8], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoProtobufClient) ListVaultEvents(ctx context.Context, in *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaultEvents")
+	caller := c.callListVaultEvents
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaultEvents)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaultEvents) when calling interceptor")
+					}
+					return c.callListVaultEvents(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaultEvents)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaultEvents) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoProtobufClient) callListVaultEvents(ctx context.Context, in *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+	out := new(Resp_ListVaultEvents)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[9], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -423,7 +620,7 @@ func (c *pandoProtobufClient) FindFlip(ctx context.Context, in *Req_FindFlip) (*
 
 func (c *pandoProtobufClient) callFindFlip(ctx context.Context, in *Req_FindFlip) (*Flip, error) {
 	out := new(Flip)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[10], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -469,7 +666,7 @@ func (c *pandoProtobufClient) ListFlips(ctx context.Context, in *Req_ListFlips) 
 
 func (c *pandoProtobufClient) callListFlips(ctx context.Context, in *Req_ListFlips) (*Resp_ListFlips, error) {
 	out := new(Resp_ListFlips)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[11], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -484,26 +681,26 @@ func (c *pandoProtobufClient) callListFlips(ctx context.Context, in *Req_ListFli
 	return out, nil
 }
 
-func (c *pandoProtobufClient) ReadFlipOption(ctx context.Context, in *Req_ReadFlipOption) (*FlipOption, error) {
+func (c *pandoProtobufClient) ListFlipEvents(ctx context.Context, in *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ReadFlipOption")
-	caller := c.callReadFlipOption
+	ctx = ctxsetters.WithMethodName(ctx, "ListFlipEvents")
+	caller := c.callListFlipEvents
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ReadFlipOption) (*FlipOption, error) {
+		caller = func(ctx context.Context, req *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadFlipOption)
+					typedReq, ok := req.(*Req_ListFlipEvents)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadFlipOption) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListFlipEvents) when calling interceptor")
 					}
-					return c.callReadFlipOption(ctx, typedReq)
+					return c.callListFlipEvents(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*FlipOption)
+				typedResp, ok := resp.(*Resp_ListFlipEvents)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*FlipOption) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListFlipEvents) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -513,9 +710,9 @@ func (c *pandoProtobufClient) ReadFlipOption(ctx context.Context, in *Req_ReadFl
 	return caller(ctx, in)
 }
 
-func (c *pandoProtobufClient) callReadFlipOption(ctx context.Context, in *Req_ReadFlipOption) (*FlipOption, error) {
-	out := new(FlipOption)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[8], in, out)
+func (c *pandoProtobufClient) callListFlipEvents(ctx context.Context, in *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
+	out := new(Resp_ListFlipEvents)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[12], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -561,7 +758,7 @@ func (c *pandoProtobufClient) FindTransaction(ctx context.Context, in *Req_FindT
 
 func (c *pandoProtobufClient) callFindTransaction(ctx context.Context, in *Req_FindTransaction) (*Transaction, error) {
 	out := new(Transaction)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[9], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[13], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -607,7 +804,7 @@ func (c *pandoProtobufClient) ListTransactions(ctx context.Context, in *Req_List
 
 func (c *pandoProtobufClient) callListTransactions(ctx context.Context, in *Req_ListTransactions) (*Resp_ListTransactions, error) {
 	out := new(Resp_ListTransactions)
-	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[10], in, out)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[14], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -628,7 +825,7 @@ func (c *pandoProtobufClient) callListTransactions(ctx context.Context, in *Req_
 
 type pandoJSONClient struct {
 	client      HTTPClient
-	urls        [11]string
+	urls        [15]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -648,16 +845,20 @@ func NewPandoJSONClient(baseURL string, client HTTPClient, opts ...twirp.ClientO
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(clientOpts.PathPrefix(), "fox.pando.service", "Pando")
-	urls := [11]string{
-		serviceURL + "ReadAsset",
+	urls := [15]string{
+		serviceURL + "FindAsset",
 		serviceURL + "ListAssets",
+		serviceURL + "FindOracle",
+		serviceURL + "ListOracles",
 		serviceURL + "ListCollaterals",
 		serviceURL + "FindCollateral",
-		serviceURL + "ListVaults",
 		serviceURL + "FindVault",
+		serviceURL + "ListVaults",
+		serviceURL + "ListMyVaults",
+		serviceURL + "ListVaultEvents",
 		serviceURL + "FindFlip",
 		serviceURL + "ListFlips",
-		serviceURL + "ReadFlipOption",
+		serviceURL + "ListFlipEvents",
 		serviceURL + "FindTransaction",
 		serviceURL + "ListTransactions",
 	}
@@ -670,20 +871,20 @@ func NewPandoJSONClient(baseURL string, client HTTPClient, opts ...twirp.ClientO
 	}
 }
 
-func (c *pandoJSONClient) ReadAsset(ctx context.Context, in *Req_ReadAsset) (*Asset, error) {
+func (c *pandoJSONClient) FindAsset(ctx context.Context, in *Req_FindAsset) (*Asset, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ReadAsset")
-	caller := c.callReadAsset
+	ctx = ctxsetters.WithMethodName(ctx, "FindAsset")
+	caller := c.callFindAsset
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ReadAsset) (*Asset, error) {
+		caller = func(ctx context.Context, req *Req_FindAsset) (*Asset, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadAsset)
+					typedReq, ok := req.(*Req_FindAsset)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadAsset) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindAsset) when calling interceptor")
 					}
-					return c.callReadAsset(ctx, typedReq)
+					return c.callFindAsset(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
@@ -699,7 +900,7 @@ func (c *pandoJSONClient) ReadAsset(ctx context.Context, in *Req_ReadAsset) (*As
 	return caller(ctx, in)
 }
 
-func (c *pandoJSONClient) callReadAsset(ctx context.Context, in *Req_ReadAsset) (*Asset, error) {
+func (c *pandoJSONClient) callFindAsset(ctx context.Context, in *Req_FindAsset) (*Asset, error) {
 	out := new(Asset)
 	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
@@ -762,6 +963,98 @@ func (c *pandoJSONClient) callListAssets(ctx context.Context, in *Req_ListAssets
 	return out, nil
 }
 
+func (c *pandoJSONClient) FindOracle(ctx context.Context, in *Req_FindOracle) (*Oracle, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "FindOracle")
+	caller := c.callFindOracle
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_FindOracle) (*Oracle, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindOracle)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindOracle) when calling interceptor")
+					}
+					return c.callFindOracle(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Oracle)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Oracle) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoJSONClient) callFindOracle(ctx context.Context, in *Req_FindOracle) (*Oracle, error) {
+	out := new(Oracle)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoJSONClient) ListOracles(ctx context.Context, in *Req_ListOracles) (*Resp_ListOracles, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListOracles")
+	caller := c.callListOracles
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListOracles) (*Resp_ListOracles, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListOracles)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListOracles) when calling interceptor")
+					}
+					return c.callListOracles(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListOracles)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListOracles) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoJSONClient) callListOracles(ctx context.Context, in *Req_ListOracles) (*Resp_ListOracles, error) {
+	out := new(Resp_ListOracles)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
 func (c *pandoJSONClient) ListCollaterals(ctx context.Context, in *Req_ListCollaterals) (*Resp_ListCollaterals, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
@@ -793,7 +1086,7 @@ func (c *pandoJSONClient) ListCollaterals(ctx context.Context, in *Req_ListColla
 
 func (c *pandoJSONClient) callListCollaterals(ctx context.Context, in *Req_ListCollaterals) (*Resp_ListCollaterals, error) {
 	out := new(Resp_ListCollaterals)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -839,53 +1132,7 @@ func (c *pandoJSONClient) FindCollateral(ctx context.Context, in *Req_FindCollat
 
 func (c *pandoJSONClient) callFindCollateral(ctx context.Context, in *Req_FindCollateral) (*Collateral, error) {
 	out := new(Collateral)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
-	if err != nil {
-		twerr, ok := err.(twirp.Error)
-		if !ok {
-			twerr = twirp.InternalErrorWith(err)
-		}
-		callClientError(ctx, c.opts.Hooks, twerr)
-		return nil, err
-	}
-
-	callClientResponseReceived(ctx, c.opts.Hooks)
-
-	return out, nil
-}
-
-func (c *pandoJSONClient) ListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
-	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
-	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ListVaults")
-	caller := c.callListVaults
-	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ListVaults) (*Resp_ListVaults, error) {
-			resp, err := c.interceptor(
-				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ListVaults)
-					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaults) when calling interceptor")
-					}
-					return c.callListVaults(ctx, typedReq)
-				},
-			)(ctx, req)
-			if resp != nil {
-				typedResp, ok := resp.(*Resp_ListVaults)
-				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
-				}
-				return typedResp, err
-			}
-			return nil, err
-		}
-	}
-	return caller(ctx, in)
-}
-
-func (c *pandoJSONClient) callListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
-	out := new(Resp_ListVaults)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -931,7 +1178,145 @@ func (c *pandoJSONClient) FindVault(ctx context.Context, in *Req_FindVault) (*Va
 
 func (c *pandoJSONClient) callFindVault(ctx context.Context, in *Req_FindVault) (*Vault, error) {
 	out := new(Vault)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoJSONClient) ListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaults")
+	caller := c.callListVaults
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListVaults) (*Resp_ListVaults, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaults)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaults) when calling interceptor")
+					}
+					return c.callListVaults(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaults)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoJSONClient) callListVaults(ctx context.Context, in *Req_ListVaults) (*Resp_ListVaults, error) {
+	out := new(Resp_ListVaults)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoJSONClient) ListMyVaults(ctx context.Context, in *Req_ListMyVaults) (*Resp_ListVaults, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListMyVaults")
+	caller := c.callListMyVaults
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListMyVaults) (*Resp_ListVaults, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListMyVaults)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListMyVaults) when calling interceptor")
+					}
+					return c.callListMyVaults(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaults)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoJSONClient) callListMyVaults(ctx context.Context, in *Req_ListMyVaults) (*Resp_ListVaults, error) {
+	out := new(Resp_ListVaults)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[8], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *pandoJSONClient) ListVaultEvents(ctx context.Context, in *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
+	ctx = ctxsetters.WithServiceName(ctx, "Pando")
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaultEvents")
+	caller := c.callListVaultEvents
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaultEvents)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaultEvents) when calling interceptor")
+					}
+					return c.callListVaultEvents(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaultEvents)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaultEvents) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *pandoJSONClient) callListVaultEvents(ctx context.Context, in *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+	out := new(Resp_ListVaultEvents)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[9], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -977,7 +1362,7 @@ func (c *pandoJSONClient) FindFlip(ctx context.Context, in *Req_FindFlip) (*Flip
 
 func (c *pandoJSONClient) callFindFlip(ctx context.Context, in *Req_FindFlip) (*Flip, error) {
 	out := new(Flip)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[10], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -1023,7 +1408,7 @@ func (c *pandoJSONClient) ListFlips(ctx context.Context, in *Req_ListFlips) (*Re
 
 func (c *pandoJSONClient) callListFlips(ctx context.Context, in *Req_ListFlips) (*Resp_ListFlips, error) {
 	out := new(Resp_ListFlips)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[11], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -1038,26 +1423,26 @@ func (c *pandoJSONClient) callListFlips(ctx context.Context, in *Req_ListFlips) 
 	return out, nil
 }
 
-func (c *pandoJSONClient) ReadFlipOption(ctx context.Context, in *Req_ReadFlipOption) (*FlipOption, error) {
+func (c *pandoJSONClient) ListFlipEvents(ctx context.Context, in *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "fox.pando.service")
 	ctx = ctxsetters.WithServiceName(ctx, "Pando")
-	ctx = ctxsetters.WithMethodName(ctx, "ReadFlipOption")
-	caller := c.callReadFlipOption
+	ctx = ctxsetters.WithMethodName(ctx, "ListFlipEvents")
+	caller := c.callListFlipEvents
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *Req_ReadFlipOption) (*FlipOption, error) {
+		caller = func(ctx context.Context, req *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadFlipOption)
+					typedReq, ok := req.(*Req_ListFlipEvents)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadFlipOption) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListFlipEvents) when calling interceptor")
 					}
-					return c.callReadFlipOption(ctx, typedReq)
+					return c.callListFlipEvents(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*FlipOption)
+				typedResp, ok := resp.(*Resp_ListFlipEvents)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*FlipOption) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListFlipEvents) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -1067,9 +1452,9 @@ func (c *pandoJSONClient) ReadFlipOption(ctx context.Context, in *Req_ReadFlipOp
 	return caller(ctx, in)
 }
 
-func (c *pandoJSONClient) callReadFlipOption(ctx context.Context, in *Req_ReadFlipOption) (*FlipOption, error) {
-	out := new(FlipOption)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[8], in, out)
+func (c *pandoJSONClient) callListFlipEvents(ctx context.Context, in *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
+	out := new(Resp_ListFlipEvents)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[12], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -1115,7 +1500,7 @@ func (c *pandoJSONClient) FindTransaction(ctx context.Context, in *Req_FindTrans
 
 func (c *pandoJSONClient) callFindTransaction(ctx context.Context, in *Req_FindTransaction) (*Transaction, error) {
 	out := new(Transaction)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[9], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[13], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -1161,7 +1546,7 @@ func (c *pandoJSONClient) ListTransactions(ctx context.Context, in *Req_ListTran
 
 func (c *pandoJSONClient) callListTransactions(ctx context.Context, in *Req_ListTransactions) (*Resp_ListTransactions, error) {
 	out := new(Resp_ListTransactions)
-	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[10], in, out)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[14], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -1260,11 +1645,17 @@ func (s *pandoServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	switch method {
-	case "ReadAsset":
-		s.serveReadAsset(ctx, resp, req)
+	case "FindAsset":
+		s.serveFindAsset(ctx, resp, req)
 		return
 	case "ListAssets":
 		s.serveListAssets(ctx, resp, req)
+		return
+	case "FindOracle":
+		s.serveFindOracle(ctx, resp, req)
+		return
+	case "ListOracles":
+		s.serveListOracles(ctx, resp, req)
 		return
 	case "ListCollaterals":
 		s.serveListCollaterals(ctx, resp, req)
@@ -1272,11 +1663,17 @@ func (s *pandoServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	case "FindCollateral":
 		s.serveFindCollateral(ctx, resp, req)
 		return
+	case "FindVault":
+		s.serveFindVault(ctx, resp, req)
+		return
 	case "ListVaults":
 		s.serveListVaults(ctx, resp, req)
 		return
-	case "FindVault":
-		s.serveFindVault(ctx, resp, req)
+	case "ListMyVaults":
+		s.serveListMyVaults(ctx, resp, req)
+		return
+	case "ListVaultEvents":
+		s.serveListVaultEvents(ctx, resp, req)
 		return
 	case "FindFlip":
 		s.serveFindFlip(ctx, resp, req)
@@ -1284,8 +1681,8 @@ func (s *pandoServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	case "ListFlips":
 		s.serveListFlips(ctx, resp, req)
 		return
-	case "ReadFlipOption":
-		s.serveReadFlipOption(ctx, resp, req)
+	case "ListFlipEvents":
+		s.serveListFlipEvents(ctx, resp, req)
 		return
 	case "FindTransaction":
 		s.serveFindTransaction(ctx, resp, req)
@@ -1300,7 +1697,7 @@ func (s *pandoServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (s *pandoServer) serveReadAsset(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveFindAsset(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -1308,9 +1705,9 @@ func (s *pandoServer) serveReadAsset(ctx context.Context, resp http.ResponseWrit
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveReadAssetJSON(ctx, resp, req)
+		s.serveFindAssetJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveReadAssetProtobuf(ctx, resp, req)
+		s.serveFindAssetProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -1318,32 +1715,32 @@ func (s *pandoServer) serveReadAsset(ctx context.Context, resp http.ResponseWrit
 	}
 }
 
-func (s *pandoServer) serveReadAssetJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveFindAssetJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "ReadAsset")
+	ctx = ctxsetters.WithMethodName(ctx, "FindAsset")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
 		return
 	}
 
-	reqContent := new(Req_ReadAsset)
+	reqContent := new(Req_FindAsset)
 	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
 	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.ReadAsset
+	handler := s.Pando.FindAsset
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_ReadAsset) (*Asset, error) {
+		handler = func(ctx context.Context, req *Req_FindAsset) (*Asset, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadAsset)
+					typedReq, ok := req.(*Req_FindAsset)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadAsset) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindAsset) when calling interceptor")
 					}
-					return s.Pando.ReadAsset(ctx, typedReq)
+					return s.Pando.FindAsset(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
@@ -1369,7 +1766,7 @@ func (s *pandoServer) serveReadAssetJSON(ctx context.Context, resp http.Response
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *Asset and nil error while calling ReadAsset. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Asset and nil error while calling FindAsset. nil responses are not supported"))
 		return
 	}
 
@@ -1396,9 +1793,9 @@ func (s *pandoServer) serveReadAssetJSON(ctx context.Context, resp http.Response
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *pandoServer) serveReadAssetProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveFindAssetProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "ReadAsset")
+	ctx = ctxsetters.WithMethodName(ctx, "FindAsset")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1410,22 +1807,22 @@ func (s *pandoServer) serveReadAssetProtobuf(ctx context.Context, resp http.Resp
 		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
 		return
 	}
-	reqContent := new(Req_ReadAsset)
+	reqContent := new(Req_FindAsset)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.ReadAsset
+	handler := s.Pando.FindAsset
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_ReadAsset) (*Asset, error) {
+		handler = func(ctx context.Context, req *Req_FindAsset) (*Asset, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadAsset)
+					typedReq, ok := req.(*Req_FindAsset)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadAsset) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindAsset) when calling interceptor")
 					}
-					return s.Pando.ReadAsset(ctx, typedReq)
+					return s.Pando.FindAsset(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
@@ -1451,7 +1848,7 @@ func (s *pandoServer) serveReadAssetProtobuf(ctx context.Context, resp http.Resp
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *Asset and nil error while calling ReadAsset. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Asset and nil error while calling FindAsset. nil responses are not supported"))
 		return
 	}
 
@@ -1627,6 +2024,356 @@ func (s *pandoServer) serveListAssetsProtobuf(ctx context.Context, resp http.Res
 	}
 	if respContent == nil {
 		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListAssets and nil error while calling ListAssets. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveFindOracle(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveFindOracleJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveFindOracleProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *pandoServer) serveFindOracleJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "FindOracle")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(Req_FindOracle)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.FindOracle
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_FindOracle) (*Oracle, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindOracle)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindOracle) when calling interceptor")
+					}
+					return s.Pando.FindOracle(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Oracle)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Oracle) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Oracle
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Oracle and nil error while calling FindOracle. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true, EmitDefaults: !s.jsonSkipDefaults}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	respBytes := buf.Bytes()
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveFindOracleProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "FindOracle")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
+		return
+	}
+	reqContent := new(Req_FindOracle)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.FindOracle
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_FindOracle) (*Oracle, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindOracle)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindOracle) when calling interceptor")
+					}
+					return s.Pando.FindOracle(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Oracle)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Oracle) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Oracle
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Oracle and nil error while calling FindOracle. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveListOracles(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveListOraclesJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveListOraclesProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *pandoServer) serveListOraclesJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "ListOracles")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(Req_ListOracles)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.ListOracles
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_ListOracles) (*Resp_ListOracles, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListOracles)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListOracles) when calling interceptor")
+					}
+					return s.Pando.ListOracles(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListOracles)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListOracles) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Resp_ListOracles
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListOracles and nil error while calling ListOracles. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true, EmitDefaults: !s.jsonSkipDefaults}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	respBytes := buf.Bytes()
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveListOraclesProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "ListOracles")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
+		return
+	}
+	reqContent := new(Req_ListOracles)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.ListOracles
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_ListOracles) (*Resp_ListOracles, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListOracles)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListOracles) when calling interceptor")
+					}
+					return s.Pando.ListOracles(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListOracles)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListOracles) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Resp_ListOracles
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListOracles and nil error while calling ListOracles. nil responses are not supported"))
 		return
 	}
 
@@ -2000,6 +2747,181 @@ func (s *pandoServer) serveFindCollateralProtobuf(ctx context.Context, resp http
 	callResponseSent(ctx, s.hooks)
 }
 
+func (s *pandoServer) serveFindVault(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveFindVaultJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveFindVaultProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *pandoServer) serveFindVaultJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "FindVault")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(Req_FindVault)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.FindVault
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_FindVault) (*Vault, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindVault)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindVault) when calling interceptor")
+					}
+					return s.Pando.FindVault(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Vault)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Vault) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Vault
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Vault and nil error while calling FindVault. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true, EmitDefaults: !s.jsonSkipDefaults}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	respBytes := buf.Bytes()
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveFindVaultProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "FindVault")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
+		return
+	}
+	reqContent := new(Req_FindVault)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.FindVault
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_FindVault) (*Vault, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_FindVault)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_FindVault) when calling interceptor")
+					}
+					return s.Pando.FindVault(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Vault)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Vault) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Vault
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Vault and nil error while calling FindVault. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
 func (s *pandoServer) serveListVaults(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
@@ -2175,7 +3097,7 @@ func (s *pandoServer) serveListVaultsProtobuf(ctx context.Context, resp http.Res
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *pandoServer) serveFindVault(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListMyVaults(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -2183,9 +3105,9 @@ func (s *pandoServer) serveFindVault(ctx context.Context, resp http.ResponseWrit
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveFindVaultJSON(ctx, resp, req)
+		s.serveListMyVaultsJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveFindVaultProtobuf(ctx, resp, req)
+		s.serveListMyVaultsProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -2193,38 +3115,38 @@ func (s *pandoServer) serveFindVault(ctx context.Context, resp http.ResponseWrit
 	}
 }
 
-func (s *pandoServer) serveFindVaultJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListMyVaultsJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "FindVault")
+	ctx = ctxsetters.WithMethodName(ctx, "ListMyVaults")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
 		return
 	}
 
-	reqContent := new(Req_FindVault)
+	reqContent := new(Req_ListMyVaults)
 	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
 	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.FindVault
+	handler := s.Pando.ListMyVaults
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_FindVault) (*Vault, error) {
+		handler = func(ctx context.Context, req *Req_ListMyVaults) (*Resp_ListVaults, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_FindVault)
+					typedReq, ok := req.(*Req_ListMyVaults)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_FindVault) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListMyVaults) when calling interceptor")
 					}
-					return s.Pando.FindVault(ctx, typedReq)
+					return s.Pando.ListMyVaults(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*Vault)
+				typedResp, ok := resp.(*Resp_ListVaults)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*Vault) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -2233,7 +3155,7 @@ func (s *pandoServer) serveFindVaultJSON(ctx context.Context, resp http.Response
 	}
 
 	// Call service method
-	var respContent *Vault
+	var respContent *Resp_ListVaults
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -2244,7 +3166,7 @@ func (s *pandoServer) serveFindVaultJSON(ctx context.Context, resp http.Response
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *Vault and nil error while calling FindVault. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListVaults and nil error while calling ListMyVaults. nil responses are not supported"))
 		return
 	}
 
@@ -2271,9 +3193,9 @@ func (s *pandoServer) serveFindVaultJSON(ctx context.Context, resp http.Response
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *pandoServer) serveFindVaultProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListMyVaultsProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "FindVault")
+	ctx = ctxsetters.WithMethodName(ctx, "ListMyVaults")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -2285,28 +3207,28 @@ func (s *pandoServer) serveFindVaultProtobuf(ctx context.Context, resp http.Resp
 		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
 		return
 	}
-	reqContent := new(Req_FindVault)
+	reqContent := new(Req_ListMyVaults)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.FindVault
+	handler := s.Pando.ListMyVaults
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_FindVault) (*Vault, error) {
+		handler = func(ctx context.Context, req *Req_ListMyVaults) (*Resp_ListVaults, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_FindVault)
+					typedReq, ok := req.(*Req_ListMyVaults)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_FindVault) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListMyVaults) when calling interceptor")
 					}
-					return s.Pando.FindVault(ctx, typedReq)
+					return s.Pando.ListMyVaults(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*Vault)
+				typedResp, ok := resp.(*Resp_ListVaults)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*Vault) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaults) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -2315,7 +3237,7 @@ func (s *pandoServer) serveFindVaultProtobuf(ctx context.Context, resp http.Resp
 	}
 
 	// Call service method
-	var respContent *Vault
+	var respContent *Resp_ListVaults
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -2326,7 +3248,182 @@ func (s *pandoServer) serveFindVaultProtobuf(ctx context.Context, resp http.Resp
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *Vault and nil error while calling FindVault. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListVaults and nil error while calling ListMyVaults. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveListVaultEvents(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveListVaultEventsJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveListVaultEventsProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *pandoServer) serveListVaultEventsJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaultEvents")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(Req_ListVaultEvents)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.ListVaultEvents
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaultEvents)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaultEvents) when calling interceptor")
+					}
+					return s.Pando.ListVaultEvents(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaultEvents)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaultEvents) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Resp_ListVaultEvents
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListVaultEvents and nil error while calling ListVaultEvents. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true, EmitDefaults: !s.jsonSkipDefaults}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	respBytes := buf.Bytes()
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *pandoServer) serveListVaultEventsProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "ListVaultEvents")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
+		return
+	}
+	reqContent := new(Req_ListVaultEvents)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Pando.ListVaultEvents
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *Req_ListVaultEvents) (*Resp_ListVaultEvents, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*Req_ListVaultEvents)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListVaultEvents) when calling interceptor")
+					}
+					return s.Pando.ListVaultEvents(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*Resp_ListVaultEvents)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListVaultEvents) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *Resp_ListVaultEvents
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListVaultEvents and nil error while calling ListVaultEvents. nil responses are not supported"))
 		return
 	}
 
@@ -2700,7 +3797,7 @@ func (s *pandoServer) serveListFlipsProtobuf(ctx context.Context, resp http.Resp
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *pandoServer) serveReadFlipOption(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListFlipEvents(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -2708,9 +3805,9 @@ func (s *pandoServer) serveReadFlipOption(ctx context.Context, resp http.Respons
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveReadFlipOptionJSON(ctx, resp, req)
+		s.serveListFlipEventsJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveReadFlipOptionProtobuf(ctx, resp, req)
+		s.serveListFlipEventsProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -2718,38 +3815,38 @@ func (s *pandoServer) serveReadFlipOption(ctx context.Context, resp http.Respons
 	}
 }
 
-func (s *pandoServer) serveReadFlipOptionJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListFlipEventsJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "ReadFlipOption")
+	ctx = ctxsetters.WithMethodName(ctx, "ListFlipEvents")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
 		return
 	}
 
-	reqContent := new(Req_ReadFlipOption)
+	reqContent := new(Req_ListFlipEvents)
 	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
 	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the json request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.ReadFlipOption
+	handler := s.Pando.ListFlipEvents
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_ReadFlipOption) (*FlipOption, error) {
+		handler = func(ctx context.Context, req *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadFlipOption)
+					typedReq, ok := req.(*Req_ListFlipEvents)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadFlipOption) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListFlipEvents) when calling interceptor")
 					}
-					return s.Pando.ReadFlipOption(ctx, typedReq)
+					return s.Pando.ListFlipEvents(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*FlipOption)
+				typedResp, ok := resp.(*Resp_ListFlipEvents)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*FlipOption) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListFlipEvents) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -2758,7 +3855,7 @@ func (s *pandoServer) serveReadFlipOptionJSON(ctx context.Context, resp http.Res
 	}
 
 	// Call service method
-	var respContent *FlipOption
+	var respContent *Resp_ListFlipEvents
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -2769,7 +3866,7 @@ func (s *pandoServer) serveReadFlipOptionJSON(ctx context.Context, resp http.Res
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *FlipOption and nil error while calling ReadFlipOption. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListFlipEvents and nil error while calling ListFlipEvents. nil responses are not supported"))
 		return
 	}
 
@@ -2796,9 +3893,9 @@ func (s *pandoServer) serveReadFlipOptionJSON(ctx context.Context, resp http.Res
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *pandoServer) serveReadFlipOptionProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *pandoServer) serveListFlipEventsProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "ReadFlipOption")
+	ctx = ctxsetters.WithMethodName(ctx, "ListFlipEvents")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -2810,28 +3907,28 @@ func (s *pandoServer) serveReadFlipOptionProtobuf(ctx context.Context, resp http
 		s.writeError(ctx, resp, wrapInternal(err, "failed to read request body"))
 		return
 	}
-	reqContent := new(Req_ReadFlipOption)
+	reqContent := new(Req_ListFlipEvents)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
 	}
 
-	handler := s.Pando.ReadFlipOption
+	handler := s.Pando.ListFlipEvents
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *Req_ReadFlipOption) (*FlipOption, error) {
+		handler = func(ctx context.Context, req *Req_ListFlipEvents) (*Resp_ListFlipEvents, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*Req_ReadFlipOption)
+					typedReq, ok := req.(*Req_ListFlipEvents)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*Req_ReadFlipOption) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Req_ListFlipEvents) when calling interceptor")
 					}
-					return s.Pando.ReadFlipOption(ctx, typedReq)
+					return s.Pando.ListFlipEvents(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*FlipOption)
+				typedResp, ok := resp.(*Resp_ListFlipEvents)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*FlipOption) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*Resp_ListFlipEvents) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -2840,7 +3937,7 @@ func (s *pandoServer) serveReadFlipOptionProtobuf(ctx context.Context, resp http
 	}
 
 	// Call service method
-	var respContent *FlipOption
+	var respContent *Resp_ListFlipEvents
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -2851,7 +3948,7 @@ func (s *pandoServer) serveReadFlipOptionProtobuf(ctx context.Context, resp http
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *FlipOption and nil error while calling ReadFlipOption. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *Resp_ListFlipEvents and nil error while calling ListFlipEvents. nil responses are not supported"))
 		return
 	}
 
@@ -3787,75 +4884,106 @@ func callClientError(ctx context.Context, h *twirp.ClientHooks, err twirp.Error)
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 1111 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x5f, 0x6f, 0x1b, 0x45,
-	0x10, 0x97, 0x73, 0x3e, 0xff, 0x19, 0xa7, 0xf9, 0xb3, 0x42, 0xf4, 0xb2, 0xa8, 0xc4, 0x31, 0xa2,
-	0xcd, 0x43, 0x71, 0x51, 0x78, 0xaa, 0x10, 0xa0, 0xa6, 0xa8, 0x21, 0x12, 0x82, 0x68, 0xa9, 0x22,
-	0xc1, 0x4b, 0xb4, 0xf6, 0x6d, 0x9c, 0x55, 0xce, 0x77, 0xd7, 0xdb, 0x75, 0x94, 0x7c, 0x10, 0x1e,
-	0x10, 0x5f, 0x00, 0x1e, 0x79, 0xeb, 0x17, 0xe2, 0x91, 0xef, 0x80, 0x66, 0x77, 0xcf, 0xde, 0xd4,
-	0xe7, 0x0b, 0xa8, 0x79, 0x9b, 0x99, 0xfb, 0xcd, 0xec, 0xcc, 0xfc, 0x66, 0xc6, 0x86, 0x5e, 0xce,
-	0xd3, 0x38, 0x1b, 0xe6, 0x45, 0xa6, 0x33, 0xb2, 0x7d, 0x9e, 0x5d, 0x0f, 0xad, 0x41, 0x89, 0xe2,
-	0x4a, 0x8e, 0x05, 0xdd, 0x9d, 0x64, 0xd9, 0x24, 0x11, 0xcf, 0x0c, 0x60, 0x34, 0x3b, 0x7f, 0xa6,
-	0xe5, 0x54, 0x28, 0xcd, 0xa7, 0xb9, 0xf5, 0x19, 0x7c, 0x07, 0x70, 0xc2, 0x27, 0x32, 0xe5, 0x5a,
-	0x66, 0x29, 0xd9, 0x85, 0x5e, 0x2a, 0xae, 0xf5, 0xd9, 0x78, 0x56, 0xa8, 0xac, 0x88, 0x1a, 0xfd,
-	0xc6, 0x7e, 0x97, 0x01, 0x9a, 0x5e, 0x1a, 0x0b, 0xd9, 0x81, 0xce, 0x05, 0x57, 0x67, 0x68, 0x89,
-	0xd6, 0xfa, 0x8d, 0xfd, 0x0e, 0x6b, 0x5f, 0x70, 0xf5, 0x83, 0xb8, 0xd6, 0x83, 0xb7, 0x0d, 0x08,
-	0x5f, 0x28, 0x25, 0x34, 0xd9, 0x80, 0x35, 0x19, 0x3b, 0xe7, 0x35, 0x19, 0x13, 0x02, 0xcd, 0x94,
-	0x4f, 0x85, 0x71, 0xe8, 0x32, 0x23, 0x93, 0x0f, 0xa1, 0xa5, 0x6e, 0xa6, 0xa3, 0x2c, 0x89, 0x02,
-	0x63, 0x75, 0x1a, 0x62, 0x93, 0x6c, 0x92, 0x45, 0x4d, 0x8b, 0x45, 0x19, 0x1f, 0x1d, 0x5f, 0x70,
-	0x99, 0x9e, 0xc9, 0x38, 0x0a, 0x8d, 0xbd, 0x6d, 0xf4, 0xe3, 0x98, 0x0c, 0x21, 0x34, 0x62, 0xd4,
-	0xea, 0x37, 0xf6, 0x7b, 0x07, 0xd1, 0x70, 0xa9, 0x05, 0x43, 0x93, 0x13, 0xb3, 0x30, 0xf2, 0x01,
-	0x84, 0x79, 0x21, 0xc7, 0x22, 0x6a, 0x9b, 0x38, 0x56, 0x19, 0xfc, 0x19, 0x00, 0xbc, 0xcc, 0x92,
-	0x84, 0x6b, 0x51, 0xf0, 0x64, 0x29, 0xff, 0xe7, 0x00, 0xe3, 0x42, 0x70, 0x2d, 0xe2, 0x33, 0x6e,
-	0xcb, 0xee, 0x1d, 0xd0, 0xa1, 0xed, 0xec, 0xb0, 0xec, 0xec, 0xf0, 0x75, 0xd9, 0x59, 0xd6, 0x75,
-	0xe8, 0x17, 0x7a, 0x5e, 0x7a, 0xe0, 0x95, 0xbe, 0x05, 0xc1, 0x44, 0x4c, 0x5d, 0x85, 0x28, 0xa2,
-	0x25, 0xe6, 0xd2, 0xd5, 0x86, 0x22, 0x5a, 0x64, 0x7a, 0x69, 0xaa, 0xea, 0x32, 0x14, 0xd1, 0xc2,
-	0x0b, 0xed, 0xf2, 0x46, 0x11, 0x63, 0x17, 0x5c, 0x8b, 0xa8, 0x63, 0x63, 0xa3, 0x4c, 0x9e, 0x42,
-	0x50, 0x5c, 0x64, 0x51, 0xf7, 0xce, 0x1c, 0x11, 0x86, 0x11, 0x62, 0x31, 0xd2, 0x11, 0xd8, 0x08,
-	0x28, 0x1b, 0x02, 0x64, 0x2a, 0xa2, 0x9e, 0x23, 0x40, 0xa6, 0xc2, 0xe0, 0x66, 0x4a, 0x47, 0xeb,
-	0x0e, 0x37, 0x53, 0x7a, 0xd1, 0xc9, 0x07, 0x5e, 0x27, 0x31, 0xcb, 0x29, 0xd7, 0xd1, 0x86, 0xcd,
-	0x72, 0xca, 0xb5, 0xf5, 0xd5, 0x37, 0xd1, 0x66, 0xe9, 0xab, 0x6f, 0xd0, 0x36, 0xbe, 0xc8, 0xf2,
-	0x68, 0xcb, 0xda, 0x50, 0xb6, 0xb8, 0xf4, 0x32, 0xda, 0x2e, 0x71, 0xe9, 0xa5, 0xcd, 0xe5, 0x4a,
-	0x44, 0xc4, 0x4c, 0x9a, 0x91, 0x07, 0xbf, 0x37, 0x20, 0x3c, 0xe5, 0xb3, 0x44, 0xdf, 0x27, 0x4d,
-	0x9f, 0xc0, 0x83, 0xf1, 0x9c, 0x7f, 0x1c, 0x33, 0xcb, 0xd7, 0xfa, 0xc2, 0x78, 0x1c, 0x97, 0x9c,
-	0x34, 0x97, 0x38, 0x09, 0xe7, 0x9c, 0x0c, 0xfe, 0x5e, 0x83, 0xe6, 0xab, 0x44, 0xe6, 0xf7, 0x99,
-	0xdc, 0x53, 0x08, 0xb4, 0x1c, 0x9b, 0x94, 0xee, 0xe0, 0x54, 0xcb, 0x31, 0xa2, 0x45, 0x1a, 0x9b,
-	0x2c, 0xef, 0x40, 0x8b, 0x34, 0x46, 0x16, 0x45, 0x1a, 0x0b, 0xbb, 0x57, 0x1d, 0x66, 0x15, 0x12,
-	0x41, 0x5b, 0x09, 0xad, 0x13, 0x11, 0x9b, 0x09, 0xec, 0xb0, 0x52, 0xc5, 0x8a, 0x47, 0x32, 0x2e,
-	0xa7, 0x70, 0x24, 0x8d, 0x25, 0xc9, 0xb4, 0x1b, 0x42, 0x14, 0xd1, 0xa2, 0xf9, 0xc8, 0xcc, 0x60,
-	0x97, 0xa1, 0xb8, 0xdc, 0x5e, 0xa8, 0x68, 0xef, 0x0e, 0x74, 0xae, 0x90, 0x57, 0xfc, 0x6e, 0x87,
-	0xaf, 0x6d, 0x74, 0xdb, 0xf9, 0xa3, 0xd9, 0x8d, 0x1b, 0x3f, 0x14, 0x07, 0x87, 0x00, 0xd8, 0xe6,
-	0x1f, 0x73, 0x73, 0xb6, 0x30, 0x2b, 0x31, 0x71, 0xdd, 0x46, 0xd1, 0xe4, 0xa0, 0x13, 0xd3, 0xe7,
-	0x06, 0x43, 0xd1, 0x66, 0x35, 0x33, 0x5d, 0x44, 0x0b, 0x9f, 0x0d, 0xfe, 0x58, 0x83, 0xde, 0xeb,
-	0x82, 0xa7, 0x8a, 0x8f, 0x4d, 0x94, 0x7b, 0xa4, 0x6c, 0x07, 0x3a, 0x1c, 0xcf, 0xce, 0x62, 0x94,
-	0xda, 0x46, 0x3f, 0x8e, 0xf1, 0xf0, 0xf1, 0x69, 0x36, 0x4b, 0xb5, 0x1b, 0x24, 0xa7, 0x19, 0xbb,
-	0xc9, 0xc3, 0x50, 0x11, 0x32, 0xa7, 0x2d, 0xf7, 0xae, 0x75, 0x47, 0xef, 0xda, 0xb7, 0x7b, 0xf7,
-	0x10, 0xda, 0xe7, 0x89, 0xcc, 0xf1, 0x8b, 0xe5, 0xa8, 0x85, 0xaa, 0x4d, 0x44, 0x69, 0xae, 0x67,
-	0xca, 0x30, 0x15, 0x32, 0xa7, 0x99, 0x45, 0xe4, 0x9a, 0xcf, 0x8f, 0x02, 0xd7, 0x7c, 0xf0, 0x36,
-	0x80, 0x80, 0x89, 0x37, 0xf4, 0x23, 0xe8, 0x32, 0xc1, 0xe3, 0xca, 0x33, 0x4f, 0xd7, 0x01, 0xbe,
-	0x97, 0x4a, 0x9b, 0x8f, 0x8a, 0x6e, 0xc3, 0x26, 0x6a, 0x8b, 0xb3, 0xaa, 0x68, 0x1f, 0x36, 0x5e,
-	0xc9, 0x34, 0x5e, 0x7d, 0x69, 0xcb, 0x10, 0x66, 0xbf, 0x15, 0xbe, 0x86, 0xf8, 0xca, 0x6d, 0xa7,
-	0x14, 0x3a, 0xf8, 0xb1, 0x6a, 0xd9, 0xe8, 0x73, 0xe8, 0x62, 0x18, 0xfc, 0xa6, 0xb0, 0xce, 0x5b,
-	0x3f, 0x67, 0x4e, 0xc3, 0xd1, 0x4f, 0xe4, 0x54, 0x5a, 0x66, 0x03, 0x66, 0x15, 0xba, 0x05, 0x1b,
-	0x58, 0xe1, 0x62, 0xb8, 0xe8, 0x1e, 0x6c, 0xe2, 0x43, 0x35, 0x93, 0x42, 0x7f, 0x6b, 0xc0, 0x16,
-	0x3e, 0xe8, 0x61, 0xfe, 0xe7, 0xbb, 0xff, 0xed, 0x02, 0xf9, 0x34, 0x37, 0x57, 0xd2, 0x1c, 0xfa,
-	0x34, 0x0f, 0xfe, 0x09, 0xa0, 0xc9, 0x84, 0xca, 0xe9, 0xd7, 0x3e, 0x3d, 0xe4, 0x73, 0x68, 0x99,
-	0x89, 0x54, 0x51, 0xa3, 0x1f, 0xd4, 0xfe, 0x72, 0x3a, 0x1c, 0x65, 0x4b, 0x84, 0x92, 0x6f, 0xa0,
-	0xb7, 0xc8, 0xaf, 0x8c, 0xf4, 0xa8, 0x22, 0xd2, 0xc2, 0x89, 0xf9, 0x1e, 0x65, 0x4e, 0x96, 0x6f,
-	0xcc, 0xc9, 0x94, 0x53, 0x97, 0x93, 0x81, 0x32, 0x87, 0xa3, 0x37, 0x3e, 0xd1, 0x9f, 0x41, 0x88,
-	0x35, 0x97, 0xde, 0x0f, 0x2b, 0xbc, 0x11, 0xc8, 0x2c, 0x8a, 0x7c, 0x05, 0x90, 0xcf, 0xff, 0xf9,
-	0xb8, 0xf5, 0xae, 0xca, 0x7d, 0xf1, 0xf7, 0x88, 0x79, 0x0e, 0xf4, 0xd7, 0x2a, 0xce, 0x0f, 0x61,
-	0x5d, 0x7b, 0xba, 0xcb, 0xe4, 0xe3, 0x8a, 0xa8, 0x9e, 0x1b, 0xbb, 0xe5, 0xf3, 0x9e, 0x79, 0x1d,
-	0xfc, 0xd5, 0x86, 0xf0, 0x04, 0x81, 0xe4, 0xc8, 0x5f, 0xd6, 0x7e, 0x45, 0x04, 0x26, 0xde, 0x0c,
-	0xe7, 0x08, 0xba, 0x72, 0x02, 0xc8, 0x4f, 0xb7, 0x26, 0x67, 0x6f, 0x45, 0x24, 0x6f, 0xf7, 0x07,
-	0x95, 0x10, 0x95, 0x7b, 0x18, 0x32, 0x5a, 0x1e, 0xa7, 0xc7, 0x35, 0x91, 0xfd, 0x3b, 0xf2, 0xa4,
-	0x2e, 0xbc, 0x1f, 0xf0, 0x74, 0xe9, 0xe0, 0x7c, 0xba, 0xe2, 0x89, 0xdb, 0x30, 0x5a, 0x3f, 0xc3,
-	0x65, 0x43, 0xdc, 0xd8, 0xd6, 0x35, 0xc4, 0x5d, 0xb2, 0xda, 0x86, 0xb8, 0x30, 0x47, 0xfe, 0xb5,
-	0xeb, 0xd7, 0xe4, 0x69, 0x10, 0x74, 0xe5, 0x72, 0x90, 0x6f, 0xbd, 0xcb, 0xb8, 0x5b, 0x13, 0x07,
-	0x01, 0x74, 0xd5, 0x96, 0x90, 0x13, 0x7f, 0xb5, 0xfa, 0x35, 0x25, 0x1a, 0x04, 0xdd, 0xab, 0xab,
-	0xd0, 0x06, 0x39, 0x7d, 0xf7, 0xb4, 0xae, 0x64, 0xe3, 0x9d, 0x0b, 0xfc, 0x68, 0x45, 0x8e, 0x2e,
-	0xca, 0xcf, 0xcb, 0x07, 0xfa, 0x71, 0x4d, 0xd9, 0x1e, 0x8e, 0xde, 0xb1, 0x99, 0x44, 0x54, 0xec,
-	0xf8, 0x93, 0x9a, 0x5e, 0xf8, 0x40, 0xba, 0x5f, 0xd7, 0x12, 0x1f, 0x79, 0xd8, 0xfe, 0x25, 0x1c,
-	0x7e, 0xc9, 0x73, 0x39, 0x6a, 0x99, 0xbf, 0x15, 0x5f, 0xfc, 0x1b, 0x00, 0x00, 0xff, 0xff, 0xc9,
-	0x40, 0x1e, 0xc3, 0xd7, 0x0d, 0x00, 0x00,
+	// 1613 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0x5f, 0x6f, 0xdb, 0x46,
+	0x12, 0x8f, 0xfe, 0x90, 0xb2, 0x46, 0xb2, 0x4d, 0xef, 0x25, 0x31, 0xc3, 0xbb, 0xc4, 0xb2, 0x8c,
+	0x38, 0xbe, 0x5c, 0x4e, 0xc9, 0x39, 0x97, 0x03, 0x82, 0x6b, 0xda, 0xda, 0x4e, 0xec, 0xba, 0x69,
+	0x1a, 0x83, 0x0e, 0x1c, 0xb4, 0x2f, 0xc6, 0x4a, 0xdc, 0xc8, 0x84, 0x29, 0x92, 0x21, 0x57, 0xae,
+	0xf5, 0xd0, 0xb7, 0x7e, 0x85, 0x02, 0x05, 0xfa, 0x21, 0x0a, 0xf4, 0xa5, 0xfd, 0x10, 0xfd, 0x02,
+	0x7d, 0xea, 0x6b, 0xd1, 0x4f, 0x51, 0xcc, 0xee, 0x52, 0xa2, 0x2c, 0x8a, 0x4a, 0x90, 0xa0, 0x6f,
+	0x33, 0xc3, 0xdf, 0xcc, 0xce, 0xbf, 0x9d, 0x59, 0x42, 0x2d, 0xa4, 0xbe, 0x13, 0xb4, 0xc2, 0x28,
+	0xe0, 0x01, 0x59, 0x7a, 0x15, 0x9c, 0xb7, 0xa4, 0x20, 0x66, 0xd1, 0x99, 0xdb, 0x61, 0xd6, 0x4a,
+	0x37, 0x08, 0xba, 0x1e, 0xbb, 0x2b, 0x00, 0xed, 0xfe, 0xab, 0xbb, 0xdc, 0xed, 0xb1, 0x98, 0xd3,
+	0x5e, 0x28, 0x75, 0x9a, 0x9f, 0x00, 0x1c, 0xd0, 0xae, 0xeb, 0x53, 0xee, 0x06, 0x3e, 0x59, 0x81,
+	0x9a, 0xcf, 0xce, 0xf9, 0x71, 0xa7, 0x1f, 0xc5, 0x41, 0x64, 0x16, 0x1a, 0x85, 0x8d, 0xaa, 0x0d,
+	0x28, 0xda, 0x11, 0x12, 0x72, 0x0d, 0xe6, 0x4e, 0x68, 0x7c, 0x8c, 0x12, 0xb3, 0xd8, 0x28, 0x6c,
+	0xcc, 0xd9, 0x95, 0x13, 0x1a, 0x7f, 0xce, 0xce, 0x79, 0xf3, 0xe7, 0x02, 0x68, 0x5b, 0x71, 0xcc,
+	0x38, 0x59, 0x80, 0xa2, 0xeb, 0x28, 0xe5, 0xa2, 0xeb, 0x10, 0x02, 0x65, 0x9f, 0xf6, 0x98, 0x50,
+	0xa8, 0xda, 0x82, 0x26, 0x57, 0x41, 0x8f, 0x07, 0xbd, 0x76, 0xe0, 0x99, 0x25, 0x21, 0x55, 0x1c,
+	0x62, 0xbd, 0xa0, 0x1b, 0x98, 0x65, 0x89, 0x45, 0x1a, 0x0f, 0xed, 0x9c, 0x50, 0xd7, 0x3f, 0x76,
+	0x1d, 0x53, 0x13, 0xf2, 0x8a, 0xe0, 0xf7, 0x1d, 0xd2, 0x02, 0x4d, 0x90, 0xa6, 0xde, 0x28, 0x6c,
+	0xd4, 0x36, 0xcd, 0xd6, 0x44, 0x0a, 0x5a, 0xc2, 0x27, 0x5b, 0xc2, 0xc8, 0x65, 0xd0, 0xc2, 0xc8,
+	0xed, 0x30, 0xb3, 0x22, 0xec, 0x48, 0xa6, 0xf9, 0x5b, 0x09, 0x60, 0x27, 0xf0, 0x3c, 0xca, 0x59,
+	0x44, 0xbd, 0x09, 0xff, 0x1f, 0x02, 0x74, 0x22, 0x46, 0x39, 0x73, 0x8e, 0xa9, 0x0c, 0xbb, 0xb6,
+	0x69, 0xb5, 0x64, 0x66, 0x5b, 0x49, 0x66, 0x5b, 0x2f, 0x92, 0xcc, 0xda, 0x55, 0x85, 0xde, 0xe2,
+	0xc3, 0xd0, 0x4b, 0xa9, 0xd0, 0x0d, 0x28, 0x75, 0x59, 0x4f, 0x45, 0x88, 0x24, 0x4a, 0x1c, 0xea,
+	0xaa, 0xd8, 0x90, 0x44, 0x89, 0xeb, 0x9f, 0x8a, 0xa8, 0xaa, 0x36, 0x92, 0x28, 0xa1, 0x11, 0x57,
+	0x7e, 0x23, 0x89, 0xb6, 0x23, 0xca, 0x99, 0x39, 0x27, 0x6d, 0x23, 0x4d, 0xee, 0x40, 0x29, 0x3a,
+	0x09, 0xcc, 0xea, 0x4c, 0x1f, 0x11, 0x86, 0x16, 0x1c, 0xd6, 0xe6, 0x26, 0x48, 0x0b, 0x48, 0x8b,
+	0x02, 0xb8, 0x3e, 0x33, 0x6b, 0xaa, 0x00, 0xae, 0xcf, 0x04, 0xae, 0x1f, 0x73, 0xb3, 0xae, 0x70,
+	0xfd, 0x98, 0x8f, 0x32, 0x39, 0x9f, 0xca, 0x24, 0x7a, 0xd9, 0xa3, 0xdc, 0x5c, 0x90, 0x5e, 0xf6,
+	0x28, 0x97, 0xba, 0x7c, 0x60, 0x2e, 0x26, 0xba, 0x7c, 0x80, 0xb2, 0xce, 0x49, 0x10, 0x9a, 0x86,
+	0x94, 0x21, 0x2d, 0x71, 0xfe, 0xa9, 0xb9, 0x94, 0xe0, 0x64, 0xcc, 0x6d, 0xd6, 0x35, 0x89, 0xb4,
+	0xd6, 0x66, 0x5d, 0x94, 0x70, 0xee, 0x99, 0x7f, 0x6b, 0x14, 0x36, 0x34, 0x1b, 0x49, 0x21, 0xa1,
+	0x7d, 0xf3, 0xb2, 0x92, 0xd0, 0xbe, 0x8c, 0xe0, 0x8c, 0x99, 0x57, 0x44, 0x7f, 0x0a, 0xba, 0xf9,
+	0x47, 0x11, 0xb4, 0x23, 0xda, 0xf7, 0xf8, 0xfb, 0x2c, 0xee, 0x1a, 0xcc, 0x77, 0x86, 0x5d, 0x83,
+	0xcd, 0x29, 0xab, 0x5c, 0x1f, 0x09, 0xf7, 0x9d, 0xa4, 0x92, 0xe5, 0x89, 0x4a, 0x6a, 0xc3, 0x4a,
+	0x5a, 0xbf, 0x14, 0x40, 0x7b, 0x72, 0xc6, 0x7c, 0x8e, 0xad, 0x7e, 0x86, 0x6e, 0x1e, 0x0f, 0x7d,
+	0xac, 0x08, 0x7e, 0xff, 0x9d, 0x1c, 0xfd, 0x0f, 0xe8, 0xb4, 0x83, 0x17, 0x5c, 0x78, 0xb8, 0xb0,
+	0x79, 0x2d, 0xeb, 0x9a, 0x08, 0x80, 0xad, 0x80, 0xa2, 0x1c, 0x23, 0xbf, 0x05, 0x2d, 0x64, 0x23,
+	0xcf, 0x05, 0x3d, 0x6c, 0x21, 0x7d, 0xd4, 0x42, 0xcd, 0x1f, 0xca, 0x50, 0xde, 0xf5, 0xdc, 0xf0,
+	0x7d, 0xe6, 0xfa, 0x0e, 0x94, 0xb8, 0xdb, 0x11, 0xfe, 0xcf, 0x68, 0x6c, 0xee, 0x76, 0x10, 0xcd,
+	0x7c, 0x47, 0x38, 0x3f, 0x03, 0xcd, 0x7c, 0x51, 0xa2, 0xf6, 0x70, 0xb4, 0x20, 0x89, 0x12, 0x2f,
+	0x48, 0x82, 0x42, 0x52, 0xb6, 0x59, 0x3b, 0xb9, 0x7e, 0x9c, 0xb6, 0x93, 0x32, 0xce, 0x8d, 0x2e,
+	0xe4, 0x44, 0x3f, 0x54, 0x33, 0xfa, 0x21, 0x5d, 0x61, 0x18, 0xaf, 0xb0, 0x01, 0xa5, 0xbd, 0xfe,
+	0x40, 0xdd, 0x3c, 0x24, 0x53, 0x85, 0xab, 0xbf, 0x61, 0xe1, 0xac, 0x1f, 0x87, 0xbd, 0xb4, 0x0c,
+	0x95, 0x57, 0x9e, 0x1b, 0x8e, 0x5a, 0x49, 0x47, 0xf6, 0x2f, 0xef, 0x24, 0x95, 0xdd, 0xf2, 0x44,
+	0x76, 0xb5, 0x61, 0x76, 0x9b, 0xdf, 0x15, 0x40, 0x7f, 0x1e, 0xd1, 0x8e, 0xc7, 0x30, 0x3f, 0x14,
+	0x27, 0x76, 0xea, 0x06, 0x08, 0x5e, 0xe6, 0x07, 0xa7, 0x46, 0x51, 0x5e, 0x75, 0x1c, 0x1a, 0x26,
+	0x54, 0x3a, 0xfd, 0x28, 0x62, 0x3e, 0x57, 0x77, 0x2f, 0x61, 0xc5, 0xe0, 0xc5, 0x25, 0xa5, 0xfa,
+	0x17, 0x69, 0x72, 0x1f, 0x2a, 0x21, 0x63, 0xa7, 0x18, 0xb4, 0x36, 0x33, 0x68, 0x1d, 0xa1, 0x5b,
+	0xbc, 0xf9, 0x6b, 0x11, 0x6a, 0x2f, 0x22, 0xea, 0xc7, 0x2a, 0x9c, 0xf7, 0xd8, 0xd3, 0xe9, 0x50,
+	0x4b, 0xe3, 0xa1, 0x5e, 0x05, 0x9d, 0xf6, 0x82, 0xbe, 0x9f, 0x04, 0xa0, 0xb8, 0x54, 0xfe, 0xb5,
+	0x37, 0xcd, 0xff, 0x23, 0xd0, 0x63, 0x4e, 0x79, 0x3f, 0x16, 0xed, 0xbc, 0xb0, 0x79, 0x33, 0x43,
+	0x25, 0x15, 0x60, 0xeb, 0x50, 0x80, 0x6d, 0xa5, 0x24, 0x26, 0x7a, 0xdc, 0x4d, 0x1a, 0xbf, 0x17,
+	0x77, 0xc9, 0x0d, 0x80, 0x90, 0x46, 0xb4, 0xc7, 0x38, 0x8b, 0x62, 0xd5, 0xff, 0x29, 0x49, 0x73,
+	0x03, 0x74, 0x69, 0x83, 0xd4, 0xa0, 0x72, 0xc0, 0x7c, 0xc7, 0xf5, 0xbb, 0xc6, 0x25, 0x52, 0x05,
+	0x6d, 0xab, 0x1d, 0x44, 0xdc, 0x28, 0x10, 0x1d, 0x8a, 0xcf, 0x9f, 0x1a, 0xc5, 0xe6, 0xef, 0x65,
+	0x28, 0xd9, 0xec, 0xb5, 0xf5, 0x77, 0xa8, 0xee, 0xba, 0xbe, 0x93, 0xf9, 0x7a, 0xb0, 0xea, 0x00,
+	0x9f, 0xb9, 0x31, 0x17, 0x1f, 0x63, 0xeb, 0x1f, 0x00, 0x08, 0x55, 0xcd, 0x72, 0x11, 0x3b, 0x0f,
+	0x35, 0xc4, 0xca, 0xaf, 0xb1, 0xb5, 0x04, 0x8b, 0xc8, 0x8e, 0x56, 0x7b, 0x6c, 0x35, 0x60, 0x01,
+	0xf5, 0xa7, 0x6f, 0xfb, 0xc4, 0x99, 0xcc, 0x6d, 0x61, 0x9d, 0x4b, 0x67, 0xc4, 0xc7, 0x78, 0xf2,
+	0xc2, 0x17, 0x32, 0x2e, 0xfc, 0x32, 0x54, 0xfa, 0x31, 0x8b, 0xf0, 0xb3, 0x7c, 0x00, 0xe9, 0xc8,
+	0xca, 0x1a, 0xab, 0x77, 0x96, 0x7a, 0x02, 0x49, 0x0e, 0x37, 0xab, 0xe7, 0xf6, 0x5c, 0x59, 0xfa,
+	0x92, 0x2d, 0x19, 0xeb, 0x03, 0xa8, 0xe3, 0xc9, 0xcf, 0x06, 0xea, 0xec, 0x91, 0x76, 0x21, 0x5b,
+	0xbb, 0x98, 0xd6, 0x5e, 0x95, 0x99, 0x10, 0xba, 0x62, 0x3a, 0xc4, 0x13, 0xa1, 0x59, 0x30, 0x87,
+	0x71, 0x67, 0x0d, 0x6e, 0xeb, 0x21, 0x54, 0x51, 0x1d, 0xbf, 0xbd, 0xed, 0xc9, 0x0d, 0x58, 0x48,
+	0x54, 0xa7, 0x1c, 0xbc, 0x0a, 0x8b, 0x78, 0x70, 0xce, 0x25, 0xb3, 0x3e, 0x06, 0x03, 0x8d, 0xa4,
+	0x20, 0x6f, 0xe9, 0x46, 0xf3, 0x1b, 0x1d, 0xca, 0x36, 0x8b, 0x43, 0xeb, 0xc3, 0x74, 0x3b, 0x91,
+	0x7b, 0xa0, 0x8b, 0x2b, 0x17, 0x9b, 0x85, 0x46, 0x29, 0xf7, 0x01, 0xa9, 0x70, 0xd6, 0xf6, 0x58,
+	0x8b, 0xe1, 0x4c, 0x09, 0x24, 0xa9, 0x2c, 0x64, 0xdd, 0x48, 0x09, 0xb6, 0x13, 0xa4, 0x65, 0x4f,
+	0xf4, 0x25, 0xf9, 0x08, 0x6a, 0xa3, 0xae, 0x49, 0x6c, 0x5d, 0xcf, 0xb0, 0x35, 0x52, 0xb2, 0xd3,
+	0x1a, 0xd6, 0xd7, 0x63, 0x9d, 0x79, 0x0f, 0x74, 0xb1, 0x55, 0xf2, 0xe2, 0x12, 0x50, 0x5b, 0xe1,
+	0xc8, 0x23, 0xbc, 0xd5, 0xc9, 0x8f, 0x80, 0x9a, 0x63, 0x59, 0xe7, 0x8f, 0xfe, 0x16, 0xec, 0x94,
+	0x82, 0xb5, 0x3f, 0xd9, 0x60, 0xff, 0x03, 0x9d, 0x09, 0x4a, 0xf9, 0x70, 0x63, 0x9a, 0x0f, 0x2d,
+	0xa1, 0x60, 0x2b, 0xb4, 0x35, 0x48, 0x37, 0xdb, 0xbf, 0x41, 0xc3, 0xad, 0x95, 0xd8, 0x58, 0xce,
+	0xb0, 0x81, 0x40, 0x5b, 0xa2, 0xde, 0x35, 0x8a, 0xbd, 0x89, 0x66, 0x7d, 0x70, 0x21, 0x88, 0xeb,
+	0x53, 0x1c, 0xb8, 0x10, 0xc3, 0xb7, 0x85, 0x8c, 0x8e, 0xdd, 0x86, 0x3a, 0x4f, 0xf1, 0x39, 0x69,
+	0x49, 0xa9, 0xd9, 0x63, 0x3a, 0xef, 0x18, 0xe0, 0xed, 0x9f, 0x8a, 0xa0, 0xcb, 0xfd, 0x40, 0x34,
+	0x28, 0x1c, 0x1b, 0x97, 0xc8, 0x22, 0xd4, 0x0e, 0x07, 0xf1, 0x4b, 0x97, 0x9f, 0x38, 0x11, 0xfd,
+	0xca, 0x28, 0x10, 0x03, 0xea, 0x07, 0x51, 0x10, 0x06, 0x31, 0xf5, 0x9e, 0xd1, 0x53, 0x66, 0xd4,
+	0xc8, 0x12, 0xcc, 0x27, 0x92, 0xc3, 0x93, 0xa0, 0xcf, 0x8d, 0x7a, 0x1a, 0x74, 0x14, 0x70, 0x66,
+	0xcc, 0x93, 0x79, 0xa8, 0xee, 0x50, 0xbe, 0x23, 0x96, 0x9b, 0x71, 0x45, 0xb1, 0x87, 0xfd, 0x30,
+	0xf4, 0x06, 0xc6, 0x55, 0xdc, 0x04, 0x3b, 0x94, 0x3f, 0x71, 0x5c, 0x6e, 0x2c, 0x2b, 0x66, 0x37,
+	0xf0, 0x1c, 0xc3, 0x44, 0xe6, 0x88, 0xf2, 0xe7, 0x21, 0xf3, 0x8d, 0x15, 0xb2, 0x00, 0x70, 0x44,
+	0xf9, 0x63, 0x16, 0x06, 0xb1, 0xcb, 0x8d, 0x06, 0x3a, 0x77, 0x44, 0xf9, 0xd0, 0xb9, 0x55, 0x05,
+	0x38, 0xa0, 0x83, 0x36, 0xed, 0x9c, 0x1a, 0x4d, 0x05, 0xd8, 0x63, 0x3e, 0xc3, 0xdf, 0x1f, 0x63,
+	0x8d, 0xd4, 0x61, 0x0e, 0xcb, 0xf1, 0xd4, 0xed, 0x9c, 0x1a, 0xff, 0x44, 0xe3, 0xc8, 0x6d, 0xbb,
+	0x8e, 0x71, 0x3b, 0xf9, 0xf4, 0x98, 0x51, 0xcf, 0xf8, 0x17, 0x5a, 0x92, 0xd7, 0xf2, 0x20, 0x38,
+	0x65, 0xc6, 0xfd, 0x11, 0xbf, 0xcb, 0x98, 0x63, 0xfc, 0x77, 0xc4, 0x1f, 0x72, 0x16, 0x1a, 0x0f,
+	0x36, 0xbf, 0x07, 0xd0, 0x0e, 0x30, 0xc5, 0x64, 0x2f, 0xbd, 0xad, 0x1a, 0x19, 0xb9, 0xb7, 0xd9,
+	0xeb, 0xd6, 0x10, 0x61, 0x4d, 0x1d, 0x29, 0xe4, 0x70, 0x6c, 0x14, 0xad, 0x4e, 0xb1, 0x94, 0x5a,
+	0x7e, 0xcd, 0x4c, 0x48, 0x1c, 0xa6, 0x30, 0xe4, 0xd3, 0xb1, 0x05, 0xb9, 0x9a, 0xe3, 0x9e, 0x84,
+	0x58, 0xd3, 0x07, 0x16, 0x39, 0x1a, 0x9f, 0x75, 0xcd, 0x1c, 0x0f, 0x93, 0x95, 0xbb, 0x96, 0xe7,
+	0x62, 0x62, 0xa8, 0x3d, 0x39, 0xff, 0xd6, 0x73, 0x6c, 0xa7, 0xf7, 0xf7, 0xad, 0x3c, 0xfb, 0x69,
+	0x83, 0x47, 0x13, 0x8b, 0xfe, 0x66, 0x4e, 0x2e, 0x46, 0x30, 0x2b, 0x7f, 0xe8, 0x26, 0xd5, 0x97,
+	0xcf, 0x83, 0xbc, 0xea, 0x0b, 0x84, 0x35, 0x75, 0xf0, 0x26, 0xd5, 0x57, 0x03, 0x3b, 0xaf, 0xfa,
+	0x12, 0x92, 0x5f, 0x7d, 0x65, 0xe6, 0xe5, 0x85, 0x57, 0xc2, 0x5a, 0x8e, 0xd9, 0x04, 0xf4, 0x46,
+	0x86, 0xdb, 0x93, 0xf3, 0x7d, 0x7d, 0x96, 0xcb, 0x12, 0x97, 0x5f, 0xb2, 0xb4, 0xc1, 0xc7, 0xa9,
+	0x17, 0xc8, 0x4a, 0x4e, 0x66, 0x11, 0x60, 0x4d, 0xdb, 0x04, 0xe4, 0x20, 0xbd, 0x3e, 0x1a, 0x39,
+	0x3e, 0x0a, 0x84, 0xb5, 0x9a, 0xe7, 0x9d, 0x34, 0x72, 0x3c, 0xb1, 0x15, 0x6e, 0xce, 0x30, 0xab,
+	0x22, 0x5f, 0x9f, 0x65, 0x5b, 0x99, 0xfb, 0x62, 0xf2, 0x05, 0xb4, 0x9e, 0x13, 0x7f, 0x0a, 0x67,
+	0xcd, 0xd8, 0x1e, 0x84, 0x65, 0xec, 0xa1, 0x5b, 0x39, 0xde, 0xa7, 0x81, 0xd6, 0x46, 0x9e, 0xff,
+	0x69, 0xe4, 0x76, 0xe5, 0x4b, 0xad, 0xf5, 0x7f, 0x1a, 0xba, 0x6d, 0x5d, 0xfc, 0xf2, 0xdc, 0xff,
+	0x33, 0x00, 0x00, 0xff, 0xff, 0xc1, 0x36, 0xe5, 0x75, 0x99, 0x14, 0x00, 0x00,
 }

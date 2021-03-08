@@ -1,11 +1,14 @@
 package cat
 
 import (
+	"context"
+
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
+	"github.com/fox-one/pkg/store"
 	"github.com/shopspring/decimal"
 )
 
@@ -36,32 +39,11 @@ func HandleCreate(
 			return err
 		}
 
-		gemAsset, err := assetz.Find(ctx, gem.String())
-		if err != nil {
-			log.WithError(err).Errorln("assetz.Find")
+		if _, err := handleAsset(ctx, assets, assetz, gem.String()); err != nil {
 			return err
 		}
 
-		if err := require(gemAsset.Symbol != "", "nil-asset"); err != nil {
-			return err
-		}
-
-		if err := assets.Create(ctx, gemAsset); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("assets.Create")
-			return err
-		}
-
-		daiAsset, err := assetz.Find(ctx, dai.String())
-		if err != nil {
-			return err
-		}
-
-		if err := require(daiAsset.Symbol != "", "nil-asset"); err != nil {
-			return err
-		}
-
-		if err := assets.Create(ctx, daiAsset); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("assets.Create")
+		if _, err := handleAsset(ctx, assets, assetz, dai.String()); err != nil {
 			return err
 		}
 
@@ -102,4 +84,39 @@ func HandleCreate(
 
 		return nil
 	}
+}
+
+func handleAsset(ctx context.Context, assets core.AssetStore, assetz core.AssetService, id string) (*core.Asset, error) {
+	log := logger.FromContext(ctx)
+
+	asset, err := assets.Find(ctx, id)
+	if err != nil {
+		if !store.IsErrNotFound(err) {
+			log.WithError(err).Errorln("assets.Find")
+			return nil, err
+		}
+
+		asset, err = assetz.Find(ctx, id)
+		if err != nil {
+			log.WithError(err).Errorln("assets.Find")
+			return nil, err
+		}
+
+		if err := require(asset.Symbol != "", "asset-not-exist"); err != nil {
+			return nil, err
+		}
+
+		if err := assets.Create(ctx, asset); err != nil {
+			log.WithError(err).Errorln("assets.Create")
+			return nil, err
+		}
+	}
+
+	if asset.ID != asset.ChainID {
+		if _, err := handleAsset(ctx, assets, assetz, asset.ChainID); err != nil {
+			return nil, err
+		}
+	}
+
+	return asset, nil
 }

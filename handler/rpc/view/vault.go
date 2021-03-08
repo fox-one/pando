@@ -14,3 +14,14 @@ func Vault(vat *core.Vault) *api.Vault {
 		Art:          vat.Art.String(),
 	}
 }
+
+func VaultEvent(event *core.VaultEvent) *api.Vault_Event {
+	return &api.Vault_Event{
+		VaultId:   event.VaultID,
+		CreatedAt: Time(&event.CreatedAt),
+		Action:    api.Action(event.Action),
+		Dink:      event.Dink.String(),
+		Dart:      event.Dart.String(),
+		Debt:      event.Debt.String(),
+	}
+}

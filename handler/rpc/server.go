@@ -10,9 +10,7 @@ import (
 	"github.com/fox-one/pando/handler/request"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/fox-one/pando/handler/rpc/view"
-	makerflip "github.com/fox-one/pando/pkg/maker/flip"
 	"github.com/fox-one/pkg/logger"
-	"github.com/fox-one/pkg/property"
 	"github.com/fox-one/pkg/store"
 	"github.com/spf13/cast"
 	"github.com/twitchtv/twirp"
@@ -22,7 +20,7 @@ func New(
 	assets core.AssetStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
-	properties property.Store,
+	oracles core.OracleStore,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 ) *Server {
@@ -30,7 +28,7 @@ func New(
 		assets:       assets,
 		vaults:       vaults,
 		flips:        flips,
-		properties:   properties,
+		oracles:      oracles,
 		collaterals:  collaterals,
 		transactions: transactions,
 	}
@@ -40,7 +38,7 @@ type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	flips        core.FlipStore
-	properties   property.Store
+	oracles      core.OracleStore
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 }
@@ -57,7 +55,7 @@ func (s *Server) Handle(sessions core.Session) http.Handler {
 	return auth.HandleAuthentication(sessions)(s.TwirpServer())
 }
 
-func (s *Server) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.Asset, error) {
+func (s *Server) FindAsset(ctx context.Context, req *api.Req_FindAsset) (*api.Asset, error) {
 	asset, err := s.assets.Find(ctx, req.Id)
 	if err != nil {
 		if store.IsErrNotFound(err) {
@@ -83,7 +81,7 @@ func (s *Server) ReadAsset(ctx context.Context, req *api.Req_ReadAsset) (*api.As
 func (s *Server) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Resp_ListAssets, error) {
 	assets, err := s.assets.List(ctx)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Error("rpc: assets.ListAll")
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: assets.ListAll")
 		return nil, err
 	}
 
@@ -106,16 +104,30 @@ func (s *Server) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Re
 	return resp, nil
 }
 
-func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals) (*api.Resp_ListCollaterals, error) {
-	cats, err := s.collaterals.List(ctx)
+func (s *Server) FindOracle(ctx context.Context, req *api.Req_FindOracle) (*api.Oracle, error) {
+	oracle, err := s.oracles.Find(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Error("rpc: collaterals.List")
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: oracles.Find")
 		return nil, err
 	}
 
-	resp := &api.Resp_ListCollaterals{}
-	for _, cat := range cats {
-		resp.Collaterals = append(resp.Collaterals, view.Collateral(cat))
+	if oracle.ID == 0 {
+		return nil, twirp.NotFoundError("not found")
+	}
+
+	return view.Oracle(oracle), nil
+}
+
+func (s *Server) ListOracles(ctx context.Context, _ *api.Req_ListOracles) (*api.Resp_ListOracles, error) {
+	oracles, err := s.oracles.List(ctx)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: oracles.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListOracles{}
+	for _, oracle := range oracles {
+		resp.Oracles = append(resp.Oracles, view.Oracle(oracle))
 	}
 
 	return resp, nil
@@ -135,22 +147,16 @@ func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral
 	return view.Collateral(cat), nil
 }
 
-func (s *Server) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Resp_ListVaults, error) {
-	user, ok := request.UserFrom(ctx)
-	if !ok {
-		logger.FromContext(ctx).Debugln("rpc: authentication required")
-		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
-	}
-
-	vats, err := s.vaults.ListUser(ctx, user.MixinID)
+func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals) (*api.Resp_ListCollaterals, error) {
+	cats, err := s.collaterals.List(ctx)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Error("rpc: vaults.ListUser")
+		logger.FromContext(ctx).WithError(err).Error("rpc: collaterals.List")
 		return nil, err
 	}
 
-	resp := &api.Resp_ListVaults{}
-	for _, vat := range vats {
-		resp.Vaults = append(resp.Vaults, view.Vault(vat))
+	resp := &api.Resp_ListCollaterals{}
+	for _, cat := range cats {
+		resp.Collaterals = append(resp.Collaterals, view.Collateral(cat))
 	}
 
 	return resp, nil
@@ -168,6 +174,75 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 	}
 
 	return view.Vault(vat), nil
+}
+
+func (s *Server) ListMyVaults(ctx context.Context, req *api.Req_ListMyVaults) (*api.Resp_ListVaults, error) {
+	user, ok := request.UserFrom(ctx)
+	if !ok {
+		logger.FromContext(ctx).Debugln("rpc: authentication required")
+		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
+	}
+
+	return s.ListVaults(ctx, &api.Req_ListVaults{
+		UserId: user.MixinID,
+		Cursor: req.Cursor,
+		Limit:  req.Limit,
+	})
+}
+
+func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.Resp_ListVaults, error) {
+	fromID := cast.ToInt64(req.Cursor)
+	limit := 50
+	if l := int(req.Limit); l > 0 && l < limit {
+		limit = l
+	}
+
+	if req.UserId != "" {
+		user, ok := request.UserFrom(ctx)
+		if !ok || user.MixinID != req.UserId {
+			logger.FromContext(ctx).Debugln("rpc: authentication required")
+			return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
+		}
+	}
+
+	vats, err := s.vaults.List(ctx, core.ListVaultRequest{
+		CollateralID: req.CollateralId,
+		UserID:       req.UserId,
+		FromID:       fromID,
+		Limit:        limit + 1,
+	})
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: vaults.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListVaults{}
+	for idx, vat := range vats {
+		resp.Vaults = append(resp.Vaults, view.Vault(vat))
+
+		if idx == limit-1 {
+			resp.Pagination.NextCursor = cast.ToString(vat.ID)
+			resp.Pagination.HasNext = true
+			break
+		}
+	}
+
+	return resp, nil
+}
+
+func (s *Server) ListVaultEvents(ctx context.Context, req *api.Req_ListVaultEvents) (*api.Resp_ListVaultEvents, error) {
+	events, err := s.vaults.ListEvents(ctx, req.Id)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("vaults.ListEvents")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListVaultEvents{}
+	for _, event := range events {
+		resp.Events = append(resp.Events, view.VaultEvent(event))
+	}
+
+	return resp, nil
 }
 
 func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip, error) {
@@ -219,13 +294,19 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 	return resp, nil
 }
 
-func (s *Server) ReadFlipOption(ctx context.Context, _ *api.Req_ReadFlipOption) (*api.FlipOption, error) {
-	opt, err := makerflip.ReadOptions(ctx, s.properties)
+func (s *Server) ListFlipEvents(ctx context.Context, req *api.Req_ListFlipEvents) (*api.Resp_ListFlipEvents, error) {
+	events, err := s.flips.ListEvents(ctx, req.Id)
 	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("flips.ListEvents")
 		return nil, err
 	}
 
-	return view.FlipOption(opt), nil
+	resp := &api.Resp_ListFlipEvents{}
+	for _, event := range events {
+		resp.Events = append(resp.Events, view.FlipEvent(event))
+	}
+
+	return resp, nil
 }
 
 func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransaction) (*api.Transaction, error) {
@@ -254,43 +335,7 @@ func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransact
 		limit = l
 	}
 
-	q := &core.ListTransactionReq{
-		CollateralID: req.CollateralId,
-		VaultID:      req.VaultId,
-		FlipID:       req.FlipId,
-		Desc:         true,
-		FromID:       fromID,
-		Limit:        limit + 1,
-	}
-
-	if q.FlipID != "" && q.VaultID == "" {
-		flip, err := s.flips.Find(ctx, q.FlipID)
-		if err != nil {
-			return nil, err
-		}
-
-		if flip.ID == 0 {
-			return nil, twirp.NotFoundError("flip not init")
-		}
-
-		q.VaultID = flip.VaultID
-		q.CollateralID = flip.CollateralID
-	}
-
-	if q.VaultID != "" && q.CollateralID == "" {
-		vat, err := s.vaults.Find(ctx, q.VaultID)
-		if err != nil {
-			return nil, err
-		}
-
-		if vat.ID == 0 {
-			return nil, twirp.NotFoundError("vat not init")
-		}
-
-		q.CollateralID = vat.CollateralID
-	}
-
-	transactions, err := s.transactions.List(ctx, q)
+	transactions, err := s.transactions.List(ctx, fromID, limit+1)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Error("rpc: transactions.ListTarget")
 		return nil, err

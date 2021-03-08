@@ -98,10 +98,33 @@ func (s *vaultStore) Find(ctx context.Context, traceID string) (*core.Vault, err
 	return &vault, nil
 }
 
-func (s *vaultStore) ListUser(ctx context.Context, userID string) ([]*core.Vault, error) {
+func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*core.Vault, error) {
 	var vaults []*core.Vault
 
-	if err := s.db.View().Where("user_id = ?", userID).Find(&vaults).Error; err != nil {
+	tx := s.db.View()
+	if req.CollateralID != "" {
+		tx = tx.Where("collateral_id = ?", req.CollateralID)
+	}
+
+	if req.UserID != "" {
+		tx = tx.Where("user_id = ?", req.UserID)
+	}
+
+	if req.Desc {
+		if req.FromID > 0 {
+			tx = tx.Where("id < ?", req.FromID)
+		}
+
+		tx = tx.Order("id DESC")
+	} else {
+		if req.FromID > 0 {
+			tx = tx.Where("id > ?", req.FromID)
+		}
+
+		tx = tx.Order("id")
+	}
+
+	if err := tx.Limit(req.Limit).Find(&vaults).Error; err != nil {
 		return nil, err
 	}
 

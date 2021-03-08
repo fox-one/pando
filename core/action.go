@@ -46,7 +46,6 @@ const (
 	ActionFlipKick
 	ActionFlipBid
 	ActionFlipDeal
-	ActionFlipOpt
 )
 
 const (

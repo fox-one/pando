@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/pkg/maker/cat/create.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/pkg/maker/vat/frob.go">
           <value>
             <Attribute>
