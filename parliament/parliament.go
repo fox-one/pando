@@ -90,6 +90,10 @@ func (s *parliament) fetchUserName(ctx context.Context, userID string) string {
 }
 
 func (s *parliament) fetchCatName(ctx context.Context, id string) string {
+	if uuid.IsNil(id) {
+		return "ALL"
+	}
+
 	c, err := s.collaterals.Find(ctx, id)
 	if err != nil {
 		return "NULL"

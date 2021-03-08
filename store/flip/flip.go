@@ -21,6 +21,20 @@ func init() {
 
 		return nil
 	})
+
+	db.RegisterMigrate(func(db *db.DB) error {
+		tx := db.Update().Model(core.FlipEvent{})
+
+		if err := tx.AutoMigrate(core.FlipEvent{}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.AddUniqueIndex("idx_flip_events_flip_version", "flip_id", "version").Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func New(db *db.DB) core.FlipStore {
@@ -95,4 +109,34 @@ func (s *flipStore) List(ctx context.Context, from int64, limit int) ([]*core.Fl
 	}
 
 	return flips, nil
+}
+
+func (s *flipStore) CreateEvent(ctx context.Context, event *core.FlipEvent) error {
+	if err := s.db.Update().Where("flip_id = ? AND version = ?", event.FlipID, event.Version).FirstOrCreate(event).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *flipStore) FindEvent(ctx context.Context, flipID string, version int64) (*core.FlipEvent, error) {
+	event := core.FlipEvent{FlipID: flipID, Version: version}
+	if err := s.db.View().Where("flip_id = ? AND version = ?", flipID, version).Take(&event).Error; err != nil {
+		if db.IsErrorNotFound(err) {
+			return &event, nil
+		}
+
+		return nil, err
+	}
+
+	return &event, nil
+}
+
+func (s *flipStore) ListEvents(ctx context.Context, flipID string) ([]*core.FlipEvent, error) {
+	var events []*core.FlipEvent
+	if err := s.db.View().Where("flip_id = ?", flipID).Order("version").Find(&events).Error; err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }

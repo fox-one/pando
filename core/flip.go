@@ -51,7 +51,7 @@ type (
 		// Event
 		CreateEvent(ctx context.Context, event *FlipEvent) error
 		FindEvent(ctx context.Context, flipID string, version int64) (*FlipEvent, error)
-		ListEvents(ctx context.Context) ([]*FlipEvent, error)
+		ListEvents(ctx context.Context, flipID string) ([]*FlipEvent, error)
 	}
 )
 

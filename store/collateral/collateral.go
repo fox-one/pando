@@ -49,6 +49,9 @@ func toUpdateParams(collateral *core.Collateral) map[string]interface{} {
 		"duty":  collateral.Duty,
 		"chop":  collateral.Chop,
 		"dunk":  collateral.Dunk,
+		"beg":   collateral.Beg,
+		"ttl":   collateral.TTL,
+		"tau":   collateral.Tau,
 		"live":  collateral.Live,
 	}
 }

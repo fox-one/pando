@@ -45,6 +45,6 @@ type (
 		// Events
 		CreateEvent(ctx context.Context, event *VaultEvent) error
 		FindEvent(ctx context.Context, vaultID string, version int64) (*VaultEvent, error)
-		ListEvents(ctx context.Context) ([]*VaultEvent, error)
+		ListEvents(ctx context.Context, vaultID string) ([]*VaultEvent, error)
 	}
 )
