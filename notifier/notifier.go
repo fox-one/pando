@@ -62,12 +62,34 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 		return nil
 	}
 
-	switch tx.Action {
-	case core.ActionVatOpen, core.ActionVatDeposit, core.ActionVatWithdraw, core.ActionVatPayback, core.ActionVatGenerate:
-		return n.handleVatTx(ctx, tx)
+	action := n.localize("Action" + tx.Action.String())
+	data := TxData{
+		Action:  action,
+		Message: tx.Message,
 	}
 
-	return nil
+	id := "tx_abort"
+	if tx.Status == core.TransactionStatusOk {
+		switch tx.Action {
+		case core.ActionVatOpen, core.ActionVatDeposit, core.ActionVatWithdraw, core.ActionVatPayback, core.ActionVatGenerate:
+			if err := n.handleVatTx(ctx, tx, &data); err != nil {
+				return err
+			}
+		}
+
+		id = "tx_ok"
+	}
+
+	msg := n.localize(id, data)
+	req := &mixin.MessageRequest{
+		ConversationID: mixin.UniqueConversationID(n.system.ClientID, tx.UserID),
+		RecipientID:    tx.UserID,
+		MessageID:      uuid.Modify(tx.TraceID, "notify"),
+		Category:       mixin.MessageCategoryPlainText,
+		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	}
+
+	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
 }
 
 func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signedTx string) error {
@@ -91,16 +113,16 @@ func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signed
 		return nil
 	}
 
-	asset, err := n.assetz.Find(ctx, transfer.AssetID)
+	coin, err := n.assetz.Find(ctx, transfer.AssetID)
 	if err != nil {
 		return err
 	}
 
 	card := mixin.AppCardMessage{
 		AppID:       n.system.ClientID,
-		IconURL:     asset.Logo,
+		IconURL:     coin.Logo,
 		Title:       transfer.Amount.String(),
-		Description: asset.Symbol,
+		Description: coin.Symbol,
 		Action:      mixin.URL.Snapshots("", traceID),
 	}
 	data, _ := json.Marshal(card)

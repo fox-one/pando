@@ -1,53 +1,19 @@
 login_done: |
   授权成功，欢迎来到 Pando。
 
-vat_open_success: |
-  ✅ 创建抵押仓库成功 {{.CatName}}
+tx_ok: |
+  ✅ {{.Action}}成功
+  {{range .Lines}}
+  - {{.}}
+  {{end}}
 
-  - 💰 注入 {{.Dink}} {{.GemSymbol}}
-  - 💰 借出 {{.Debt}} {{.DaiSymbol}}
+tx_abort: |
+  ❌ {{.Action}}失败
 
-vat_open_failed: |
-  ❌ 创建抵押仓库失败 {{.CatName}}
+  - 🙅：错误代码 "{{.Message}}"
 
-  - 🪧 错误代码：{{.Msg}}
 
-vat_deposit_success: |
-  ✅ 注入抵押物成功 {{.CatName}}
-
-  - 💰 注入 {{.Dink}} {{.GemSymbol}}
-
-vat_deposit_failed: |
-  ❌ 注入抵押物失败 {{.CatName}}
-
-  - 🪧 错误代码：{{.Msg}}
-
-vat_withdraw_success: |
-  ✅ 提取抵押物成功 {{.CatName}}
-
-  - 💰 提取 {{.Dink}} {{.GemSymbol}}
-
-vat_withdraw_failed: |
-  ❌ 提取抵押物失败 {{.CatName}}
-
-  - 🪧 错误代码：{{.Msg}}
-
-vat_payback_success: |
-  ✅ 还款成功 {{.CatName}}
-
-  - 💰 还款 {{.Debt}} {{.DaiSymbol}}
-
-vat_payback_failed: |
-  ❌ 还款失败 {{.CatName}}
-
-  - 🪧 错误代码：{{.Msg}}
-
-vat_generate_success: |
-  ✅ 借款成功 {{.CatName}}
-
-  - 💰 借出 {{.Debt}} {{.DaiSymbol}}
-
-vat_generate_failed: |
-  ❌ 借款失败 {{.CatName}}
-
-  - 🪧 错误代码：{{.Msg}}
+vat_deposit: 💰： 抵押 {{.Dink}} {{.Gem}}
+vat_withdraw: 💰：取出 {{.Dink}} {{.Gem}}
+vat_generate: 💰：借出 {{.Debt}} {{.Dai}}
+vat_payback: 💰：还款 {{.Debt}} {{.Dai}}

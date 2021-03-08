@@ -43,19 +43,6 @@ func provideWalletService(client *mixin.Client, cfg *config.Config, system *core
 }
 
 func provideSystem(cfg *config.Config) *core.System {
-	members := make([]*core.Member, 0, len(cfg.Group.Members))
-	for _, m := range cfg.Group.Members {
-		verifyKey, err := mtg.DecodePublicKey(m.VerifyKey)
-		if err != nil {
-			panic(fmt.Errorf("decode verify key for member %s failed", m.ClientID))
-		}
-
-		members = append(members, &core.Member{
-			ClientID:  m.ClientID,
-			VerifyKey: verifyKey,
-		})
-	}
-
 	privateKey, err := mtg.DecodePrivateKey(cfg.Group.PrivateKey)
 	if err != nil {
 		panic(fmt.Errorf("base64 decode group private key failed: %w", err))
@@ -69,7 +56,7 @@ func provideSystem(cfg *config.Config) *core.System {
 	return &core.System{
 		Admins:     cfg.Group.Admins,
 		ClientID:   cfg.Dapp.ClientID,
-		Members:    members,
+		Members:    cfg.Group.Members,
 		Threshold:  cfg.Group.Threshold,
 		VoteAsset:  cfg.Group.Vote.Asset,
 		VoteAmount: cfg.Group.Vote.Amount,

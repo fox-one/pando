@@ -27,12 +27,6 @@ type (
 		Amount decimal.Decimal `json:"amount,omitempty"`
 	}
 
-	Member struct {
-		ClientID string `json:"client_id,omitempty"`
-		// 节点共享的用户验证签名的公钥
-		VerifyKey string `json:"verify_key,omitempty"`
-	}
-
 	Group struct {
 		// 节点管理员 mixin id
 		Admins []string `json:"admins,omitempty"`
@@ -40,7 +34,7 @@ type (
 		SignKey string `json:"sign_key,omitempty"`
 		// 节点共享的用户解密的私钥
 		PrivateKey string   `json:"private_key,omitempty"`
-		Members    []Member `json:"members,omitempty"`
+		Members    []string `json:"members,omitempty"`
 		Threshold  uint8    `json:"threshold,omitempty"`
 
 		Vote Vote `json:"vote,omitempty"`

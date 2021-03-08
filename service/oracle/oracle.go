@@ -13,6 +13,6 @@ func New() core.OracleService {
 type oracleService struct {
 }
 
-func (s *oracleService) Parse(b []byte) (*core.Oracle, error) {
+func (s *oracleService) Parse(b []byte) ([]byte, error) {
 	return nil, errors.New("implement me")
 }

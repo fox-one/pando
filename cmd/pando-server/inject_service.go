@@ -42,13 +42,6 @@ func provideWalletService(client *mixin.Client, cfg *config.Config, system *core
 }
 
 func provideSystem(cfg *config.Config) *core.System {
-	members := make([]*core.Member, 0, len(cfg.Group.Members))
-	for _, m := range cfg.Group.Members {
-		members = append(members, &core.Member{
-			ClientID: m,
-		})
-	}
-
 	publicKey, err := mtg.DecodePublicKey(cfg.Group.PublicKey)
 	if err != nil {
 		panic(fmt.Errorf("base64 decode group private key failed: %w", err))
@@ -57,7 +50,7 @@ func provideSystem(cfg *config.Config) *core.System {
 	return &core.System{
 		ClientID:     cfg.Dapp.ClientID,
 		ClientSecret: cfg.Dapp.ClientSecret,
-		Members:      members,
+		Members:      cfg.Group.Members,
 		Threshold:    cfg.Group.Threshold,
 		PublicKey:    publicKey,
 		Version:      version,

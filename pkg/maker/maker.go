@@ -104,6 +104,7 @@ func (r *Request) Tx() *core.Transaction {
 	return &core.Transaction{
 		CreatedAt: r.Now,
 		TraceID:   r.TraceID,
+		Version:   r.Version,
 		UserID:    r.Sender,
 		FollowID:  r.FollowID,
 		AssetID:   r.AssetID,

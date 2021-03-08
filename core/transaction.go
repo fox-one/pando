@@ -23,6 +23,7 @@ type (
 		ID         int64             `sql:"PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt  time.Time         `json:"created_at,omitempty"`
 		TraceID    string            `sql:"size:36" json:"trace_id,omitempty"`
+		Version    int64             `json:"version,omitempty"`
 		UserID     string            `sql:"size:36" json:"user_id,omitempty"`
 		FollowID   string            `sql:"size:36" json:"follow_id,omitempty"`
 		AssetID    string            `sql:"size:36" json:"asset_id,omitempty"`

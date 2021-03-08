@@ -64,7 +64,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New()
-	payeePayee := payee.New(assetStore, assetService, walletStore, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
+	payeePayee := payee.New(assetStore, assetService, walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
 	sync := pricesync.New(assetStore, assetService)
 	localizer, err := provideLocalizer(cfg)
 	if err != nil {

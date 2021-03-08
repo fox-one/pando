@@ -5,5 +5,5 @@ import (
 )
 
 func require(condition bool, msg string) error {
-	return maker.Require(condition, "Sys/%s", msg)
+	return maker.Require(condition, "Sys/"+msg)
 }
