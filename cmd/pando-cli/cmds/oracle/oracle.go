@@ -1,7 +1,6 @@
 package oracle
 
 import (
-	"github.com/fox-one/pando/cmd/pando-cli/cmds/oracle/feed"
 	"github.com/spf13/cobra"
 )
 
@@ -10,6 +9,8 @@ func NewCmd() *cobra.Command {
 		Use: "oracle",
 	}
 
-	cmd.AddCommand(feed.NewCmd())
+	cmd.AddCommand(NewFeedCmd())
+	cmd.AddCommand(NewStepCmd())
+
 	return cmd
 }
