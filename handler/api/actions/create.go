@@ -55,7 +55,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 				Amount:    body.Amount.Truncate(8),
 				Memo:      memo,
 				Threshold: system.Threshold,
-				Opponents: system.MemberIDs(),
+				Opponents: system.Members,
 			}
 
 			code, err := walletz.ReqTransfer(ctx, transfer)

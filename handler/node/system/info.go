@@ -11,7 +11,7 @@ import (
 func HandleInfo(system *core.System) http.HandlerFunc {
 	view := render.H{
 		"version":    system.Version,
-		"members":    system.MemberIDs(),
+		"members":    system.Members,
 		"threshold":  system.Threshold,
 		"public_key": base64.StdEncoding.EncodeToString(system.PublicKey),
 	}

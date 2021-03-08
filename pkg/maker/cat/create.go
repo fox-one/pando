@@ -1,8 +1,6 @@
 package cat
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/number"
@@ -17,7 +15,8 @@ func HandleCreate(
 	assets core.AssetStore,
 	assetz core.AssetService,
 ) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
+	return func(r *maker.Request) error {
+		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
 		if err := require(r.Gov, "not-authorized"); err != nil {
@@ -67,40 +66,33 @@ func HandleCreate(
 		}
 
 		cat := &core.Collateral{
-			CreatedAt: r.Now(),
-			TraceID:   r.TraceID(),
-			Version:   r.Version(),
+			CreatedAt: r.Now,
+			TraceID:   r.TraceID,
+			Version:   r.Version,
 			Name:      name,
 			Gem:       gem.String(),
 			Dai:       dai.String(),
 			Art:       decimal.Zero,
 			Rate:      number.Decimal("1"),
-			Rho:       r.Now(),
+			Rho:       r.Now,
 			Dust:      number.Decimal("100"),
 			Mat:       number.Decimal("1.5"),
 			Duty:      number.Decimal("1.05"),
 			Chop:      number.Decimal("1.13"),
 			Dunk:      number.Decimal("5000"),
+			Beg:       number.Decimal("0.03"),
+			TTL:       15 * 60,     // 15m
+			Tau:       3 * 60 * 60, // 3h
 		}
 
-		if assetID, amount := r.Payment(); assetID == cat.Dai {
-			cat.Line = amount
-		}
-
-		goc, err := oracles.Find(ctx, gem.String(), r.Now())
+		prices, err := oracles.ListCurrent(ctx)
 		if err != nil {
-			log.WithError(err).Errorln("oracles.Find")
+			log.WithError(err).Errorln("oracles.ListCurrent")
 			return err
 		}
 
-		doc, err := oracles.Find(ctx, dai.String(), r.Now())
-		if err != nil {
-			log.WithError(err).Errorln("oracles.Find")
-			return err
-		}
-
-		if goc.Price.IsPositive() && doc.Price.IsPositive() {
-			cat.Price = goc.Price.Div(doc.Price).Truncate(12)
+		if gp, dp := prices.Get(cat.Gem), prices.Get(cat.Dai); gp.IsPositive() && dp.IsPositive() {
+			cat.Price = gp.Div(dp).Truncate(12)
 		}
 
 		if err := collaterals.Create(ctx, cat); err != nil {

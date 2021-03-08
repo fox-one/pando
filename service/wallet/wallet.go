@@ -54,10 +54,6 @@ func (s *walletService) Pull(ctx context.Context, offset time.Time, limit int) (
 	results := make([]*core.Output, 0, len(outputs))
 	for _, output := range outputs {
 		result := convertToOutput(output)
-		if result.Sender == "" {
-			result.Memo, result.Sender = extractSender(s.key, output.Memo)
-		}
-
 		results = append(results, result)
 	}
 
@@ -144,7 +140,7 @@ func (s *walletService) Spend(ctx context.Context, outputs []*core.Output, trans
 func (s *walletService) ReqTransfer(ctx context.Context, transfer *core.Transfer) (string, error) {
 	input := mixin.TransferInput{
 		AssetID: transfer.AssetID,
-		Amount:  transfer.Amount.Truncate(8),
+		Amount:  transfer.Amount,
 		TraceID: transfer.TraceID,
 		Memo:    transfer.Memo,
 	}
@@ -158,6 +154,21 @@ func (s *walletService) ReqTransfer(ctx context.Context, transfer *core.Transfer
 	}
 
 	return payment.CodeID, nil
+}
+
+func (s *walletService) HandleTransfer(ctx context.Context, transfer *core.Transfer) error {
+	input := mixin.TransferInput{
+		AssetID: transfer.AssetID,
+		Amount:  transfer.Amount,
+		TraceID: transfer.TraceID,
+		Memo:    transfer.Memo,
+	}
+
+	input.OpponentMultisig.Receivers = transfer.Opponents
+	input.OpponentMultisig.Threshold = transfer.Threshold
+
+	_, err := s.client.Transaction(ctx, &input, s.pin)
+	return err
 }
 
 // signTransaction 根据输入的 Output 计算出 Transaction Hash

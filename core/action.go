@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
+	"github.com/fox-one/msgpack"
 	"github.com/fox-one/pando/pkg/mtg/types"
 )
 
@@ -19,6 +20,7 @@ const (
 const (
 	ActionProposal Action = iota + 10
 	ActionProposalMake
+	ActionProposalShout
 	ActionProposalVote
 )
 
@@ -49,7 +51,9 @@ const (
 
 const (
 	ActionOracle Action = iota + 50
+	ActionOraclePoke
 	ActionOracleFeed
+	ActionOracleStep
 )
 
 func (i Action) MarshalBinary() (data []byte, err error) {
@@ -64,6 +68,25 @@ func (i *Action) UnmarshalBinary(data []byte) error {
 
 	*i = Action(b)
 	return nil
+}
+
+type TransactionAction struct {
+	UserID   []byte `msgpack:"u,omitempty"`
+	FollowID []byte `msgpack:"f,omitempty"`
+	Body     []byte `msgpack:"b,omitempty"`
+}
+
+func (action TransactionAction) Encode() ([]byte, error) {
+	return msgpack.Marshal(action)
+}
+
+func DecodeTransactionAction(b []byte) (*TransactionAction, error) {
+	var action TransactionAction
+	if err := msgpack.Unmarshal(b, &action); err != nil {
+		return nil, err
+	}
+
+	return &action, nil
 }
 
 type TransferAction struct {

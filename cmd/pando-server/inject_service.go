@@ -36,7 +36,7 @@ func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
 func provideWalletService(client *mixin.Client, cfg *config.Config, system *core.System) core.WalletService {
 	return wallet.New(client, wallet.Config{
 		Pin:       cfg.Dapp.Pin,
-		Members:   system.MemberIDs(),
+		Members:   system.Members,
 		Threshold: system.Threshold,
 	})
 }

@@ -79,6 +79,8 @@ type (
 		Spend(ctx context.Context, outputs []*Output, transfer *Transfer) (*RawTransaction, error)
 		// ReqTransfer generate payment code for multisig transfer
 		ReqTransfer(ctx context.Context, transfer *Transfer) (string, error)
+		// Transfer handle a transfer request
+		HandleTransfer(ctx context.Context, transfer *Transfer) error
 	}
 )
 

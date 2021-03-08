@@ -6,16 +6,16 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func Tend(r *maker.Request, c *core.Collateral, f *core.Flip, lot decimal.Decimal, opt *Option) error {
-	if err := require(r.Now().Before(f.Tic), "finished-tic"); err != nil {
+func Tend(r *maker.Request, c *core.Collateral, f *core.Flip, lot decimal.Decimal) error {
+	if err := require(f.TicFinished(r.Now) == false, "finished-tic"); err != nil {
 		return err
 	}
 
-	if err := require(r.Now().Before(f.End), "finished-end"); err != nil {
+	if err := require(f.EndFinished(r.Now), "finished-end"); err != nil {
 		return err
 	}
 
-	assetID, bid := r.Payment()
+	assetID, bid := r.AssetID, r.Amount
 	if err := require(assetID == c.Dai && bid.LessThanOrEqual(f.Tab), "bid-not-match"); err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func Tend(r *maker.Request, c *core.Collateral, f *core.Flip, lot decimal.Decima
 		return err
 	}
 
-	if err := require(bid.Equal(f.Tab) || bid.GreaterThanOrEqual(f.Bid.Mul(opt.Beg)), "insufficient-increase"); err != nil {
+	if err := require(bid.Equal(f.Tab) || bid.GreaterThanOrEqual(f.Bid.Mul(c.Beg)), "insufficient-increase"); err != nil {
 		return err
 	}
 

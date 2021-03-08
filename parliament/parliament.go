@@ -60,7 +60,7 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 		Amount:    s.system.VoteAmount,
 		Memo:      base64.StdEncoding.EncodeToString(memo),
 		Threshold: s.system.Threshold,
-		Opponents: s.system.MemberIDs(),
+		Opponents: s.system.Members,
 	}
 
 	code, err := s.walletz.ReqTransfer(ctx, transfer)

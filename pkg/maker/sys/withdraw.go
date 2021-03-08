@@ -1,8 +1,6 @@
 package sys
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/uuid"
@@ -11,7 +9,8 @@ import (
 )
 
 func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
+	return func(r *maker.Request) error {
+		ctx := r.Context()
 		if err := require(r.Gov, "not-authorized"); err != nil {
 			return err
 		}
@@ -32,13 +31,13 @@ func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
 		}
 
 		memo := core.TransferAction{
-			ID:     r.TraceID(),
+			ID:     r.TraceID,
 			Source: r.Action.String(),
 		}.Encode()
 
 		t := &core.Transfer{
-			CreatedAt: r.Now(),
-			TraceID:   uuid.Modify(r.TraceID(), memo),
+			CreatedAt: r.Now,
+			TraceID:   uuid.Modify(r.TraceID, memo),
 			AssetID:   asset.String(),
 			Amount:    amount,
 			Memo:      memo,

@@ -3,6 +3,7 @@ package payee
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"time"
 
@@ -28,6 +29,7 @@ func New(
 	assets core.AssetStore,
 	assetz core.AssetService,
 	wallets core.WalletStore,
+	walletz core.WalletService,
 	transactions core.TransactionStore,
 	proposals core.ProposalStore,
 	collaterals core.CollateralStore,
@@ -48,41 +50,46 @@ func New(
 		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles, assets, assetz),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
-		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, transactions, wallets),
-		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, transactions, wallets),
-		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, transactions, wallets),
-		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, transactions, wallets),
-		core.ActionVatGenerate: vat.HandleGernerate(collaterals, vaults, transactions, wallets),
+		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets),
+		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, wallets),
+		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, wallets),
+		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets),
+		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets),
 		// flip
-		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, transactions, property),
-		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, transactions, wallets, property),
-		core.ActionFlipDeal: flip.HandleDeal(collaterals, vaults, flips, transactions, wallets),
-		core.ActionFlipOpt:  flip.HandleOpt(property),
+		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips),
+		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets),
+		core.ActionFlipDeal: flip.HandleDeal(collaterals, flips, wallets),
 		// oracle
+		core.ActionOraclePoke: oracle.HandlePoke(collaterals, oracles),
 		core.ActionOracleFeed: oracle.HandleFeed(collaterals, oracles),
+		core.ActionOracleStep: oracle.HandleStep(oracles),
 		// proposal
-		core.ActionProposalMake: proposal.HandleMake(proposals, parliaments, system),
+		core.ActionProposalMake:  proposal.HandleMake(proposals, walletz, parliaments, system),
+		core.ActionProposalShout: proposal.HandleShout(proposals, parliaments, system),
+		core.ActionProposalVote:  proposal.HandleVote(proposals, parliaments, walletz, system),
 	}
 
-	actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)
+	// actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)
 
 	return &Payee{
-		wallets:   wallets,
-		proposals: proposals,
-		property:  property,
-		oraclez:   oraclez,
-		system:    system,
-		actions:   actions,
+		wallets:      wallets,
+		proposals:    proposals,
+		property:     property,
+		oraclez:      oraclez,
+		transactions: transactions,
+		system:       system,
+		actions:      actions,
 	}
 }
 
 type Payee struct {
-	wallets   core.WalletStore
-	property  property.Store
-	proposals core.ProposalStore
-	oraclez   core.OracleService
-	system    *core.System
-	actions   map[core.Action]maker.HandlerFunc
+	wallets      core.WalletStore
+	property     property.Store
+	proposals    core.ProposalStore
+	oraclez      core.OracleService
+	transactions core.TransactionStore
+	system       *core.System
+	actions      map[core.Action]maker.HandlerFunc
 }
 
 func (w *Payee) Run(ctx context.Context) error {
@@ -143,53 +150,30 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	ctx = logger.WithContext(ctx, log)
 
 	message := decodeMemo(output.Memo)
+	req := requestFromOutput(output)
 
 	// 1, parse oracle message
-	if ora, err := w.oraclez.Parse(message); err == nil {
-		asset, _ := uuid.FromString(ora.AssetID)
-		if b, err := mtg.Encode(asset, ora.Price, ora.PeekAt.Unix()); err == nil {
-			r := &maker.Request{
-				UTXO:   output,
-				Action: core.ActionOracleFeed,
-				Body:   b,
-				Gov:    true,
-			}
-
-			return w.handleRequest(ctx, r)
-		}
-
-		return nil
+	if body, err := w.oraclez.Parse(message); err == nil {
+		req.Action = core.ActionOraclePoke
+		req.Body = body
+		req.Gov = true
+		return w.handleRequest(ctx, req)
 	}
 
-	// 2. decode group action
-	if member, body, err := core.DecodeMemberAction(message, w.system.Members); err == nil {
-		var action core.Action
-		if body, err := mtg.Scan(body, &action); err == nil {
-			r := &maker.Request{
-				UTXO:   output,
-				Action: action,
-				Body:   body,
-				UserID: member.ClientID,
-			}
-
-			return w.handleRequest(ctx, r)
-		}
-
-		return nil
-	}
-
-	// 3. decode tx message
+	// 2. decode tx message
 	if body, err := mtg.Decrypt(message, w.system.PrivateKey); err == nil {
-		var action core.Action
-		if body, err = mtg.Scan(body, &action); err == nil {
-			r := &maker.Request{
-				UTXO:   output,
-				Action: action,
-				Body:   body,
-				Gov:    false,
-			}
+		if payload, err := core.DecodeTransactionAction(body); err == nil {
+			if req.Body, err = mtg.Scan(payload.Body, &req.Action); err == nil {
+				if sender, _ := uuid.FromBytes(payload.UserID); sender != uuid.Zero && req.Sender == "" {
+					req.Sender = sender.String()
+				}
 
-			return w.handleRequest(ctx, r)
+				if follow, _ := uuid.FromBytes(payload.FollowID); follow != uuid.Zero {
+					req.FollowID = follow.String()
+				}
+
+				return w.handleRequest(ctx, req)
+			}
 		}
 
 		return nil
@@ -207,34 +191,27 @@ func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
 		return nil
 	}
 
-	if err := h(ctx, r); err != nil {
+	tx := r.Tx()
+
+	if err := h(r.WithContext(ctx)); err != nil {
 		var e maker.Error
 		if !errors.As(err, &e) {
 			return err
 		}
 
-		log.WithError(err).Debugf("handle action %s failed", r.Action.String())
-
-		// refunds
-		if r.UserID != "" {
-			id := r.FollowID
-			if id == "" {
-				id = r.TraceID()
-			}
-
+		if r.Sender != "" && maker.ShouldRefund(e.Flag) {
 			memo := core.TransferAction{
-				ID:     id,
+				ID:     r.FollowID,
 				Source: e.Error(),
 			}.Encode()
 
-			asset, amount := r.Payment()
 			transfer := &core.Transfer{
-				TraceID:   uuid.Modify(r.TraceID(), "Refund"),
-				AssetID:   asset,
-				Amount:    amount,
+				TraceID:   uuid.Modify(r.TraceID, memo),
+				AssetID:   r.AssetID,
+				Amount:    r.Amount,
 				Memo:      memo,
 				Threshold: 1,
-				Opponents: []string{r.UserID},
+				Opponents: []string{r.Sender},
 			}
 
 			if err := w.wallets.CreateTransfers(ctx, []*core.Transfer{transfer}); err != nil {
@@ -242,6 +219,21 @@ func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
 				return err
 			}
 		}
+
+		tx.Status = core.TransactionStatusAbort
+		tx.Message = e.Msg
+	} else {
+		tx.Status = core.TransactionStatusOk
+	}
+
+	tx.Parameters, _ = json.Marshal(r.Values())
+	if err := w.transactions.Create(ctx, tx); err != nil {
+		log.WithError(err).Errorln("transactions.Create")
+		return err
+	}
+
+	if r.Next != nil {
+		return w.handleRequest(ctx, r.Next)
 	}
 
 	return nil
@@ -257,4 +249,16 @@ func decodeMemo(memo string) []byte {
 	}
 
 	return []byte(memo)
+}
+
+func requestFromOutput(output *core.Output) *maker.Request {
+	return &maker.Request{
+		Now:      output.CreatedAt,
+		Version:  output.ID,
+		TraceID:  output.TraceID,
+		Sender:   output.Sender,
+		FollowID: output.TraceID,
+		AssetID:  output.AssetID,
+		Amount:   output.Amount,
+	}
 }

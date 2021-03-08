@@ -10,7 +10,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func HandleFeed(
+func HandlePoke(
 	collaterals core.CollateralStore,
 	oracles core.OracleStore,
 ) maker.HandlerFunc {
@@ -24,14 +24,15 @@ func HandleFeed(
 		var (
 			id    uuid.UUID
 			price decimal.Decimal
+			ts    int64
 		)
 
-		if err := require(r.Scan(&id, &price) == nil, "bad-data"); err != nil {
+		if err := require(r.Scan(&id, &price, &ts) == nil, "bad-data"); err != nil {
 			return err
 		}
 
 		price = price.Truncate(12)
-		if err := require(price.IsPositive(), "bad-data"); err != nil {
+		if err := require(price.IsPositive() && ts < r.Now.Unix(), "bad-data"); err != nil {
 			return err
 		}
 
@@ -44,9 +45,18 @@ func HandleFeed(
 		if oracle.ID == 0 {
 			oracle.AssetID = id.String()
 			oracle.Hop = 60 * 60 // an hour
+			oracle.Next = price
 		}
 
-		oracle.Current = price
+		if err := require(r.Now.Unix() > oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
+			return err
+		}
+
+		if err := require(ts > oracle.PeekAt.Unix(), "out-of-date"); err != nil {
+			return err
+		}
+
+		oracle.Current = oracle.Next
 		oracle.Next = price
 		oracle.PeekAt = r.Now.Truncate(time.Duration(oracle.Hop) * time.Second)
 

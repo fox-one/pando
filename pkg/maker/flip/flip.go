@@ -1,24 +1,23 @@
 package flip
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 )
 
-func require(condition bool, msg string) error {
-	return maker.Require(condition, "Flip/%s", msg)
+func require(condition bool, msg string, flags ...int) error {
+	return maker.Require(condition, "Flip/"+msg, flags...)
 }
 
-func From(ctx context.Context, flips core.FlipStore, r *maker.Request) (*core.Flip, error) {
+func From(r *maker.Request, flips core.FlipStore) (*core.Flip, error) {
 	var id uuid.UUID
 	if err := require(r.Scan(&id) == nil, "bad-data"); err != nil {
 		return nil, err
 	}
 
+	ctx := r.Context()
 	log := logger.FromContext(ctx)
 
 	f, err := flips.Find(ctx, id.String())

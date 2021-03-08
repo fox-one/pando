@@ -108,7 +108,7 @@ func (w *Cashier) handleTransfer(ctx context.Context, transfer *core.Transfer) e
 				TraceID:   traceID,
 				AssetID:   transfer.AssetID,
 				Amount:    sum,
-				Opponents: w.system.MemberIDs(),
+				Opponents: w.system.Members,
 				Threshold: w.system.Threshold,
 				Memo:      fmt.Sprintf("merge for %s", transfer.TraceID),
 			}

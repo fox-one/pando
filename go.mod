@@ -10,6 +10,7 @@ require (
 	github.com/drone/signal v1.0.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fox-one/mixin-sdk-go v1.3.2
+	github.com/fox-one/msgpack v1.0.0 // indirect
 	github.com/fox-one/pkg v1.5.4
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.5.0

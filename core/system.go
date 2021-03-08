@@ -12,7 +12,7 @@ type System struct {
 	Admins       []string
 	ClientID     string
 	ClientSecret string
-	Members      []*Member
+	Members      []string
 	Threshold    uint8
 	VoteAsset    string
 	VoteAmount   decimal.Decimal
@@ -22,15 +22,10 @@ type System struct {
 	Version      string
 }
 
-func (s *System) MemberIDs() []string {
-	ids := make([]string, len(s.Members))
-	for idx, m := range s.Members {
-		ids[idx] = m.ClientID
-	}
-
-	return ids
+func (s *System) IsMember(id string) bool {
+	return govalidator.IsIn(id, s.Members...)
 }
 
-func (s *System) IsMember(id string) bool {
-	return govalidator.IsIn(id, s.MemberIDs()...)
+func (s *System) IsStaff(id string) bool {
+	return govalidator.IsIn(id, s.Admins...)
 }

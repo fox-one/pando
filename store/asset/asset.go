@@ -43,6 +43,10 @@ func (s *assetStore) Update(ctx context.Context, asset *core.Asset) error {
 	updates["version"] = asset.Version + 1
 
 	tx := s.db.Update().Model(asset).Where("version = ?", asset.Version).Updates(updates)
+	if err := tx.Error; err != nil {
+		return err
+	}
+
 	if tx.RowsAffected == 0 {
 		return db.ErrOptimisticLock
 	}

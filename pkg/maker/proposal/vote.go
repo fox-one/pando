@@ -1,9 +1,7 @@
 package proposal
 
 import (
-	"context"
 	"database/sql"
-	"encoding/base64"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/core"
@@ -14,55 +12,49 @@ import (
 func HandleVote(
 	proposals core.ProposalStore,
 	parliaments core.Parliament,
-	actions map[core.Action]maker.HandlerFunc,
+	walletz core.WalletService,
 	system *core.System,
 ) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
-		if err := require(system.IsMember(r.UserID), "not-mtg-member"); err != nil {
-			return err
-		}
+	return func(r *maker.Request) error {
+		ctx := r.Context()
 
-		p, err := From(ctx, proposals, r)
+		p, err := From(r, proposals)
 		if err != nil {
 			return err
 		}
 
-		if voted := govalidator.IsIn(r.UserID, p.Votes...); !voted {
-			p.Votes = append(p.Votes, r.UserID)
+		if system.IsMember(r.Sender) {
+			if voted := govalidator.IsIn(r.Sender, p.Votes...); !voted {
+				p.Votes = append(p.Votes, r.Sender)
 
-			if err := parliaments.Approved(ctx, p); err != nil {
-				logger.FromContext(ctx).WithError(err).Errorln("parliaments.Approved")
-				return err
-			}
-
-			if !p.PassedAt.Valid && len(p.Votes) >= int(system.Threshold) {
-				p.PassedAt = sql.NullTime{
-					Time:  r.Now(),
-					Valid: true,
-				}
-
-				if err := parliaments.Passed(ctx, p); err != nil {
-					logger.FromContext(ctx).WithError(err).Errorln("parliaments.Passed")
+				if err := parliaments.Approved(ctx, p); err != nil {
+					logger.FromContext(ctx).WithError(err).Errorln("parliaments.Approved")
 					return err
 				}
 
-				// execute
-				if h, ok := actions[p.Action]; ok {
-					r.UTXO.AssetID = p.AssetID
-					r.UTXO.Amount = p.Amount
-					r.Gov = true
-					r.UserID = p.Creator
-					r.Action = p.Action
-					r.Body, _ = base64.StdEncoding.DecodeString(p.Data)
+				if !p.PassedAt.Valid && len(p.Votes) >= int(system.Threshold) {
+					p.PassedAt = sql.NullTime{
+						Time:  r.Now,
+						Valid: true,
+					}
 
-					if err := h(ctx, r); err != nil {
+					if err := parliaments.Passed(ctx, p); err != nil {
+						logger.FromContext(ctx).WithError(err).Errorln("parliaments.Passed")
 						return err
 					}
 				}
+
+				if err := proposals.Update(ctx, p, r.Version); err != nil {
+					logger.FromContext(ctx).WithError(err).Errorln("proposals.Update")
+					return err
+				}
 			}
 
-			if err := proposals.Update(ctx, p, r.Version()); err != nil {
-				logger.FromContext(ctx).WithError(err).Errorln("proposals.Update")
+			if p.PassedAt.Valid && p.Version == r.Version {
+				r.Next = r.WithProposal(p)
+			}
+		} else if system.IsStaff(r.Sender) {
+			if err := handleProposal(r, walletz, system, core.ActionProposalVote, p); err != nil {
 				return err
 			}
 		}
