@@ -3,6 +3,7 @@ package tx
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/fox-one/pando/cmd/pando-cli/internal/call"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/cfg"
@@ -10,9 +11,12 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/internal/jq"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/spf13/cobra"
+	"github.com/twitchtv/twirp"
 )
 
 func NewFollowCmd() *cobra.Command {
+	var loop bool
+
 	cmd := &cobra.Command{
 		Use:  "follow",
 		Args: cobra.ExactArgs(1),
@@ -21,8 +25,19 @@ func NewFollowCmd() *cobra.Command {
 			ctx := call.WithToken(cmd.Context(), token)
 
 			id := args[0]
+
+		loop:
 			tx, err := call.RPC().FindTransaction(ctx, &api.Req_FindTransaction{Id: id})
 			if err != nil {
+				if terr, ok := err.(twirp.Error); ok && terr.Code() == twirp.NotFound && loop {
+					select {
+					case <-ctx.Done():
+						return ctx.Err()
+					case <-time.After(time.Second):
+						goto loop
+					}
+				}
+
 				return err
 			}
 
@@ -37,5 +52,6 @@ func NewFollowCmd() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().BoolVar(&loop, "loop", false, "polling until not 404")
 	return cmd
 }
