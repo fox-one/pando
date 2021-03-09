@@ -7,6 +7,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/mtg"
+	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -88,6 +89,7 @@ func (r *Request) Context() context.Context {
 
 func (r *Request) WithProposal(p *core.Proposal) *Request {
 	r2 := r.copy()
+	r2.TraceID = uuid.Modify(r.TraceID, p.TraceID)
 	r2.Sender = p.Creator
 	r2.AssetID = p.AssetID
 	r2.FollowID = p.TraceID
