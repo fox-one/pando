@@ -21,11 +21,11 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 		ctx := r.Context()
 
 		var body struct {
-			UserID   string          `json:"user_id,omitempty"`
-			FollowID string          `json:"follow_id,omitempty"`
-			Actions  []string        `json:"actions,omitempty"`
-			AssetID  string          `json:"asset_id,omitempty"`
-			Amount   decimal.Decimal `json:"amount,omitempty"`
+			UserID     string          `json:"user_id,omitempty"`
+			FollowID   string          `json:"follow_id,omitempty"`
+			Parameters []string        `json:"parameters,omitempty"`
+			AssetID    string          `json:"asset_id,omitempty"`
+			Amount     decimal.Decimal `json:"amount,omitempty"`
 		}
 
 		if err := param.Binding(r, &body); err != nil {
@@ -35,7 +35,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 
 		user, _ := uuid.FromString(body.UserID)
 		follow, _ := uuid.FromString(body.FollowID)
-		data, err := types.EncodeWithTypes(body.Actions...)
+		data, err := types.EncodeWithTypes(body.Parameters...)
 		if err == nil {
 			data, _ = core.TransactionAction{
 				UserID:   user.Bytes(),
@@ -48,7 +48,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 		}
 
 		if err != nil {
-			logger.FromContext(ctx).WithError(err).Debugln("EncodeWithTypes", body.Actions)
+			logger.FromContext(ctx).WithError(err).Debugln("EncodeWithTypes", body.Parameters)
 			render.Error(w, twirp.InvalidArgumentError("actions", "encode failed"))
 			return
 		}

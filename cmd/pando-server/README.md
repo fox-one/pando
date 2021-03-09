@@ -188,7 +188,8 @@ GET /api/cats
 | gem  | collateral asset id              |
 | dai  | debt asset id                    |
 | ink  | gem total deposited amount       |
-| rate | total normalised debt            |
+| art  | total normalised debt            |
+| rate | accumulated rates                |
 | rho  | last update time of rate         |
 | debt | total debt                       |
 | line | max debt in total                |
@@ -240,32 +241,62 @@ GET /api/cats
 ### List My Vaults
 
 ```http request
-GET /api/vats
+GET /api/me/vats
 ```
+
+#### [Vault]
+
+| key | description          |
+| --- | -------------------- |
+| id  | vault id             |
+| ink | gem deposited amount |
+| art | normalised debt      |
 
 **Response:**
 
 ```json5
 {
-   "ts": 1614858173421,
-   "data": {
-      "vaults": [
-         {
-            "id": "e40060ae-fb63-3b6b-8c17-72550ffa5a5d",
-            "created_at": "2021-03-03T08:56:34Z",
-            "collateral_id": "0439b3e4-61a8-3ff4-9d3c-fe223ff55244",
-            "ink": "1",                         // Total Deposited
-            "art": "120"                        // Total Normalised Debt, debt = art * rate
-         }
-      ]
-   }
+    "data": {
+        "pagination": null,
+        "vaults": [
+            {
+                "art": "100",
+                "collateral_id": "f7c1ba17-67b9-34f3-adec-18bf4d63931b",
+                "created_at": "2021-03-09T09:06:54Z",
+                "id": "a095b205-b78a-3db8-b17b-808005c5d3ba",
+                "ink": "30"
+            }
+        ]
+    },
+    "ts": 1615280938512
+}
+```
+
+### Find Vault 
+
+```http request
+GET /api/vats/id
+```
+
+**Response:** 
+
+```json5
+{
+    "data": {
+        "art": "100",
+        "collateral_id": "f7c1ba17-67b9-34f3-adec-18bf4d63931b",
+        "created_at": "2021-03-09T09:06:54Z",
+        "id": "a095b205-b78a-3db8-b17b-808005c5d3ba",
+        "ink": "30"
+    },
+    "ts": 1615281132899
 }
 ```
 
 ### Get Tx
 
 ```http request
-GET /transactions/{follow_id}
+GET /api/transactions/{follow_id}
 ```
 
 **Response:**
@@ -278,7 +309,7 @@ GET /transactions/{follow_id}
     "asset_id": "965e5c6e-434c-3fa9-b780-c50f43cd955c",
     "created_at": "2021-03-09T06:29:21Z",
     "id": "3f973c40-1e6c-5572-b5d5-e55a7117a512",
-    "msg": "",
+    "msg": "", // Abort Msg
     "parameters": "[\"f7c1ba17-67b9-34f3-adec-18bf4d63931b\",\"price\",\"5\",\"live\",\"1\"]",
     "status": "OK" // OK/Abort
   },
@@ -296,11 +327,21 @@ POST /api/actions
 
 ```json5
 {
+  "user_id": "mixin id",
+  "follow_id": "uuid",
   "asset_id": "", // payment asset id
   "amount": "123", // payment amount
-  "actions": ["uuid","xxx"]
+  "parameters": ["uuid","xxx"]
 }
 ```
+
+| action      | parameters                                                        |
+| ----------- | ----------------------------------------------------------------- |
+| VatOpen     | "bit","31","uuid","{cat_id}","decimal","{ink}","decimal","{debt}" |
+| VatDeposit  | "bit","32","uuid","{vat_id}","decimal","{ink}"                    |
+| VatWithdraw | "bit","33","uuid","{vat_id}","decimal","{ink}"                    |
+| VatPayback  | "bit","34","uuid","{vat_id}","decimal","{debt}"                   |
+| VatGenerate | "bit","35","uuid","{vat_id}","decimal","{debt}"                   |
 
 **Response:**
 
