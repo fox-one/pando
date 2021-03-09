@@ -44,15 +44,25 @@ type parliament struct {
 }
 
 func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Proposal) (string, error) {
-	trace, _ := uuid.FromString(proposal.TraceID)
-	uid, _ := uuid.FromString(s.system.ClientID)
-	memo, err := mtg.Encode(uid, core.ActionProposalVote, trace)
+	id, _ := uuid.FromString(proposal.TraceID)
+	body, err := mtg.Encode(core.ActionProposalVote, id)
 	if err != nil {
 		return "", err
 	}
 
-	sign := mtg.Sign(memo, s.system.SignKey)
-	memo = mtg.Pack(memo, sign)
+	user, _ := uuid.FromString(s.system.ClientID)
+	data, err := core.TransactionAction{
+		UserID: user.Bytes(),
+		Body:   body,
+	}.Encode()
+	if err != nil {
+		return "", err
+	}
+
+	memo, err := mtg.Encrypt(data, mixin.GenerateEd25519Key(), s.system.PublicKey)
+	if err != nil {
+		return "", err
+	}
 
 	transfer := &core.Transfer{
 		TraceID:   uuid.Modify(proposal.TraceID, s.system.ClientID),
@@ -72,12 +82,12 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 }
 
 func (s *parliament) fetchAssetSymbol(ctx context.Context, assetID string) string {
-	asset, err := s.assetz.Find(ctx, assetID)
+	coin, err := s.assetz.Find(ctx, assetID)
 	if err != nil {
 		return "NULL"
 	}
 
-	return asset.Symbol
+	return coin.Symbol
 }
 
 func (s *parliament) fetchUserName(ctx context.Context, userID string) string {
@@ -182,10 +192,9 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 		var (
 			id    uuid.UUID
 			price decimal.Decimal
-			ts    int64
 		)
 
-		_, _ = mtg.Scan(data, &id, &price, &ts)
+		_, _ = mtg.Scan(data, &id, &price)
 
 		view.Meta = []Item{
 			{
@@ -197,25 +206,40 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 				Key:   "price",
 				Value: number.Humanize(price),
 			},
-			{
-				Key:   "date",
-				Value: time.Unix(ts, 0).Format(time.RFC3339),
-			},
 		}
-	case core.ActionSysWithdraw:
+	case core.ActionOracleStep:
 		var (
-			asset    uuid.UUID
-			amount   decimal.Decimal
-			opponent uuid.UUID
+			id uuid.UUID
+			ts int64
 		)
 
-		_, _ = mtg.Scan(data, &asset, &amount, &opponent)
+		_, _ = mtg.Scan(data, &id, &ts)
 
 		view.Meta = []Item{
 			{
 				Key:    "asset",
-				Value:  fmt.Sprintf("%s %s", number.Humanize(amount), s.fetchAssetSymbol(ctx, asset.String())),
-				Action: assetAction(asset.String()),
+				Value:  s.fetchAssetSymbol(ctx, id.String()),
+				Action: assetAction(id.String()),
+			},
+			{
+				Key:   "step",
+				Value: (time.Duration(ts) * time.Second).String(),
+			},
+		}
+	case core.ActionSysWithdraw:
+		var (
+			assetID  uuid.UUID
+			amount   decimal.Decimal
+			opponent uuid.UUID
+		)
+
+		_, _ = mtg.Scan(data, &assetID, &amount, &opponent)
+
+		view.Meta = []Item{
+			{
+				Key:    "asset",
+				Value:  fmt.Sprintf("%s %s", number.Humanize(amount), s.fetchAssetSymbol(ctx, assetID.String())),
+				Action: assetAction(assetID.String()),
 			},
 			{
 				Key:    "opponent",

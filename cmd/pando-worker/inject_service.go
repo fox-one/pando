@@ -48,11 +48,6 @@ func provideSystem(cfg *config.Config) *core.System {
 		panic(fmt.Errorf("base64 decode group private key failed: %w", err))
 	}
 
-	signKey, err := mtg.DecodePrivateKey(cfg.Group.SignKey)
-	if err != nil {
-		panic(fmt.Errorf("base64 decode group sign key failed: %w", err))
-	}
-
 	return &core.System{
 		Admins:     cfg.Group.Admins,
 		ClientID:   cfg.Dapp.ClientID,
@@ -62,7 +57,6 @@ func provideSystem(cfg *config.Config) *core.System {
 		VoteAmount: cfg.Group.Vote.Amount,
 		PrivateKey: privateKey,
 		PublicKey:  privateKey.Public().(ed25519.PublicKey),
-		SignKey:    signKey,
 		Version:    version,
 	}
 }

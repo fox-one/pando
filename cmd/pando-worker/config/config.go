@@ -30,8 +30,6 @@ type (
 	Group struct {
 		// 节点管理员 mixin id
 		Admins []string `json:"admins,omitempty"`
-		// 节点用于签名的私钥
-		SignKey string `json:"sign_key,omitempty"`
 		// 节点共享的用户解密的私钥
 		PrivateKey string   `json:"private_key,omitempty"`
 		Members    []string `json:"members,omitempty"`
