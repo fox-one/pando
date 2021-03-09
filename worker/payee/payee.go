@@ -157,7 +157,7 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 		req.Action = core.ActionOraclePoke
 		req.Body = body
 		req.Gov = true
-		return w.handleRequest(ctx, req)
+		return w.handleRequest(req.WithContext(ctx))
 	}
 
 	// 2. decode tx message
@@ -172,7 +172,7 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 					req.FollowID = follow.String()
 				}
 
-				return w.handleRequest(ctx, req)
+				return w.handleRequest(req.WithContext(ctx))
 			}
 		}
 
@@ -182,7 +182,8 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	return nil
 }
 
-func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
+func (w *Payee) handleRequest(r *maker.Request) error {
+	ctx := r.Context()
 	log := logger.FromContext(ctx).WithField("action", r.Action.String())
 
 	h, ok := w.actions[r.Action]
@@ -193,7 +194,7 @@ func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
 
 	tx := r.Tx()
 
-	if err := h(r.WithContext(ctx)); err != nil {
+	if err := h(r); err != nil {
 		var e maker.Error
 		if !errors.As(err, &e) {
 			return err
@@ -233,7 +234,7 @@ func (w *Payee) handleRequest(ctx context.Context, r *maker.Request) error {
 	}
 
 	if r.Next != nil {
-		return w.handleRequest(ctx, r.Next)
+		return w.handleRequest(r.Next)
 	}
 
 	return nil
