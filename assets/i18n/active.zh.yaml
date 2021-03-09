@@ -3,7 +3,8 @@ login_done: |
 
 tx_ok: |
   ✅ {{.Action}}成功
-  {{range .Lines}}
+
+  {{ range .Lines -}}
   - {{.}}
   {{end}}
 
@@ -12,7 +13,7 @@ tx_abort: |
 
   - 🙅：错误代码 "{{.Message}}"
 
-
+vat_name: 🔑 金库 {{.Name}}
 vat_deposit: 💰： 抵押 {{.Dink}} {{.Gem}}
 vat_withdraw: 💰：取出 {{.Dink}} {{.Gem}}
 vat_generate: 💰：借出 {{.Debt}} {{.Dai}}
