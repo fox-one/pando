@@ -89,7 +89,7 @@ func (s *oracleStore) List(ctx context.Context) ([]*core.Oracle, error) {
 
 func (s *oracleStore) ListCurrent(ctx context.Context) (number.Values, error) {
 	var oracles []*core.Oracle
-	if err := s.db.View().Select("asset_id", "current").Find(&oracles).Error; err != nil {
+	if err := s.db.View().Select("asset_id, current").Find(&oracles).Error; err != nil {
 		return nil, err
 	}
 
