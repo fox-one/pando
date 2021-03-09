@@ -13,6 +13,7 @@ import (
 	message2 "github.com/fox-one/pando/service/message"
 	oracle2 "github.com/fox-one/pando/service/oracle"
 	"github.com/fox-one/pando/service/user"
+	wallet2 "github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
@@ -45,8 +46,9 @@ func buildApp(cfg *config.Config) (app, error) {
 	if err != nil {
 		return app{}, err
 	}
+	walletConfig := provideWalletServiceConfig(cfg)
+	walletService := wallet2.New(client, walletConfig)
 	system := provideSystem(cfg)
-	walletService := provideWalletService(client, cfg, system)
 	cashierCashier := cashier.New(walletStore, walletService, system)
 	messageStore := message.New(db)
 	messageService := message2.New(client)

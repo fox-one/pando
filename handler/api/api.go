@@ -11,7 +11,6 @@ import (
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pando/handler/rpc"
 	"github.com/fox-one/pando/pkg/reversetwirp"
-	"github.com/fox-one/pkg/property"
 	"github.com/go-chi/chi"
 	"github.com/twitchtv/twirp"
 )
@@ -22,7 +21,6 @@ func New(
 	assets core.AssetStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
-	properties property.Store,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
 	walletz core.WalletService,
@@ -36,7 +34,6 @@ func New(
 		assets:       assets,
 		vaults:       vaults,
 		flips:        flips,
-		properties:   properties,
 		collaterals:  collaterals,
 		transactions: transactions,
 		walletz:      walletz,
@@ -52,7 +49,6 @@ type Server struct {
 	assets       core.AssetStore
 	vaults       core.VaultStore
 	flips        core.FlipStore
-	properties   property.Store
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
 	walletz      core.WalletService

@@ -2,8 +2,6 @@ package wallet
 
 import (
 	"context"
-	"crypto/ed25519"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -15,10 +13,9 @@ import (
 )
 
 type Config struct {
-	Pin        string   `valid:"required"`
-	Members    []string `valid:"required"`
-	Threshold  uint8    `valid:"required"`
-	PrivateKey string   `valid:"required"`
+	Pin       string   `valid:"required"`
+	Members   []string `valid:"required"`
+	Threshold uint8    `valid:"required"`
 }
 
 func New(client *mixin.Client, cfg Config) core.WalletService {
@@ -26,14 +23,11 @@ func New(client *mixin.Client, cfg Config) core.WalletService {
 		panic(err)
 	}
 
-	key, _ := base64.StdEncoding.DecodeString(cfg.PrivateKey)
-
 	return &walletService{
 		client:    client,
 		members:   cfg.Members,
 		threshold: cfg.Threshold,
 		pin:       cfg.Pin,
-		key:       key,
 	}
 }
 
@@ -42,7 +36,6 @@ type walletService struct {
 	members   []string
 	threshold uint8
 	pin       string
-	key       ed25519.PrivateKey
 }
 
 func (s *walletService) Pull(ctx context.Context, offset time.Time, limit int) ([]*core.Output, error) {

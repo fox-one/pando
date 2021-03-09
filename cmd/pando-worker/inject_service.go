@@ -26,7 +26,8 @@ var serviceSet = wire.NewSet(
 	user.New,
 	oracle.New,
 	provideSystem,
-	provideWalletService,
+	provideWalletServiceConfig,
+	wallet.New,
 	provideLocalizer,
 )
 
@@ -34,12 +35,12 @@ func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
 	return mixin.NewFromKeystore(&cfg.Dapp.Keystore)
 }
 
-func provideWalletService(client *mixin.Client, cfg *config.Config, system *core.System) core.WalletService {
-	return wallet.New(client, wallet.Config{
+func provideWalletServiceConfig(cfg *config.Config) wallet.Config {
+	return wallet.Config{
 		Pin:       cfg.Dapp.Pin,
-		Members:   system.Members,
-		Threshold: system.Threshold,
-	})
+		Members:   cfg.Group.Members,
+		Threshold: cfg.Group.Threshold,
+	}
 }
 
 func provideSystem(cfg *config.Config) *core.System {
