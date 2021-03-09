@@ -21,9 +21,11 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 		ctx := r.Context()
 
 		var body struct {
-			Actions []string        `json:"actions,omitempty"`
-			AssetID string          `json:"asset_id,omitempty"`
-			Amount  decimal.Decimal `json:"amount,omitempty"`
+			UserID   string          `json:"user_id,omitempty"`
+			FollowID string          `json:"follow_id,omitempty"`
+			Actions  []string        `json:"actions,omitempty"`
+			AssetID  string          `json:"asset_id,omitempty"`
+			Amount   decimal.Decimal `json:"amount,omitempty"`
 		}
 
 		if err := param.Binding(r, &body); err != nil {
@@ -31,8 +33,16 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 			return
 		}
 
+		user, _ := uuid.FromString(body.UserID)
+		follow, _ := uuid.FromString(body.FollowID)
 		data, err := types.EncodeWithTypes(body.Actions...)
 		if err == nil {
+			data, _ = core.TransactionAction{
+				UserID:   user.Bytes(),
+				FollowID: follow.Bytes(),
+				Body:     data,
+			}.Encode()
+
 			key := mixin.GenerateEd25519Key()
 			data, err = mtg.Encrypt(data, key, system.PublicKey)
 		}
@@ -55,7 +65,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 				Amount:    body.Amount.Truncate(8),
 				Memo:      memo,
 				Threshold: system.Threshold,
-				Opponents: system.MemberIDs(),
+				Opponents: system.Members,
 			}
 
 			code, err := walletz.ReqTransfer(ctx, transfer)

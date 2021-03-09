@@ -8,6 +8,7 @@ import (
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
+	"github.com/fox-one/pkg/store"
 	"github.com/shopspring/decimal"
 )
 
@@ -17,7 +18,8 @@ func HandleCreate(
 	assets core.AssetStore,
 	assetz core.AssetService,
 ) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
+	return func(r *maker.Request) error {
+		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
 		if err := require(r.Gov, "not-authorized"); err != nil {
@@ -37,70 +39,42 @@ func HandleCreate(
 			return err
 		}
 
-		gemAsset, err := assetz.Find(ctx, gem.String())
-		if err != nil {
-			log.WithError(err).Errorln("assetz.Find")
+		if _, err := handleAsset(ctx, assets, assetz, gem.String()); err != nil {
 			return err
 		}
 
-		if err := require(gemAsset.Symbol != "", "nil-asset"); err != nil {
-			return err
-		}
-
-		if err := assets.Create(ctx, gemAsset); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("assets.Create")
-			return err
-		}
-
-		daiAsset, err := assetz.Find(ctx, dai.String())
-		if err != nil {
-			return err
-		}
-
-		if err := require(daiAsset.Symbol != "", "nil-asset"); err != nil {
-			return err
-		}
-
-		if err := assets.Create(ctx, daiAsset); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("assets.Create")
+		if _, err := handleAsset(ctx, assets, assetz, dai.String()); err != nil {
 			return err
 		}
 
 		cat := &core.Collateral{
-			CreatedAt: r.Now(),
-			TraceID:   r.TraceID(),
-			Version:   r.Version(),
+			CreatedAt: r.Now,
+			TraceID:   r.TraceID,
+			Version:   r.Version,
 			Name:      name,
 			Gem:       gem.String(),
 			Dai:       dai.String(),
 			Art:       decimal.Zero,
 			Rate:      number.Decimal("1"),
-			Rho:       r.Now(),
+			Rho:       r.Now,
 			Dust:      number.Decimal("100"),
 			Mat:       number.Decimal("1.5"),
 			Duty:      number.Decimal("1.05"),
 			Chop:      number.Decimal("1.13"),
 			Dunk:      number.Decimal("5000"),
+			Beg:       number.Decimal("0.03"),
+			TTL:       15 * 60,     // 15m
+			Tau:       3 * 60 * 60, // 3h
 		}
 
-		if assetID, amount := r.Payment(); assetID == cat.Dai {
-			cat.Line = amount
-		}
-
-		goc, err := oracles.Find(ctx, gem.String(), r.Now())
+		prices, err := oracles.ListCurrent(ctx)
 		if err != nil {
-			log.WithError(err).Errorln("oracles.Find")
+			log.WithError(err).Errorln("oracles.ListCurrent")
 			return err
 		}
 
-		doc, err := oracles.Find(ctx, dai.String(), r.Now())
-		if err != nil {
-			log.WithError(err).Errorln("oracles.Find")
-			return err
-		}
-
-		if goc.Price.IsPositive() && doc.Price.IsPositive() {
-			cat.Price = goc.Price.Div(doc.Price).Truncate(12)
+		if gp, dp := prices.Get(cat.Gem), prices.Get(cat.Dai); gp.IsPositive() && dp.IsPositive() {
+			cat.Price = gp.Div(dp).Truncate(12)
 		}
 
 		if err := collaterals.Create(ctx, cat); err != nil {
@@ -110,4 +84,39 @@ func HandleCreate(
 
 		return nil
 	}
+}
+
+func handleAsset(ctx context.Context, assets core.AssetStore, assetz core.AssetService, id string) (*core.Asset, error) {
+	log := logger.FromContext(ctx)
+
+	asset, err := assets.Find(ctx, id)
+	if err != nil {
+		if !store.IsErrNotFound(err) {
+			log.WithError(err).Errorln("assets.Find")
+			return nil, err
+		}
+
+		asset, err = assetz.Find(ctx, id)
+		if err != nil {
+			log.WithError(err).Errorln("assets.Find")
+			return nil, err
+		}
+
+		if err := require(asset.Symbol != "", "asset-not-exist"); err != nil {
+			return nil, err
+		}
+
+		if err := assets.Create(ctx, asset); err != nil {
+			log.WithError(err).Errorln("assets.Create")
+			return nil, err
+		}
+	}
+
+	if asset.ID != asset.ChainID {
+		if _, err := handleAsset(ctx, assets, assetz, asset.ChainID); err != nil {
+			return nil, err
+		}
+	}
+
+	return asset, nil
 }

@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	clientKey = "auth.client_id"
-	tokenKey  = "auth.token"
+	clientKey  = "auth.client_id"
+	tokenKey   = "auth.token"
+	mixinIDKey = "auth.mixin_id"
 )
 
 func SetAuthClient(clientID string) {
@@ -23,4 +24,12 @@ func SetAuthToken(token string) {
 
 func GetAuthToken() string {
 	return viper.GetString(tokenKey)
+}
+
+func SetAuthMixinID(id string) {
+	viper.Set(mixinIDKey, id)
+}
+
+func GetAuthMixinID() string {
+	return viper.GetString(mixinIDKey)
 }

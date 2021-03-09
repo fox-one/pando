@@ -23,6 +23,24 @@ func init() {
 			return err
 		}
 
+		if err := tx.AddIndex("idx_vaults_collateral", "collateral_id").Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	db.RegisterMigrate(func(db *db.DB) error {
+		tx := db.Update().Model(core.VaultEvent{})
+
+		if err := tx.AutoMigrate(core.VaultEvent{}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.AddUniqueIndex("idx_vault_events_vault_version", "vault_id", "version").Error; err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
@@ -80,12 +98,65 @@ func (s *vaultStore) Find(ctx context.Context, traceID string) (*core.Vault, err
 	return &vault, nil
 }
 
-func (s *vaultStore) ListUser(ctx context.Context, userID string) ([]*core.Vault, error) {
+func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*core.Vault, error) {
 	var vaults []*core.Vault
 
-	if err := s.db.View().Where("user_id = ?", userID).Find(&vaults).Error; err != nil {
+	tx := s.db.View()
+	if req.CollateralID != "" {
+		tx = tx.Where("collateral_id = ?", req.CollateralID)
+	}
+
+	if req.UserID != "" {
+		tx = tx.Where("user_id = ?", req.UserID)
+	}
+
+	if req.Desc {
+		if req.FromID > 0 {
+			tx = tx.Where("id < ?", req.FromID)
+		}
+
+		tx = tx.Order("id DESC")
+	} else {
+		if req.FromID > 0 {
+			tx = tx.Where("id > ?", req.FromID)
+		}
+
+		tx = tx.Order("id")
+	}
+
+	if err := tx.Limit(req.Limit).Find(&vaults).Error; err != nil {
 		return nil, err
 	}
 
 	return vaults, nil
+}
+
+func (s *vaultStore) CreateEvent(ctx context.Context, event *core.VaultEvent) error {
+	if err := s.db.Update().Where("vault_id = ? AND version = ?", event.VaultID, event.Version).FirstOrCreate(event).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *vaultStore) FindEvent(ctx context.Context, vaultID string, version int64) (*core.VaultEvent, error) {
+	event := core.VaultEvent{VaultID: vaultID, Version: version}
+	if err := s.db.View().Where("vault_id = ? AND version = ?", vaultID, version).Take(&event).Error; err != nil {
+		if db.IsErrorNotFound(err) {
+			return &event, nil
+		}
+
+		return nil, err
+	}
+
+	return &event, nil
+}
+
+func (s *vaultStore) ListEvents(ctx context.Context, vaultID string) ([]*core.VaultEvent, error) {
+	var events []*core.VaultEvent
+	if err := s.db.View().Where("vault_id = ?", vaultID).Order("version DESC").Find(&events).Error; err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }

@@ -1,7 +1,6 @@
 package sys
 
 import (
-	"github.com/fox-one/pando/cmd/pando-cli/cmds/sys/withdraw"
 	"github.com/spf13/cobra"
 )
 
@@ -10,6 +9,6 @@ func NewCmd() *cobra.Command {
 		Use: "sys",
 	}
 
-	cmd.AddCommand(withdraw.NewCmd())
+	cmd.AddCommand(NewWithdrawCmd())
 	return cmd
 }

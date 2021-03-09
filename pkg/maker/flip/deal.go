@@ -1,8 +1,6 @@
 package flip
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/maker/cat"
@@ -18,57 +16,48 @@ type DealData struct {
 
 func HandleDeal(
 	collaterals core.CollateralStore,
-	vaults core.VaultStore,
 	flips core.FlipStore,
-	transactions core.TransactionStore,
 	wallets core.WalletStore,
 ) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
-		f, err := From(ctx, flips, r)
+	return func(r *maker.Request) error {
+		ctx := r.Context()
+		f, err := From(r, flips)
 		if err != nil {
 			return err
 		}
 
 		cid, _ := uuid.FromString(f.CollateralID)
-		c, err := cat.From(ctx, collaterals, r.WithBody(cid))
+		c, err := cat.From(r.WithBody(cid), collaterals)
 		if err != nil {
 			return err
 		}
 
-		t, err := transactions.Find(ctx, r.TraceID())
+		event, err := flips.FindEvent(ctx, f.TraceID, r.Version)
 		if err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("transactions.Find")
+			logger.FromContext(ctx).WithError(err).Errorln("flips.FindEvent")
 			return err
 		}
 
-		if t.ID == 0 {
-			t = r.Tx().WithFlip(f)
+		if event.ID == 0 {
+			if err := Deal(r, f); err != nil {
+				return err
+			}
 
 			var transfers []*core.Transfer
+			if f.Lot.IsPositive() {
+				memo := core.TransferAction{
+					ID:     f.TraceID,
+					Source: r.Action.String(),
+				}.Encode()
 
-			if err := Deal(r, f); err == nil {
-				t.Write(core.TxStatusSuccess, DealData{
-					Bid: f.Bid,
-					Lot: f.Lot,
+				transfers = append(transfers, &core.Transfer{
+					TraceID:   uuid.Modify(r.TraceID, memo),
+					AssetID:   c.Gem,
+					Amount:    f.Lot,
+					Memo:      memo,
+					Threshold: 1,
+					Opponents: []string{f.Guy},
 				})
-
-				if f.Lot.IsPositive() {
-					memo := core.TransferAction{
-						ID:     f.TraceID,
-						Source: "Deal",
-					}.Encode()
-
-					transfers = append(transfers, &core.Transfer{
-						TraceID:   uuid.Modify(r.TraceID(), memo),
-						AssetID:   c.Gem,
-						Amount:    f.Lot,
-						Memo:      memo,
-						Threshold: 1,
-						Opponents: []string{f.Guy},
-					})
-				}
-			} else {
-				t.Write(core.TxStatusFailed, err)
 			}
 
 			if err := wallets.CreateTransfers(ctx, transfers); err != nil {
@@ -76,23 +65,25 @@ func HandleDeal(
 				return err
 			}
 
-			if err := transactions.Create(ctx, t); err != nil {
-				logger.FromContext(ctx).WithError(err).Errorln("transactions.Create")
+			event = &core.FlipEvent{
+				CreatedAt: r.Now,
+				FlipID:    f.TraceID,
+				Version:   r.Version,
+				Action:    r.Action,
+				Bid:       f.Bid,
+				Lot:       f.Lot,
+			}
+
+			if err := flips.CreateEvent(ctx, event); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("flips.CreateEvent")
 				return err
 			}
 		}
 
-		if err := require(t.Status == core.TxStatusSuccess, "tx-failed"); err != nil {
-			return err
-		}
-
-		var data DealData
-		_ = t.Data.Unmarshal(&data)
-
-		if f.Version < r.Version() {
+		if f.Version < r.Version {
 			f.Action = r.Action
 
-			if err := flips.Update(ctx, f, r.Version()); err != nil {
+			if err := flips.Update(ctx, f, r.Version); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("flips.Update")
 				return err
 			}
@@ -103,11 +94,11 @@ func HandleDeal(
 }
 
 func Deal(r *maker.Request, f *core.Flip) error {
-	if err := require(r.Now().After(f.Tic) || r.Now().After(f.End), "not-finished"); err != nil {
+	if err := require(f.TicFinished(r.Now) && f.EndFinished(r.Now), "not-finished"); err != nil {
 		return err
 	}
 
-	if err := require(f.Action != r.Action, "dealt"); err != nil {
+	if err := require(f.Action != core.ActionFlipDeal, "already-dealed"); err != nil {
 		return err
 	}
 

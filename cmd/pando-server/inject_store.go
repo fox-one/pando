@@ -13,7 +13,6 @@ import (
 	"github.com/fox-one/pando/store/vault"
 	"github.com/fox-one/pando/store/wallet"
 	"github.com/fox-one/pkg/store/db"
-	propertystore "github.com/fox-one/pkg/store/property"
 	"github.com/google/wire"
 )
 
@@ -28,7 +27,6 @@ var storeSet = wire.NewSet(
 	vault.New,
 	oracle.New,
 	wallet.New,
-	propertystore.New,
 	message.New,
 )
 

@@ -1,26 +1,33 @@
 package cat
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pkg/logger"
 )
 
 func HandleSupply(collaterals core.CollateralStore) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
+	return func(r *maker.Request) error {
+		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
-		c, err := From(ctx, collaterals, r)
+		c, err := From(r, collaterals)
 		if err != nil {
 			return err
 		}
 
-		if assetID, amount := r.Payment(); assetID == c.Dai && c.Version < r.Version() {
-			c.Line = c.Line.Add(amount)
+		if err := require(r.AssetID == c.Dai, "dai-not-match"); err != nil {
+			return err
+		}
 
-			if err := collaterals.Update(ctx, c, r.Version()); err != nil {
+		if err := require(c.Live > 0, "not-live"); err != nil {
+			return maker.WithFlag(err, maker.FlagRefund)
+		}
+
+		if c.Version < r.Version {
+			c.Line = c.Line.Add(r.Amount)
+
+			if err := collaterals.Update(ctx, c, r.Version); err != nil {
 				log.WithError(err).Errorln("collaterals.Update")
 				return err
 			}

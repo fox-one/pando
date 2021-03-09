@@ -1,19 +1,18 @@
 package vat
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 )
 
-func require(condition bool, msg string) error {
-	return maker.Require(condition, "Vat/%s", msg)
+func require(condition bool, msg string, flags ...int) error {
+	return maker.Require(condition, "Vat/"+msg, flags...)
 }
 
-func From(ctx context.Context, vaults core.VaultStore, r *maker.Request) (*core.Vault, error) {
+func From(r *maker.Request, vaults core.VaultStore) (*core.Vault, error) {
+	ctx := r.Context()
 	log := logger.FromContext(ctx)
 
 	var id uuid.UUID

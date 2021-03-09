@@ -1,53 +1,51 @@
 package proposal
 
 import (
-	"context"
 	"encoding/base64"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
-	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 )
 
 func HandleMake(
 	proposals core.ProposalStore,
+	walletz core.WalletService,
 	parliaments core.Parliament,
 	system *core.System,
 ) maker.HandlerFunc {
-	return func(ctx context.Context, r *maker.Request) error {
-		if err := require(system.IsMember(r.UserID), "not-mtg-member"); err != nil {
+	return func(r *maker.Request) error {
+		var action core.Action
+		if err := require(r.Scan(&action) == nil, "bad-data"); err != nil {
 			return err
 		}
 
-		var (
-			trace  uuid.UUID
-			action core.Action
-		)
-		if err := require(r.Scan(&trace, &action) == nil, "bad-data"); err != nil {
-			return err
-		}
-
-		assetID, amount := r.Payment()
 		p := &core.Proposal{
-			CreatedAt: r.Now(),
-			Version:   r.Version(),
-			TraceID:   trace.String(),
-			Creator:   r.UserID,
-			AssetID:   assetID,
-			Amount:    amount,
+			CreatedAt: r.Now,
+			Version:   r.Version,
+			TraceID:   r.TraceID,
+			Creator:   r.Sender,
+			AssetID:   r.AssetID,
+			Amount:    r.Amount,
 			Action:    action,
 			Data:      base64.StdEncoding.EncodeToString(r.Body),
 		}
 
+		ctx := r.Context()
 		if err := proposals.Create(ctx, p); err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("proposals.Create")
 			return err
 		}
 
-		if err := parliaments.Created(ctx, p); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("parliaments.Created")
-			return err
+		if system.IsMember(p.Creator) {
+			if err := parliaments.Created(ctx, p); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("parliaments.Created")
+				return err
+			}
+		} else if system.IsStaff(p.Creator) {
+			if err := handleProposal(r, walletz, system, core.ActionProposalShout, p); err != nil {
+				return err
+			}
 		}
 
 		return nil

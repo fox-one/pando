@@ -1,0 +1,30 @@
+# Sys
+ActionSysWithdraw: 系统提现
+
+# Proposal
+ActionProposalMake: 发起提案
+ActionProposalShout: 倡议提案投票
+ActionProposalVote: 提案投票
+
+# Cat
+ActionCatCreate: 创建抵押物
+ActionCatSupply: 扩大债务供应
+ActionCatEdit: 编辑抵押物
+ActionCatFold: 刷新抵押物 Rate
+
+# Vat
+ActionVatOpen: 创建金库
+ActionVatDeposit: 增加抵押
+ActionVatWithdraw: 减少抵押
+ActionVatPayback: 还款
+ActionVatGenerate: 借出
+
+# Flip
+ActionFlipKick: 发起拍卖
+ActionFlipBid: 拍卖出价
+ActionFlipDeal: 拍卖结算
+
+# Oracle
+ActionOraclePoke: 喂价
+ActionOracleFeed: 喂价（Gov）
+ActionOracleStep: 设置价格延迟

@@ -42,6 +42,10 @@ func FromString(id string) (uuid.UUID, error) {
 	return uuid.FromString(id)
 }
 
+func FromBytes(b []byte) (uuid.UUID, error) {
+	return uuid.FromBytes(b)
+}
+
 func IsNil(id string) bool {
 	uid, err := FromString(id)
 	return err != nil || uid == uuid.Nil

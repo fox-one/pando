@@ -2,10 +2,8 @@ package wallet
 
 import (
 	"context"
-	"encoding/json"
 	"sort"
 
-	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
 	"github.com/jinzhu/gorm"
@@ -68,19 +66,13 @@ type walletStore struct {
 	db *db.DB
 }
 
-func afterFindOutput(output *core.Output) {
-	var utxo mixin.MultisigUTXO
-	if err := json.Unmarshal(output.Data, &utxo); err == nil {
-		output.UTXO = &utxo
-	}
-}
-
 func save(db *db.DB, output *core.Output) error {
 	tx := db.Update().Model(output).Where("trace_id = ?", output.TraceID).Updates(map[string]interface{}{
-		"data":    output.Data,
-		"state":   output.State,
-		"version": gorm.Expr("version + 1"),
+		"state":     output.State,
+		"signed_tx": output.SignedTx,
+		"version":   gorm.Expr("version + 1"),
 	})
+
 	if tx.Error != nil {
 		return tx.Error
 	}
@@ -114,10 +106,6 @@ func (s *walletStore) List(_ context.Context, fromID int64, limit int) ([]*core.
 		return nil, err
 	}
 
-	for _, output := range outputs {
-		afterFindOutput(output)
-	}
-
 	return outputs, nil
 }
 
@@ -128,10 +116,6 @@ func (s *walletStore) ListSpentBy(ctx context.Context, assetID string, spentBy s
 		Order("id").
 		Find(&outputs).Error; err != nil {
 		return nil, err
-	}
-
-	for _, output := range outputs {
-		afterFindOutput(output)
 	}
 
 	return outputs, nil
@@ -145,10 +129,6 @@ func (s *walletStore) ListUnspent(_ context.Context, assetID string, limit int) 
 		Order("id").
 		Find(&outputs).Error; err != nil {
 		return nil, err
-	}
-
-	for _, output := range outputs {
-		afterFindOutput(output)
 	}
 
 	return outputs, nil

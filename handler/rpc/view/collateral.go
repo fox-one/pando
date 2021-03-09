@@ -24,6 +24,9 @@ func Collateral(cat *core.Collateral) *api.Collateral {
 		Duty:      cat.Duty.String(),
 		Chop:      cat.Chop.String(),
 		Dunk:      cat.Dunk.String(),
+		Beg:       cat.Beg.String(),
+		Ttl:       int32(cat.TTL),
+		Tau:       int32(cat.Tau),
 		Live:      cat.Live > 0,
 	}
 }

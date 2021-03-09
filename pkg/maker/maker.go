@@ -2,6 +2,7 @@ package maker
 
 import (
 	"context"
+	"encoding/base64"
 	"time"
 
 	"github.com/fox-one/pando/core"
@@ -10,20 +11,23 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type (
-	HandlerFunc func(ctx context.Context, r *Request) error
-
-	H map[string]interface{}
-)
+type HandlerFunc func(r *Request) error
 
 type Request struct {
-	UTXO   *core.Output
-	Action core.Action
-	Body   []byte
-	Gov    bool
-
-	UserID   string
+	Now      time.Time
+	Version  int64
+	TraceID  string
+	Sender   string
 	FollowID string
+	AssetID  string
+	Amount   decimal.Decimal
+	Action   core.Action
+	Body     []byte
+	Gov      bool
+	ctx      context.Context
+	values   []interface{}
+
+	Next *Request
 }
 
 func (r *Request) Scan(dest ...interface{}) error {
@@ -33,7 +37,23 @@ func (r *Request) Scan(dest ...interface{}) error {
 	}
 
 	r.Body = b
+	r.values = append(r.values, dest...)
+
 	return nil
+}
+
+func (r *Request) Values() []interface{} {
+	if r.values == nil {
+		return []interface{}{}
+	}
+
+	return r.values[:]
+}
+
+func (r *Request) copy() *Request {
+	r2 := new(Request)
+	*r2 = *r
+	return r2
 }
 
 func (r *Request) WithBody(values ...interface{}) *Request {
@@ -42,58 +62,56 @@ func (r *Request) WithBody(values ...interface{}) *Request {
 		panic(err)
 	}
 
-	r2 := new(Request)
-	*r2 = *r
+	r2 := r.copy()
 	r2.Body = b
+	r2.values = nil
 
 	return r2
 }
 
-func (r *Request) BindUser() error {
-	var id uuid.UUID
-	if err := r.Scan(&id); err != nil {
-		return err
+func (r *Request) WithContext(ctx context.Context) *Request {
+	if ctx == nil {
+		panic("nil context")
 	}
 
-	r.UserID = id.String()
-	return nil
+	r2 := r.copy()
+	r2.ctx = ctx
+	return r2
 }
 
-func (r *Request) BindFollow() error {
-	var id uuid.UUID
-	if err := r.Scan(&id); err != nil {
-		return err
+func (r *Request) Context() context.Context {
+	if r.ctx != nil {
+		return r.ctx
 	}
 
-	r.FollowID = id.String()
-	return nil
+	return context.Background()
 }
 
-func (r *Request) Version() int64 {
-	return r.UTXO.ID
-}
+func (r *Request) WithProposal(p *core.Proposal) *Request {
+	r2 := r.copy()
+	r2.TraceID = uuid.Modify(r.TraceID, p.TraceID)
+	r2.Sender = p.Creator
+	r2.AssetID = p.AssetID
+	r2.FollowID = p.TraceID
+	r2.Amount = p.Amount
+	r2.Action = p.Action
+	r2.Body, _ = base64.StdEncoding.DecodeString(p.Data)
+	r2.values = nil
+	r2.Gov = true
 
-func (r *Request) Now() time.Time {
-	return r.UTXO.CreatedAt
-}
-
-func (r *Request) TraceID() string {
-	return r.UTXO.TraceID
-}
-
-func (r *Request) Payment() (string, decimal.Decimal) {
-	return r.UTXO.AssetID, r.UTXO.Amount
+	return r2
 }
 
 func (r *Request) Tx() *core.Transaction {
-	asset, amount := r.Payment()
 	return &core.Transaction{
-		CreatedAt: r.Now(),
-		TraceID:   r.TraceID(),
-		AssetID:   asset,
-		Amount:    amount,
-		Action:    r.Action,
-		UserID:    r.UserID,
+		CreatedAt: r.Now,
+		TraceID:   r.TraceID,
+		Version:   r.Version,
+		UserID:    r.Sender,
 		FollowID:  r.FollowID,
+		AssetID:   r.AssetID,
+		Amount:    r.Amount,
+		Action:    r.Action,
+		Status:    core.TransactionStatusPending,
 	}
 }

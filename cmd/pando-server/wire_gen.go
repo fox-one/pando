@@ -13,15 +13,16 @@ import (
 	"github.com/fox-one/pando/server"
 	asset2 "github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pando/service/user"
+	"github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pando/session"
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
 	"github.com/fox-one/pando/store/message"
+	"github.com/fox-one/pando/store/oracle"
 	"github.com/fox-one/pando/store/transaction"
 	user2 "github.com/fox-one/pando/store/user"
 	"github.com/fox-one/pando/store/vault"
-	"github.com/fox-one/pkg/store/property"
 )
 
 // Injectors from wire.go:
@@ -43,11 +44,11 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	assetStore := asset.New(db)
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
-	store := propertystore.New(db)
 	collateralStore := collateral.New(db)
 	transactionStore := transaction.New(db)
+	walletConfig := provideWalletServiceConfig(cfg)
+	walletService := wallet.New(client, walletConfig)
 	system := provideSystem(cfg)
-	walletService := provideWalletService(client, cfg, system)
 	assetService := asset2.New(client)
 	messageStore := message.New(db)
 	localizer, err := provideLocalizer(cfg)
@@ -55,8 +56,9 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 		return nil, err
 	}
 	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, localizer)
-	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, store, collateralStore, transactionStore, walletService, coreNotifier, system)
-	rpcServer := rpc.New(assetStore, vaultStore, flipStore, store, collateralStore, transactionStore)
+	oracleStore := oracle.New(db)
+	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, coreNotifier, oracleStore, system)
+	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore)
 	mux := provideRoute(apiServer, rpcServer, coreSession)
 	serverServer := provideServer(mux)
 	return serverServer, nil

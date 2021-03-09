@@ -44,6 +44,13 @@ type (
 		Chop decimal.Decimal `sql:"type:decimal(10,8)" json:"chop,omitempty"`
 		// Dunk, max liquidation Quantity, eg 50000
 		Dunk decimal.Decimal `sql:"type:decimal(64,8)" json:"dunk,omitempty"`
+		// Flip Options
+		// Beg minimum bid increase
+		Beg decimal.Decimal `sql:"type:decimal(8,4)" json:"beg,omitempty"`
+		// TTL bid duration in seconds
+		TTL int64 `json:"ttl,omitempty"`
+		// Tau flip duration in seconds
+		Tau int64 `json:"tau,omitempty"`
 		// Live
 		Live int `json:"live,omitempty"`
 	}

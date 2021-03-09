@@ -9,7 +9,8 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/drone/signal v1.0.0
 	github.com/dustin/go-humanize v1.0.0
-	github.com/fox-one/mixin-sdk-go v1.3.2
+	github.com/fox-one/mixin-sdk-go v1.3.3-beta
+	github.com/fox-one/msgpack v1.0.0 // indirect
 	github.com/fox-one/pkg v1.5.4
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.5.0
@@ -39,7 +40,6 @@ require (
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210301091718-77cc2087c03b // indirect
 	golang.org/x/text v0.3.4 // indirect
 	google.golang.org/protobuf v1.25.0
 )

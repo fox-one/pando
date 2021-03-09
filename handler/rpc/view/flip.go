@@ -5,32 +5,34 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/rpc/api"
-	"github.com/fox-one/pando/pkg/maker/flip"
 )
 
 func Flip(flip *core.Flip) *api.Flip {
-	now := time.Now()
+	tic := time.Unix(flip.Tic, 0)
+	end := time.Unix(flip.End, 0)
 
 	return &api.Flip{
 		Id:           flip.TraceID,
 		CreatedAt:    Time(&flip.CreatedAt),
-		Tic:          Time(&flip.Tic),
-		End:          Time(&flip.End),
-		Ended:        now.After(flip.Tic) || now.After(flip.End),
-		Settled:      flip.Action == core.ActionFlipDeal,
+		Tic:          Time(&tic),
+		End:          Time(&end),
 		Bid:          flip.Bid.String(),
 		Lot:          flip.Lot.String(),
 		Tab:          flip.Tab.String(),
+		Art:          flip.Art.String(),
 		CollateralId: flip.CollateralID,
 		VaultId:      flip.VaultID,
 		Guy:          flip.Guy,
+		Action:       api.Action(flip.Action),
 	}
 }
 
-func FlipOption(opt *flip.Option) *api.FlipOption {
-	return &api.FlipOption{
-		Beg: opt.Beg.String(),
-		Ttl: opt.TTL.Seconds(),
-		Tau: opt.Tau.Seconds(),
+func FlipEvent(event *core.FlipEvent) *api.Flip_Event {
+	return &api.Flip_Event{
+		FlipId:    event.FlipID,
+		CreatedAt: Time(&event.CreatedAt),
+		Action:    api.Action(event.Action),
+		Bid:       event.Bid.String(),
+		Lot:       event.Lot.String(),
 	}
 }

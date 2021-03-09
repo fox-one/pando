@@ -2,9 +2,9 @@ package core
 
 import (
 	"context"
+	"sort"
 	"time"
 
-	"github.com/fox-one/mixin-sdk-go"
 	"github.com/jmoiron/sqlx/types"
 	"github.com/lib/pq"
 	"github.com/shopspring/decimal"
@@ -13,24 +13,22 @@ import (
 type (
 	// Output represent Mixin Network multisig Outputs
 	Output struct {
-		ID        int64           `sql:"PRIMARY_KEY" json:"id,omitempty"`
-		CreatedAt time.Time       `json:"created_at,omitempty"`
-		UpdatedAt time.Time       `json:"updated_at,omitempty"`
-		Version   int64           `sql:"NOT NULL" json:"version,omitempty"`
-		TraceID   string          `sql:"type:char(36)" json:"trace_id,omitempty"`
-		AssetID   string          `sql:"type:char(36)" json:"asset_id,omitempty"`
-		Amount    decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
-		Memo      string          `sql:"size:200" json:"memo,omitempty"`
-		State     string          `sql:"size:24" json:"state,omitempty"`
+		ID              int64           `sql:"PRIMARY_KEY" json:"id,omitempty"`
+		CreatedAt       time.Time       `json:"created_at,omitempty"`
+		UpdatedAt       time.Time       `json:"updated_at,omitempty"`
+		Version         int64           `sql:"NOT NULL" json:"version,omitempty"`
+		TraceID         string          `sql:"type:char(36)" json:"trace_id,omitempty"`
+		Sender          string          `sql:"type:char(36)" json:"sender,omitempty"`
+		AssetID         string          `sql:"type:char(36)" json:"asset_id,omitempty"`
+		Amount          decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
+		Memo            string          `sql:"size:320" json:"memo,omitempty"`
+		State           string          `sql:"size:24" json:"state,omitempty"`
+		TransactionHash string          `sql:"size:64" json:"hash,omitempty"`        // utxo.transaction_hash.hex
+		OutputIndex     int             `json:"output_index,omitempty"`              // utxo.output_index
+		SignedTx        string          `sql:"type:TEXT" json:"signed_tx,omitempty"` // utxo.signed_tx
 
 		// SpentBy represent the associated transfer trace id
 		SpentBy string `sql:"type:char(36);NOT NULL" json:"spent_by,omitempty"`
-
-		// UTXO json Data
-		Data types.JSONText `sql:"type:TEXT" json:"data,omitempty"`
-
-		// Raw Mixin UTXO
-		UTXO *mixin.MultisigUTXO `sql:"-" json:"-,omitempty"`
 	}
 
 	Transfer struct {
@@ -81,5 +79,36 @@ type (
 		Spend(ctx context.Context, outputs []*Output, transfer *Transfer) (*RawTransaction, error)
 		// ReqTransfer generate payment code for multisig transfer
 		ReqTransfer(ctx context.Context, transfer *Transfer) (string, error)
+		// Transfer handle a transfer request
+		HandleTransfer(ctx context.Context, transfer *Transfer) error
 	}
 )
+
+func (a *Output) Cmp(b *Output) int {
+	if dur := a.CreatedAt.Sub(b.CreatedAt); dur > 0 {
+		return 1
+	} else if dur < 0 {
+		return -1
+	}
+
+	if a.TransactionHash > b.TransactionHash {
+		return 1
+	} else if a.TransactionHash < b.TransactionHash {
+		return -1
+	}
+
+	if a.OutputIndex > b.OutputIndex {
+		return 1
+	} else if a.OutputIndex < b.OutputIndex {
+		return -1
+	}
+
+	return 0
+}
+
+func SortOutputs(outputs []*Output) {
+	sort.Slice(outputs, func(i, j int) bool {
+		a, b := outputs[i], outputs[j]
+		return a.Cmp(b) < 0
+	})
+}

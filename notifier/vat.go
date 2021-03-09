@@ -2,81 +2,71 @@ package notifier
 
 import (
 	"context"
-	"encoding/base64"
-	"fmt"
 
-	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
-	"github.com/fox-one/pando/pkg/maker/vat"
-	"github.com/fox-one/pando/pkg/uuid"
+	"github.com/fox-one/pkg/logger"
+	"github.com/spf13/cast"
 )
 
-type VatData struct {
-	vat.Data
+func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, data *TxData) error {
+	vatID := tx.TraceID
 
-	CatName   string
-	GemSymbol string
-	DaiSymbol string
-	Msg       string
-}
+	if tx.Action != core.ActionVatOpen {
+		var parameters []interface{}
+		_ = tx.Parameters.Unmarshal(&parameters)
 
-func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction) error {
-	var data VatData
-	_ = tx.Data.Unmarshal(&data)
-
-	if tx.CollateralID != "" {
-		c, err := n.cats.Find(ctx, tx.CollateralID)
-		if err != nil {
-			return fmt.Errorf("cats.Find(%q) %w", tx.CollateralID, err)
+		if len(parameters) > 0 {
+			vatID = cast.ToString(parameters[0])
 		}
-
-		data.CatName = c.Name
-
-		gem, err := n.assetz.Find(ctx, c.Gem)
-		if err != nil {
-			return fmt.Errorf("assetz.Find(%q) %w", c.Gem, err)
-		}
-
-		data.GemSymbol = gem.Symbol
-
-		dai, err := n.assetz.Find(ctx, c.Dai)
-		if err != nil {
-			return fmt.Errorf("assetz.Find(%q) %w", c.Dai, err)
-		}
-
-		data.DaiSymbol = dai.Symbol
 	}
 
-	id := "vat"
-	switch tx.Action {
-	case core.ActionVatOpen:
-		id = id + "_open"
-	case core.ActionVatDeposit:
-		id = id + "_deposit"
-	case core.ActionVatWithdraw:
-		id = id + "_withdraw"
-	case core.ActionVatPayback:
-		id = id + "_payback"
-	case core.ActionVatGenerate:
-		id = id + "_generate"
-	default:
+	vat, err := n.vats.Find(ctx, vatID)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("vats.Find")
+		return err
+	}
+
+	if vat.ID == 0 {
 		return nil
 	}
 
-	if tx.Status == core.TxStatusSuccess {
-		id = id + "_success"
+	cat, err := n.cats.Find(ctx, vat.CollateralID)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("cats.Find")
+		return err
+	}
+
+	gem, err := n.assetz.Find(ctx, cat.Gem)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
+		return err
+	}
+
+	dai, err := n.assetz.Find(ctx, cat.Dai)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
+		return err
+	}
+
+	event, err := n.vats.FindEvent(ctx, vatID, tx.Version)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("vats.FindEvent")
+		return err
+	}
+
+	data.Lines = append(data.Lines, n.localize("vat_name", "Name", cat.Name))
+
+	if event.Dink.IsPositive() {
+		data.Lines = append(data.Lines, n.localize("vat_deposit", "Dink", event.Dink.String(), "Gem", gem.Symbol))
+	} else if event.Dink.IsNegative() {
+		data.Lines = append(data.Lines, n.localize("vat_withdraw", "Dink", event.Dink.Abs().String(), "Gem", gem.Symbol))
+	}
+
+	if event.Debt.IsPositive() {
+		data.Lines = append(data.Lines, n.localize("vat_generate", "Debt", event.Debt.String(), "Dai", dai.Symbol))
 	} else {
-		id = id + "_failed"
+		data.Lines = append(data.Lines, n.localize("vat_payback", "Debt", event.Debt.Abs().String(), "Dai", dai.Symbol))
 	}
 
-	msg := n.localize(id, data)
-	req := &mixin.MessageRequest{
-		ConversationID: mixin.UniqueConversationID(n.system.ClientID, tx.UserID),
-		RecipientID:    tx.UserID,
-		MessageID:      uuid.Modify(tx.TraceID, "notifier"),
-		Category:       mixin.MessageCategoryPlainText,
-		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
-	}
-
-	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+	return nil
 }
