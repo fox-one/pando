@@ -69,11 +69,8 @@ func New(
 		core.ActionProposalVote:  proposal.HandleVote(proposals, parliaments, walletz, system),
 	}
 
-	// actions[core.ActionProposalVote] = proposal.HandleVote(proposals, parliaments, actions, system)
-
 	return &Payee{
 		wallets:      wallets,
-		proposals:    proposals,
 		property:     property,
 		oraclez:      oraclez,
 		transactions: transactions,
@@ -85,7 +82,6 @@ func New(
 type Payee struct {
 	wallets      core.WalletStore
 	property     property.Store
-	proposals    core.ProposalStore
 	oraclez      core.OracleService
 	transactions core.TransactionStore
 	system       *core.System
