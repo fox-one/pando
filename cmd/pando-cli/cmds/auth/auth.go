@@ -10,6 +10,7 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(NewLoginCmd())
+	cmd.AddCommand(NewTokenCmd())
 
 	return cmd
 }

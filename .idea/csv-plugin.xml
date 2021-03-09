@@ -150,6 +150,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/cmd/pando-server/README.md">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/core/action.go">
           <value>
             <Attribute>

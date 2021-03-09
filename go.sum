@@ -98,6 +98,8 @@ github.com/fox-one/mixin-sdk v1.1.9/go.mod h1:2WYrF99CbJuEOS9HqV7JhZwejF9vg334B9
 github.com/fox-one/mixin-sdk v1.4.5/go.mod h1:EZz+CvQxU2BLgwOQeqOPP4RFentYKc3y6K4Xv9lnulk=
 github.com/fox-one/mixin-sdk-go v1.3.2 h1:+xNse9xeo8/NC5sOKK3RA1bU4fmKIClxQg3HM+BGtnI=
 github.com/fox-one/mixin-sdk-go v1.3.2/go.mod h1:Ru2Fxkpk4K4adIF3VcYue5agtdFHyNCsHpoBl8l4SYA=
+github.com/fox-one/mixin-sdk-go v1.3.3-beta h1:l5GzwzU3TzbqGyLtCCsGz8A/QMQ3AZOt2MbIrQaLwJ0=
+github.com/fox-one/mixin-sdk-go v1.3.3-beta/go.mod h1:XFHvccwTy3teqehhT49B8LKDi03+QFfeX0n9U/HvwT0=
 github.com/fox-one/msgpack v1.0.0 h1:atr4La29WdMPCoddlRAPK2e1yhBJ2cEFF+2X93KY5Vs=
 github.com/fox-one/msgpack v1.0.0/go.mod h1:Gf/g5JQGPkB0JrQvfxCu8ZXm4jqXsCPe89mFe8i3vms=
 github.com/fox-one/pkg v1.1.14/go.mod h1://wvQ3V/0n3TOg8a58ZQ4JrFf2qH6A4CSAKl884WELM=
@@ -558,6 +560,8 @@ golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210301091718-77cc2087c03b h1:kHlr0tATeLRMEiZJu5CknOw/E8V6h69sXXQFGoPtjcc=
 golang.org/x/sys v0.0.0-20210301091718-77cc2087c03b/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210309074719-68d13333faf2 h1:46ULzRKLh1CwgRq2dC5SlBzEqqNCi8rreOZnNrbqcIY=
+golang.org/x/sys v0.0.0-20210309074719-68d13333faf2/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

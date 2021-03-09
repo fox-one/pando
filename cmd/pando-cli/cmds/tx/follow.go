@@ -2,9 +2,12 @@ package tx
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/fox-one/pando/cmd/pando-cli/internal/call"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/cfg"
+	"github.com/fox-one/pando/cmd/pando-cli/internal/column"
+	"github.com/fox-one/pando/cmd/pando-cli/internal/jq"
 	"github.com/fox-one/pando/handler/rpc/api"
 	"github.com/spf13/cobra"
 )
@@ -23,9 +26,14 @@ func NewFollowCmd() *cobra.Command {
 				return err
 			}
 
-			d := json.NewEncoder(cmd.OutOrStdout())
-			d.SetIndent("", "  ")
-			return d.Encode(tx)
+			b, _ := json.Marshal(tx)
+			lines, err := jq.ParseObject(b, "status", "msg", "action", "parameters")
+			if err != nil {
+				return err
+			}
+
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), column.Print(lines))
+			return nil
 		},
 	}
 
