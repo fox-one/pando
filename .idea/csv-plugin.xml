@@ -164,6 +164,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/handler/api/actions/create.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/notifier/notifier.go">
           <value>
             <Attribute>

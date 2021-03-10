@@ -2,11 +2,11 @@ package api
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/api/actions"
 	"github.com/fox-one/pando/handler/api/system"
+	"github.com/fox-one/pando/handler/api/user"
 	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pando/handler/rpc"
@@ -57,6 +57,22 @@ type Server struct {
 	system       *core.System
 }
 
+// @title Pando API
+// @version 1.0
+// @description Pando Api Doc
+// @termsOfService http://pando.im/terms/
+
+// @contact.name API Support
+// @contact.url http://www.pando.im/support
+// @contact.email support@pando.im
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @schemes https
+// @host pando-test-api.fox.one
+// @BasePath /api
+// @query.collection.format multi
 func (s *Server) Handler() http.Handler {
 	r := chi.NewRouter()
 	r.Use(auth.HandleAuthentication(s.sessions))
@@ -66,16 +82,10 @@ func (s *Server) Handler() http.Handler {
 		render.Error(w, twirp.NotFoundError("not found"))
 	})
 
-	r.Get("/time", func(w http.ResponseWriter, r *http.Request) {
-		t := time.Now()
-		render.JSON(w, render.H{
-			"iso":   t.Format(time.RFC3339),
-			"epoch": t.Unix(),
-		})
-	})
-
+	r.Get("/time", system.HandleTime())
 	r.Get("/info", system.HandleInfo(s.system))
-	r.Post("/login", auth.HandleOauth(s.userz, s.sessions, s.notifier))
+
+	r.Post("/login", user.HandleOauth(s.userz, s.sessions, s.notifier))
 
 	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)

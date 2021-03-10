@@ -3,6 +3,7 @@ module github.com/fox-one/pando
 go 1.16
 
 require (
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
 	github.com/bluele/gcache v0.0.2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
@@ -10,7 +11,7 @@ require (
 	github.com/drone/signal v1.0.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fox-one/mixin-sdk-go v1.3.3-beta
-	github.com/fox-one/msgpack v1.0.0 // indirect
+	github.com/fox-one/msgpack v1.0.0
 	github.com/fox-one/pkg v1.5.4
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.5.0
@@ -36,10 +37,9 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
+	github.com/swaggo/swag v1.7.0
 	github.com/twitchtv/twirp v7.1.1+incompatible
-	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/text v0.3.4
 	google.golang.org/protobuf v1.25.0
 )

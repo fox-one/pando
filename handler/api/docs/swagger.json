@@ -1,0 +1,353 @@
+{
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Pando Api Doc",
+        "title": "Pando API",
+        "termsOfService": "http://pando.im/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.pando.im/support",
+            "email": "support@pando.im"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "pando-test-api.fox.one",
+    "basePath": "/api",
+    "paths": {
+        "/actions": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "actions"
+                ],
+                "summary": "request payment code",
+                "parameters": [
+                    {
+                        "description": "request payments",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/actions.CreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/actions.CreateResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/views.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/assets": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "assets"
+                ],
+                "summary": "list assets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListAssets"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/views.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/info": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system"
+                ],
+                "summary": "Show system info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/system.InfoResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/views.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "login with mixin oauth code",
+                "parameters": [
+                    {
+                        "description": "request login",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/views.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/time": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system"
+                ],
+                "summary": "Show server time",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/system.TimeResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/views.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "actions.CreateRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "payment amount (optional)",
+                    "type": "number"
+                },
+                "asset_id": {
+                    "description": "payment asset id (optional)",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "follow_id": {
+                    "description": "follow id to track tx (uuid)",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "parameters": {
+                    "description": "tx parameters",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "actions.CreateResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "multisig payment code",
+                    "type": "string"
+                },
+                "code_url": {
+                    "description": "multisig payment code url",
+                    "type": "string"
+                },
+                "memo": {
+                    "description": "payment memo",
+                    "type": "string"
+                }
+            }
+        },
+        "api.Asset": {
+            "type": "object",
+            "properties": {
+                "chain": {
+                    "$ref": "#/definitions/api.Asset"
+                },
+                "chain_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "mixin asset id",
+                    "type": "string"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Resp_ListAssets": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Asset"
+                    }
+                }
+            }
+        },
+        "system.InfoResponse": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "description": "multisig members",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "oauth_client_id": {
+                    "description": "oauth client id",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "public_key": {
+                    "type": "string"
+                },
+                "threshold": {
+                    "description": "multisig threshold",
+                    "type": "integer"
+                }
+            }
+        },
+        "system.TimeResponse": {
+            "type": "object",
+            "properties": {
+                "epoch": {
+                    "type": "integer"
+                },
+                "iso": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "mixin oauth code",
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "description": "user avatar",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "user mixin id",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "name": {
+                    "description": "user name",
+                    "type": "string"
+                },
+                "scope": {
+                    "description": "mixin oauth scope",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "mixin oauth token",
+                    "type": "string"
+                }
+            }
+        },
+        "views.Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

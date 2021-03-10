@@ -9,7 +9,7 @@ import (
 	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/request"
 	"github.com/fox-one/pando/handler/rpc/api"
-	"github.com/fox-one/pando/handler/rpc/view"
+	"github.com/fox-one/pando/handler/rpc/views"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/store"
 	"github.com/spf13/cast"
@@ -75,7 +75,7 @@ func (s *Server) FindAsset(ctx context.Context, req *api.Req_FindAsset) (*api.As
 		}
 	}
 
-	return view.Asset(asset, chain), nil
+	return views.Asset(asset, chain), nil
 }
 
 func (s *Server) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Resp_ListAssets, error) {
@@ -98,7 +98,7 @@ func (s *Server) ListAssets(ctx context.Context, _ *api.Req_ListAssets) (*api.Re
 
 	resp := &api.Resp_ListAssets{}
 	for _, asset := range assets {
-		resp.Assets = append(resp.Assets, view.Asset(asset, chains[asset.ChainID]))
+		resp.Assets = append(resp.Assets, views.Asset(asset, chains[asset.ChainID]))
 	}
 
 	return resp, nil
@@ -115,7 +115,7 @@ func (s *Server) FindOracle(ctx context.Context, req *api.Req_FindOracle) (*api.
 		return nil, twirp.NotFoundError("not found")
 	}
 
-	return view.Oracle(oracle), nil
+	return views.Oracle(oracle), nil
 }
 
 func (s *Server) ListOracles(ctx context.Context, _ *api.Req_ListOracles) (*api.Resp_ListOracles, error) {
@@ -127,7 +127,7 @@ func (s *Server) ListOracles(ctx context.Context, _ *api.Req_ListOracles) (*api.
 
 	resp := &api.Resp_ListOracles{}
 	for _, oracle := range oracles {
-		resp.Oracles = append(resp.Oracles, view.Oracle(oracle))
+		resp.Oracles = append(resp.Oracles, views.Oracle(oracle))
 	}
 
 	return resp, nil
@@ -144,7 +144,7 @@ func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral
 		return nil, twirp.NotFoundError("cat not init")
 	}
 
-	return view.Collateral(cat), nil
+	return views.Collateral(cat), nil
 }
 
 func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals) (*api.Resp_ListCollaterals, error) {
@@ -156,7 +156,7 @@ func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals
 
 	resp := &api.Resp_ListCollaterals{}
 	for _, cat := range cats {
-		resp.Collaterals = append(resp.Collaterals, view.Collateral(cat))
+		resp.Collaterals = append(resp.Collaterals, views.Collateral(cat))
 	}
 
 	return resp, nil
@@ -173,7 +173,7 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 		return nil, twirp.NotFoundError("vat not init")
 	}
 
-	return view.Vault(vat), nil
+	return views.Vault(vat), nil
 }
 
 func (s *Server) ListMyVaults(ctx context.Context, req *api.Req_ListMyVaults) (*api.Resp_ListVaults, error) {
@@ -218,7 +218,7 @@ func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.
 
 	resp := &api.Resp_ListVaults{}
 	for idx, vat := range vats {
-		resp.Vaults = append(resp.Vaults, view.Vault(vat))
+		resp.Vaults = append(resp.Vaults, views.Vault(vat))
 
 		if idx == limit-1 {
 			resp.Pagination.NextCursor = cast.ToString(vat.ID)
@@ -239,7 +239,7 @@ func (s *Server) ListVaultEvents(ctx context.Context, req *api.Req_ListVaultEven
 
 	resp := &api.Resp_ListVaultEvents{}
 	for _, event := range events {
-		resp.Events = append(resp.Events, view.VaultEvent(event))
+		resp.Events = append(resp.Events, views.VaultEvent(event))
 	}
 
 	return resp, nil
@@ -260,7 +260,7 @@ func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip
 		flip.Guy = ""
 	}
 
-	return view.Flip(flip), nil
+	return views.Flip(flip), nil
 }
 
 func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Resp_ListFlips, error) {
@@ -282,7 +282,7 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 
 	for idx, f := range flips {
 		f.Guy = ""
-		resp.Flips = append(resp.Flips, view.Flip(f))
+		resp.Flips = append(resp.Flips, views.Flip(f))
 
 		if idx == limit-1 {
 			resp.Pagination.NextCursor = cast.ToString(f.ID)
@@ -303,7 +303,7 @@ func (s *Server) ListFlipEvents(ctx context.Context, req *api.Req_ListFlipEvents
 
 	resp := &api.Resp_ListFlipEvents{}
 	for _, event := range events {
-		resp.Events = append(resp.Events, view.FlipEvent(event))
+		resp.Events = append(resp.Events, views.FlipEvent(event))
 	}
 
 	return resp, nil
@@ -325,7 +325,7 @@ func (s *Server) FindTransaction(ctx context.Context, req *api.Req_FindTransacti
 		return nil, err
 	}
 
-	return view.Transaction(tx), nil
+	return views.Transaction(tx), nil
 }
 
 func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransactions) (*api.Resp_ListTransactions, error) {
@@ -346,7 +346,7 @@ func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransact
 	}
 
 	for idx, t := range transactions {
-		resp.Transactions = append(resp.Transactions, view.Transaction(t))
+		resp.Transactions = append(resp.Transactions, views.Transaction(t))
 
 		if idx == limit-1 {
 			resp.Pagination.NextCursor = cast.ToString(t.ID)

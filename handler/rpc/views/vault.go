@@ -1,4 +1,4 @@
-package view
+package views
 
 import (
 	"github.com/fox-one/pando/core"

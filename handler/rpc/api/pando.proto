@@ -40,6 +40,7 @@ enum Action {
 }
 
 message Asset {
+    // mixin asset id
     string id = 1;
     string name = 2;
     string symbol = 3;
