@@ -722,4 +722,5 @@ paths:
       - Vaults
 schemes:
 - https
+- http
 swagger: "2.0"

@@ -1126,7 +1126,7 @@ var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "pando-test-api.fox.one",
 	BasePath:    "/api",
-	Schemes:     []string{"https"},
+	Schemes:     []string{"https", "http"},
 	Title:       "Pando API",
 	Description: "Pando Api Doc",
 }

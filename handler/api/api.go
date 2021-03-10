@@ -57,22 +57,6 @@ type Server struct {
 	system       *core.System
 }
 
-// @title Pando API
-// @version 1.0
-// @description Pando Api Doc
-// @termsOfService http://pando.im/terms/
-
-// @contact.name API Support
-// @contact.url http://www.pando.im/support
-// @contact.email support@pando.im
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @schemes https
-// @host pando-test-api.fox.one
-// @BasePath /api
-// @query.collection.format multi
 func (s *Server) Handler() http.Handler {
 	r := chi.NewRouter()
 	r.Use(auth.HandleAuthentication(s.sessions))

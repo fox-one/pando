@@ -26,7 +26,7 @@ func Handler(version string) http.Handler {
 	f := func(w http.ResponseWriter, r *http.Request) {
 		info := SwaggerInfo
 		info.Version = version
-		info.Host = r.URL.Host
+		info.Host = r.Host
 		info.Description = strings.Replace(info.Description, "\n", "\\n", -1)
 
 		var tpl bytes.Buffer
