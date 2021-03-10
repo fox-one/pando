@@ -45,7 +45,6 @@ type CreateResponse struct {
 // @Produce  json
 // @Param request body CreateRequest false "request payments"
 // @Success 200 {object} CreateResponse
-// @Failure default {object} views.Error
 // @Router /actions [post]
 func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

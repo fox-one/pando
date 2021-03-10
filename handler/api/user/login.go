@@ -37,7 +37,6 @@ type LoginResponse struct {
 // @Produce  json
 // @Param request body LoginRequest false "request login"
 // @Success 200 {object} LoginResponse
-// @Failure default {object} views.Error
 // @Router /login [post]
 func HandleOauth(
 	userz core.UserService,

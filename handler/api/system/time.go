@@ -19,7 +19,6 @@ type TimeResponse struct {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} TimeResponse
-// @Failure default {object} views.Error
 // @Router /time [get]
 func HandleTime() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

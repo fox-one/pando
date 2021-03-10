@@ -337,27 +337,29 @@ type Collateral struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
 	Name      string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	Gem       string                 `protobuf:"bytes,4,opt,name=gem,proto3" json:"gem,omitempty"`
 	Dai       string                 `protobuf:"bytes,5,opt,name=dai,proto3" json:"dai,omitempty"`
 	Ink       string                 `protobuf:"bytes,6,opt,name=ink,proto3" json:"ink,omitempty"`
 	Art       string                 `protobuf:"bytes,7,opt,name=art,proto3" json:"art,omitempty"`
 	Rate      string                 `protobuf:"bytes,8,opt,name=rate,proto3" json:"rate,omitempty"`
-	Rho       *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=rho,proto3" json:"rho,omitempty"`
-	Debt      string                 `protobuf:"bytes,10,opt,name=debt,proto3" json:"debt,omitempty"`
-	Line      string                 `protobuf:"bytes,11,opt,name=line,proto3" json:"line,omitempty"`
-	Dust      string                 `protobuf:"bytes,12,opt,name=dust,proto3" json:"dust,omitempty"`
-	Price     string                 `protobuf:"bytes,13,opt,name=price,proto3" json:"price,omitempty"`
-	Mat       string                 `protobuf:"bytes,14,opt,name=mat,proto3" json:"mat,omitempty"`
-	Duty      string                 `protobuf:"bytes,15,opt,name=duty,proto3" json:"duty,omitempty"`
-	Chop      string                 `protobuf:"bytes,16,opt,name=chop,proto3" json:"chop,omitempty"`
-	Dunk      string                 `protobuf:"bytes,17,opt,name=dunk,proto3" json:"dunk,omitempty"`
-	Beg       string                 `protobuf:"bytes,18,opt,name=beg,proto3" json:"beg,omitempty"`
-	Ttl       int32                  `protobuf:"varint,19,opt,name=ttl,proto3" json:"ttl,omitempty"`
-	Tau       int32                  `protobuf:"varint,20,opt,name=tau,proto3" json:"tau,omitempty"`
-	Live      bool                   `protobuf:"varint,21,opt,name=live,proto3" json:"live,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	Rho   *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=rho,proto3" json:"rho,omitempty" swaggertype:"string" format:"date"`
+	Debt  string                 `protobuf:"bytes,10,opt,name=debt,proto3" json:"debt,omitempty"`
+	Line  string                 `protobuf:"bytes,11,opt,name=line,proto3" json:"line,omitempty"`
+	Dust  string                 `protobuf:"bytes,12,opt,name=dust,proto3" json:"dust,omitempty"`
+	Price string                 `protobuf:"bytes,13,opt,name=price,proto3" json:"price,omitempty"`
+	Mat   string                 `protobuf:"bytes,14,opt,name=mat,proto3" json:"mat,omitempty"`
+	Duty  string                 `protobuf:"bytes,15,opt,name=duty,proto3" json:"duty,omitempty"`
+	Chop  string                 `protobuf:"bytes,16,opt,name=chop,proto3" json:"chop,omitempty"`
+	Dunk  string                 `protobuf:"bytes,17,opt,name=dunk,proto3" json:"dunk,omitempty"`
+	Beg   string                 `protobuf:"bytes,18,opt,name=beg,proto3" json:"beg,omitempty"`
+	Ttl   int32                  `protobuf:"varint,19,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Tau   int32                  `protobuf:"varint,20,opt,name=tau,proto3" json:"tau,omitempty"`
+	Live  bool                   `protobuf:"varint,21,opt,name=live,proto3" json:"live,omitempty"`
 }
 
 func (x *Collateral) Reset() {
@@ -544,8 +546,9 @@ type Vault struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
 	CollateralId string                 `protobuf:"bytes,3,opt,name=collateral_id,json=collateralId,proto3" json:"collateral_id,omitempty"`
 	Ink          string                 `protobuf:"bytes,4,opt,name=ink,proto3" json:"ink,omitempty"`
 	Art          string                 `protobuf:"bytes,5,opt,name=art,proto3" json:"art,omitempty"`
@@ -623,10 +626,13 @@ type Flip struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	Tic          *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=tic,proto3" json:"tic,omitempty"`
-	End          *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=end,proto3" json:"end,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	Tic *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=tic,proto3" json:"tic,omitempty" swaggertype:"string" format:"date"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	End          *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=end,proto3" json:"end,omitempty" swaggertype:"string" format:"date"`
 	Bid          string                 `protobuf:"bytes,5,opt,name=bid,proto3" json:"bid,omitempty"`
 	Lot          string                 `protobuf:"bytes,6,opt,name=lot,proto3" json:"lot,omitempty"`
 	Tab          string                 `protobuf:"bytes,7,opt,name=tab,proto3" json:"tab,omitempty"`
@@ -758,11 +764,13 @@ type Oracle struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AssetId string                 `protobuf:"bytes,1,opt,name=asset_id,json=assetId,proto3" json:"asset_id,omitempty"`
-	Hop     int32                  `protobuf:"varint,2,opt,name=hop,proto3" json:"hop,omitempty"`
-	Current string                 `protobuf:"bytes,3,opt,name=current,proto3" json:"current,omitempty"`
-	Next    string                 `protobuf:"bytes,4,opt,name=next,proto3" json:"next,omitempty"`
-	PeekAt  *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=peek_at,json=peekAt,proto3" json:"peek_at,omitempty"`
+	AssetId string `protobuf:"bytes,1,opt,name=asset_id,json=assetId,proto3" json:"asset_id,omitempty"`
+	Hop     int32  `protobuf:"varint,2,opt,name=hop,proto3" json:"hop,omitempty"`
+	Current string `protobuf:"bytes,3,opt,name=current,proto3" json:"current,omitempty"`
+	Next    string `protobuf:"bytes,4,opt,name=next,proto3" json:"next,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	// last update of current price
+	PeekAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=peek_at,json=peekAt,proto3" json:"peek_at,omitempty" swaggertype:"string" format:"date"`
 }
 
 func (x *Oracle) Reset() {
@@ -837,8 +845,9 @@ type Transaction struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	CreatedAt  *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt  *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
 	AssetId    string                 `protobuf:"bytes,3,opt,name=asset_id,json=assetId,proto3" json:"asset_id,omitempty"`
 	Amount     string                 `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
 	Action     Action                 `protobuf:"varint,5,opt,name=action,proto3,enum=fox.pando.service.Action" json:"action,omitempty"`
@@ -1016,8 +1025,9 @@ type Vault_Event struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VaultId   string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	VaultId string `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
 	Action    Action                 `protobuf:"varint,3,opt,name=action,proto3,enum=fox.pando.service.Action" json:"action,omitempty"`
 	Dink      string                 `protobuf:"bytes,4,opt,name=dink,proto3" json:"dink,omitempty"`
 	Dart      string                 `protobuf:"bytes,5,opt,name=dart,proto3" json:"dart,omitempty"`
@@ -1103,8 +1113,9 @@ type Flip_Event struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FlipId    string                 `protobuf:"bytes,1,opt,name=flip_id,json=flipId,proto3" json:"flip_id,omitempty"`
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	FlipId string `protobuf:"bytes,1,opt,name=flip_id,json=flipId,proto3" json:"flip_id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
 	Action    Action                 `protobuf:"varint,3,opt,name=action,proto3,enum=fox.pando.service.Action" json:"action,omitempty"`
 	Bid       string                 `protobuf:"bytes,4,opt,name=bid,proto3" json:"bid,omitempty"`
 	Lot       string                 `protobuf:"bytes,5,opt,name=lot,proto3" json:"lot,omitempty"`
@@ -1182,7 +1193,8 @@ type Req_FindAsset struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindAsset) Reset() {
@@ -1267,7 +1279,8 @@ type Req_FindOracle struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindOracle) Reset() {
@@ -1392,7 +1405,8 @@ type Req_FindCollateral struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindCollateral) Reset() {
@@ -1439,7 +1453,8 @@ type Req_FindVault struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindVault) Reset() {
@@ -1613,7 +1628,8 @@ type Req_ListVaultEvents struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_ListVaultEvents) Reset() {
@@ -1660,7 +1676,8 @@ type Req_FindFlip struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindFlip) Reset() {
@@ -1810,7 +1827,8 @@ type Req_FindTransaction struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
 }
 
 func (x *Req_FindTransaction) Reset() {

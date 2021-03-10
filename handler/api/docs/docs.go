@@ -61,12 +61,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/actions.CreateResponse"
                         }
-                    },
-                    "default": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/views.Error"
-                        }
                     }
                 }
             }
@@ -80,7 +74,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "assets"
+                    "Assets"
                 ],
                 "summary": "list assets",
                 "responses": {
@@ -89,11 +83,185 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/api.Resp_ListAssets"
                         }
-                    },
-                    "default": {
-                        "description": "",
+                    }
+                }
+            }
+        },
+        "/assets/{asset_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Assets"
+                ],
+                "summary": "Find Asset By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "mixin asset id",
+                        "name": "asset_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/views.Error"
+                            "$ref": "#/definitions/api.Asset"
+                        }
+                    }
+                }
+            }
+        },
+        "/cats": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Collaterals"
+                ],
+                "summary": "list all collateral",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListCollaterals"
+                        }
+                    }
+                }
+            }
+        },
+        "/cats/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Collaterals"
+                ],
+                "summary": "find collateral by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "collateral id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Collateral"
+                        }
+                    }
+                }
+            }
+        },
+        "/flips": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flips"
+                ],
+                "summary": "list flips",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListFlips"
+                        }
+                    }
+                }
+            }
+        },
+        "/flips/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flips"
+                ],
+                "summary": "find flip by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "flip id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Flip"
+                        }
+                    }
+                }
+            }
+        },
+        "/flips/{id}/events": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flips"
+                ],
+                "summary": "list flip events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "flip id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListFlipEvents"
                         }
                     }
                 }
@@ -116,12 +284,6 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/system.InfoResponse"
-                        }
-                    },
-                    "default": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/views.Error"
                         }
                     }
                 }
@@ -155,11 +317,99 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/user.LoginResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/me/vats": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "list my vaults",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
                     },
-                    "default": {
-                        "description": "",
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: Bearer foo",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/views.Error"
+                            "$ref": "#/definitions/api.Resp_ListVaults"
+                        }
+                    }
+                }
+            }
+        },
+        "/oracles": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Oracles"
+                ],
+                "summary": "list all oracles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListOracles"
+                        }
+                    }
+                }
+            }
+        },
+        "/oracles/{asset_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Oracles"
+                ],
+                "summary": "find oracle by asset id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "mixin asset id",
+                        "name": "asset_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Oracle"
                         }
                     }
                 }
@@ -183,11 +433,182 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/system.TimeResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "list transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
                     },
-                    "default": {
-                        "description": "",
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/views.Error"
+                            "$ref": "#/definitions/api.Resp_ListTransactions"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{follow_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "find tx by follow id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Example: Bearer foo",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "follow id",
+                        "name": "follow_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Transaction"
+                        }
+                    }
+                }
+            }
+        },
+        "/vats": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "list vaults",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "collateral_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListVaults"
+                        }
+                    }
+                }
+            }
+        },
+        "/vats/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "find vault by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vault id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Vault"
+                        }
+                    }
+                }
+            }
+        },
+        "/vats/{id}/events": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "list vault events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "@inject_tag: valid:\"uuid,required\"",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListVaultEvents"
                         }
                     }
                 }
@@ -269,6 +690,180 @@ var doc = `{
                 }
             }
         },
+        "api.Collateral": {
+            "type": "object",
+            "properties": {
+                "art": {
+                    "type": "string"
+                },
+                "beg": {
+                    "type": "string"
+                },
+                "chop": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "dai": {
+                    "type": "string"
+                },
+                "debt": {
+                    "type": "string"
+                },
+                "dunk": {
+                    "type": "string"
+                },
+                "dust": {
+                    "type": "string"
+                },
+                "duty": {
+                    "type": "string"
+                },
+                "gem": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ink": {
+                    "type": "string"
+                },
+                "line": {
+                    "type": "string"
+                },
+                "live": {
+                    "type": "boolean"
+                },
+                "mat": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "string"
+                },
+                "rho": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "tau": {
+                    "type": "integer"
+                },
+                "ttl": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.Flip": {
+            "type": "object",
+            "properties": {
+                "Guy": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "integer"
+                },
+                "art": {
+                    "type": "string"
+                },
+                "bid": {
+                    "type": "string"
+                },
+                "collateral_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "end": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lot": {
+                    "type": "string"
+                },
+                "tab": {
+                    "type": "string"
+                },
+                "tic": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "vault_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Flip_Event": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "integer"
+                },
+                "bid": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "flip_id": {
+                    "type": "string"
+                },
+                "lot": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Oracle": {
+            "type": "object",
+            "properties": {
+                "asset_id": {
+                    "type": "string"
+                },
+                "current": {
+                    "type": "string"
+                },
+                "hop": {
+                    "type": "integer"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "peek_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"\nlast update of current price",
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
+        "api.Pagination": {
+            "type": "object",
+            "properties": {
+                "has_next": {
+                    "type": "boolean"
+                },
+                "next_cursor": {
+                    "type": "string"
+                }
+            }
+        },
         "api.Resp_ListAssets": {
             "type": "object",
             "properties": {
@@ -277,6 +872,170 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/api.Asset"
                     }
+                }
+            }
+        },
+        "api.Resp_ListCollaterals": {
+            "type": "object",
+            "properties": {
+                "collaterals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Collateral"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListFlipEvents": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Flip_Event"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListFlips": {
+            "type": "object",
+            "properties": {
+                "flips": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Flip"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                }
+            }
+        },
+        "api.Resp_ListOracles": {
+            "type": "object",
+            "properties": {
+                "oracles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Oracle"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListTransactions": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Transaction"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListVaultEvents": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Vault_Event"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListVaults": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                },
+                "vaults": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Vault"
+                    }
+                }
+            }
+        },
+        "api.Transaction": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.Vault": {
+            "type": "object",
+            "properties": {
+                "art": {
+                    "type": "string"
+                },
+                "collateral_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ink": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Vault_Event": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "dart": {
+                    "type": "string"
+                },
+                "debt": {
+                    "type": "string"
+                },
+                "dink": {
+                    "type": "string"
+                },
+                "vault_id": {
+                    "type": "string"
                 }
             }
         },
@@ -346,17 +1105,6 @@ var doc = `{
                 },
                 "token": {
                     "description": "mixin oauth token",
-                    "type": "string"
-                }
-            }
-        },
-        "views.Error": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "msg": {
                     "type": "string"
                 }
             }

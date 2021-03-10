@@ -25,7 +25,6 @@ type InfoResponse struct {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} InfoResponse
-// @Failure default {object} views.Error
 // @Router /info [get]
 func HandleInfo(system *core.System) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
