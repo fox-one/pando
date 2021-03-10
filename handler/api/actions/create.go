@@ -77,5 +77,7 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 			view["code"] = code
 			view["code_url"] = mixin.URL.Codes(code)
 		}
+
+		render.JSON(w, view)
 	}
 }
