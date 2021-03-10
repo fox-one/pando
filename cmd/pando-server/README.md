@@ -335,13 +335,13 @@ POST /api/actions
 }
 ```
 
-| action      | parameters                                                        |
-| ----------- | ----------------------------------------------------------------- |
-| VatOpen     | "bit","31","uuid","{cat_id}","decimal","{ink}","decimal","{debt}" |
-| VatDeposit  | "bit","32","uuid","{vat_id}","decimal","{ink}"                    |
-| VatWithdraw | "bit","33","uuid","{vat_id}","decimal","{ink}"                    |
-| VatPayback  | "bit","34","uuid","{vat_id}","decimal","{debt}"                   |
-| VatGenerate | "bit","35","uuid","{vat_id}","decimal","{debt}"                   |
+| action      | parameters                                      |
+| ----------- | ----------------------------------------------- |
+| VatOpen     | "bit","31","uuid","{cat_id}","decimal","{debt}" |
+| VatDeposit  | "bit","32","uuid","{vat_id}"                    |
+| VatWithdraw | "bit","33","uuid","{vat_id}","decimal","{ink}"  |
+| VatPayback  | "bit","34","uuid","{vat_id}"                    |
+| VatGenerate | "bit","35","uuid","{vat_id}","decimal","{debt}" |
 
 **Response:**
 
