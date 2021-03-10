@@ -5,6 +5,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/api"
+	"github.com/fox-one/pando/handler/docs"
 	"github.com/fox-one/pando/handler/hc"
 	"github.com/fox-one/pando/handler/rpc"
 	"github.com/fox-one/pando/server"
@@ -33,6 +34,7 @@ func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session) *chi.
 
 	r.Mount("/twirp", rpc.Handle(sessions))
 	r.Mount("/api", api.Handler())
+	r.Mount("/swagger", docs.Handler())
 	r.Mount("/hc", hc.Handle(version))
 
 	return r
