@@ -4,7 +4,6 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/number"
-	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/spf13/cast"
 )
@@ -18,31 +17,9 @@ func HandleEdit(collaterals core.CollateralStore) maker.HandlerFunc {
 			return err
 		}
 
-		var id uuid.UUID
-		if err := require(r.Scan(&id) == nil, "bad-data"); err != nil {
+		cats, err := List(r, collaterals)
+		if err != nil {
 			return err
-		}
-
-		var cats []*core.Collateral
-
-		if id == uuid.Zero {
-			var err error
-			if cats, err = collaterals.List(ctx); err != nil {
-				log.WithError(err).Errorln("collaterals.List")
-				return err
-			}
-		} else {
-			c, err := collaterals.Find(ctx, id.String())
-			if err != nil {
-				log.WithError(err).Errorln("collaterals.Find")
-				return err
-			}
-
-			if err := require(c.ID > 0, "not-init"); err != nil {
-				return err
-			}
-
-			cats = append(cats, c)
 		}
 
 		for {
