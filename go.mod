@@ -16,6 +16,7 @@ require (
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.5.0
 	github.com/gofrs/uuid v4.0.0+incompatible
+	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.4.3
 	github.com/google/wire v0.5.0
 	github.com/gorilla/schema v1.2.0
