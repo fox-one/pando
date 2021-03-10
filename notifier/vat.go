@@ -64,7 +64,7 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, data *
 
 	if event.Debt.IsPositive() {
 		data.Lines = append(data.Lines, n.localize("vat_generate", "Debt", event.Debt.String(), "Dai", dai.Symbol))
-	} else {
+	} else if event.Debt.IsNegative() {
 		data.Lines = append(data.Lines, n.localize("vat_payback", "Debt", event.Debt.Abs().String(), "Dai", dai.Symbol))
 	}
 
