@@ -34,7 +34,7 @@ func provideRoute(api *api.Server, rpc *rpc.Server, sessions core.Session) *chi.
 
 	r.Mount("/twirp", rpc.Handle(sessions))
 	r.Mount("/api", api.Handler())
-	r.Mount("/swagger", docs.Handler())
+	r.Mount("/swagger", docs.Handler(version))
 	r.Mount("/hc", hc.Handle(version))
 
 	return r

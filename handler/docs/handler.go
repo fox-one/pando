@@ -1,38 +1,42 @@
 package docs
 
 import (
-	"embed"
+	"bytes"
+	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 
+	"github.com/alecthomas/template"
 	"github.com/fox-one/pando/handler/render"
 )
 
-//go:embed swagger.*
-var contents embed.FS
+func Handler(version string) http.Handler {
+	t, err := template.New("swagger_info").Funcs(template.FuncMap{
+		"marshal": func(v interface{}) string {
+			a, _ := json.Marshal(v)
+			return string(a)
+		},
+	}).Parse(doc)
 
-func Handler() http.Handler {
+	if err != nil {
+		panic(err)
+	}
+
 	f := func(w http.ResponseWriter, r *http.Request) {
-		var (
-			b   []byte
-			err error
-		)
+		info := SwaggerInfo
+		info.Version = version
+		info.Host = r.URL.Host
+		info.Description = strings.Replace(info.Description, "\n", "\\n", -1)
 
-		accept := r.Header.Get("Accept")
-		if strings.Contains(accept, "yaml") {
-			w.Header().Set("Content-type", "application/x-yaml")
-			b, err = contents.ReadFile("swagger.yaml")
-		} else {
-			w.Header().Set("Content-type", "application/json")
-			b, err = contents.ReadFile("swagger.json")
-		}
-
-		if err != nil {
+		var tpl bytes.Buffer
+		if err := t.Execute(&tpl, info); err != nil {
 			render.Error(w, err)
 			return
 		}
 
-		_, _ = w.Write(b)
+		w.Header().Set("Content-type", "application/json")
+		_, _ = io.Copy(w, &tpl)
 	}
 
 	return http.HandlerFunc(f)
