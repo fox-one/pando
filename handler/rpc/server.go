@@ -305,7 +305,9 @@ func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.
 		return nil, err
 	}
 
-	resp := &api.Resp_ListVaults{}
+	resp := &api.Resp_ListVaults{
+		Pagination: &api.Pagination{},
+	}
 	for idx, vat := range vats {
 		resp.Vaults = append(resp.Vaults, views.Vault(vat))
 
