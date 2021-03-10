@@ -76,6 +76,10 @@ func HandleFrob(
 			}
 
 			dart := debt.Div(c.Rate)
+			if v.Art.Add(dart).Mul(c.Rate).Truncate(8).IsZero() {
+				dart = v.Art.Neg()
+			}
+
 			if err := frob(c, v, dink, dart); err != nil {
 				return maker.WithFlag(err, maker.FlagRefund)
 			}
