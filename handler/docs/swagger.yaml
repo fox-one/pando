@@ -706,6 +706,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: vault id
+        in: path
+        name: id
+        required: true
+        type: string
       - description: '@inject_tag: valid:"uuid,required"'
         in: query
         name: id

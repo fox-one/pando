@@ -599,6 +599,13 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "vault id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "@inject_tag: valid:\"uuid,required\"",
                         "name": "id",
                         "in": "query"

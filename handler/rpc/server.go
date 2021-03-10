@@ -325,6 +325,7 @@ func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.
 // @Tags Vaults
 // @Accept  json
 // @Produce  json
+// @param id path string true "vault id"
 // @param request query api.Req_ListVaultEvents false "default limit 50"
 // @Success 200 {object} api.Resp_ListVaultEvents
 // @Router /vats/{id}/events [get]
