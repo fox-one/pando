@@ -5,7 +5,6 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
-	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
 )
@@ -21,13 +20,17 @@ func HandlePoke(
 			return err
 		}
 
+		oracle, err := From(r, oracles)
+		if err != nil {
+			return err
+		}
+
 		var (
-			id    uuid.UUID
 			price decimal.Decimal
 			ts    int64
 		)
 
-		if err := require(r.Scan(&id, &price, &ts) == nil, "bad-data"); err != nil {
+		if err := require(r.Scan(&price, &ts) == nil, "bad-data"); err != nil {
 			return err
 		}
 
@@ -36,14 +39,7 @@ func HandlePoke(
 			return err
 		}
 
-		oracle, err := oracles.Find(ctx, id.String())
-		if err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("oracles.Find")
-			return err
-		}
-
 		if oracle.ID == 0 {
-			oracle.AssetID = id.String()
 			oracle.Hop = 60 * 60 // an hour
 			oracle.Next = price
 		}

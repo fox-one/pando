@@ -82,6 +82,10 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 }
 
 func (s *parliament) fetchAssetSymbol(ctx context.Context, assetID string) string {
+	if uuid.IsNil(assetID) {
+		return "ALL"
+	}
+
 	coin, err := s.assetz.Find(ctx, assetID)
 	if err != nil {
 		return "NULL"

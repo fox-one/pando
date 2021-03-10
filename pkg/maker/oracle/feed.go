@@ -5,7 +5,6 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
-	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
 )
@@ -21,12 +20,13 @@ func HandleFeed(
 			return err
 		}
 
-		var (
-			id    uuid.UUID
-			price decimal.Decimal
-		)
+		oracle, err := From(r, oracles)
+		if err != nil {
+			return err
+		}
 
-		if err := require(r.Scan(&id, &price) == nil, "bad-data"); err != nil {
+		var price decimal.Decimal
+		if err := require(r.Scan(&price) == nil, "bad-data"); err != nil {
 			return err
 		}
 
@@ -35,14 +35,7 @@ func HandleFeed(
 			return err
 		}
 
-		oracle, err := oracles.Find(ctx, id.String())
-		if err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("oracles.Find")
-			return err
-		}
-
 		if oracle.ID == 0 {
-			oracle.AssetID = id.String()
 			oracle.Hop = 60 * 60 // an hour
 		}
 

@@ -185,6 +185,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/pkg/maker/maker_test.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/pkg/maker/vat/frob.go">
           <value>
             <Attribute>
@@ -196,6 +203,13 @@
           <value>
             <Attribute>
               <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/store/collateral/memory.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
