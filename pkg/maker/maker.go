@@ -50,7 +50,7 @@ func (r *Request) Values() []interface{} {
 	return r.values[:]
 }
 
-func (r *Request) copy() *Request {
+func (r *Request) Copy() *Request {
 	r2 := new(Request)
 	*r2 = *r
 	return r2
@@ -62,7 +62,7 @@ func (r *Request) WithBody(values ...interface{}) *Request {
 		panic(err)
 	}
 
-	r2 := r.copy()
+	r2 := r.Copy()
 	r2.Body = b
 	r2.values = nil
 
@@ -74,7 +74,7 @@ func (r *Request) WithContext(ctx context.Context) *Request {
 		panic("nil context")
 	}
 
-	r2 := r.copy()
+	r2 := r.Copy()
 	r2.ctx = ctx
 	return r2
 }
@@ -88,7 +88,7 @@ func (r *Request) Context() context.Context {
 }
 
 func (r *Request) WithProposal(p *core.Proposal) *Request {
-	r2 := r.copy()
+	r2 := r.Copy()
 	r2.TraceID = uuid.Modify(r.TraceID, p.TraceID)
 	r2.Sender = p.Creator
 	r2.AssetID = p.AssetID

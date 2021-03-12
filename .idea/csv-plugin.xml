@@ -185,6 +185,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/pkg/maker/maker.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/pkg/maker/maker_test.go">
           <value>
             <Attribute>
@@ -193,6 +200,13 @@
           </value>
         </entry>
         <entry key="/pkg/maker/vat/frob.go">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/pkg/maker/vat/frob_test.go">
           <value>
             <Attribute>
               <option name="separator" value="&#9;" />

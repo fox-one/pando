@@ -76,8 +76,10 @@ func HandleFrob(
 			}
 
 			dart := debt.Div(c.Rate)
-			if v.Art.Add(dart).Mul(c.Rate).Truncate(8).IsZero() {
+			if dart.IsNegative() && v.Art.Add(dart).Mul(c.Rate).Truncate(8).IsZero() {
 				dart = v.Art.Neg()
+			} else if dart.IsPositive() && dart.Mul(c.Rate).LessThan(debt) {
+				dart = dart.Add(decimal.New(1, -16))
 			}
 
 			if err := frob(c, v, dink, dart); err != nil {
@@ -175,7 +177,7 @@ func frob(c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
 	}
 
 	ink, art := v.Ink.Add(dink), v.Art.Add(dart)
-	tab := art.Mul(c.Rate).Truncate(8)
+	tab := art.Mul(c.Rate)
 
 	if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
 		return err
