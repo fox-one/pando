@@ -79,6 +79,7 @@ func HandleFrob(
 			if dart.IsNegative() && v.Art.Add(dart).Mul(c.Rate).Truncate(8).IsZero() {
 				dart = v.Art.Neg()
 			} else if dart.IsPositive() && dart.Mul(c.Rate).LessThan(debt) {
+				// ceil(dart,16)
 				dart = dart.Add(decimal.New(1, -16))
 			}
 
