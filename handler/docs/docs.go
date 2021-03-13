@@ -1016,6 +1016,9 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
+                "identity_id": {
+                    "type": "integer"
+                },
                 "ink": {
                     "type": "string"
                 }

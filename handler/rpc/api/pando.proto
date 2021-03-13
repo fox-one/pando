@@ -35,8 +35,7 @@ enum Action {
     FlipDeal = 43;
     // Oracles
     OraclePoke = 51;
-    OracleFeed = 52;
-    OracleStep = 53;
+    OracleStep = 52;
 }
 
 message Asset {
@@ -93,6 +92,7 @@ message Vault {
     string collateral_id = 3;
     string ink = 4;
     string art = 5;
+    int64 identity_id = 6;
 }
 
 message Flip {

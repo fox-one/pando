@@ -12,6 +12,7 @@ func Vault(vat *core.Vault) *api.Vault {
 		CollateralId: vat.CollateralID,
 		Ink:          vat.Ink.String(),
 		Art:          vat.Art.String(),
+		IdentityId:   vat.ID,
 	}
 }
 
