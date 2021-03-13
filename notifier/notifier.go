@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"strings"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
@@ -41,7 +42,8 @@ type notifier struct {
 }
 
 func (n *notifier) localize(id string, args ...interface{}) string {
-	return n.i18n.LocalizeOr(id, id, args...)
+	s := n.i18n.LocalizeOr(id, id, args...)
+	return strings.TrimSpace(s)
 }
 
 func (n *notifier) Auth(ctx context.Context, user *core.User) error {

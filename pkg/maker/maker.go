@@ -23,9 +23,12 @@ type Request struct {
 	Amount   decimal.Decimal
 	Action   core.Action
 	Body     []byte
-	Gov      bool
 	ctx      context.Context
 	values   []interface{}
+
+	// 权限
+	Gov    bool // 来自节点投票
+	Oracle bool // 来自价格预言机
 
 	Next *Request
 }

@@ -192,7 +192,7 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 
 			view.Meta = append(view.Meta, item)
 		}
-	case core.ActionOracleFeed:
+	case core.ActionOraclePoke:
 		var (
 			id    uuid.UUID
 			price decimal.Decimal

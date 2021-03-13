@@ -51,7 +51,6 @@ const (
 const (
 	ActionOracle Action = iota + 50
 	ActionOraclePoke
-	ActionOracleFeed
 	ActionOracleStep
 )
 

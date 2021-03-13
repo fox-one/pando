@@ -16,7 +16,7 @@ func HandlePoke(
 	return func(r *maker.Request) error {
 		ctx := r.Context()
 
-		if err := require(r.Gov, "not-authorized"); err != nil {
+		if err := require(r.Gov || r.Oracle, "not-authorized"); err != nil {
 			return err
 		}
 
@@ -40,21 +40,26 @@ func HandlePoke(
 		}
 
 		if oracle.ID == 0 {
-			oracle.Hop = 60 * 60 // an hour
+			oracle.Hop = 30 * 60 // 30m
 			oracle.Next = price
-		}
-
-		if err := require(r.Now.Unix() > oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
-			return err
 		}
 
 		if err := require(ts > oracle.PeekAt.Unix(), "out-of-date"); err != nil {
 			return err
 		}
 
-		oracle.Current = oracle.Next
+		passed := ts > oracle.PeekAt.Unix()+oracle.Hop
+
+		// Gov 可以随意更改 Next Price
+		if err := require(r.Gov || passed, "not-passed"); err != nil {
+			return err
+		}
+
 		oracle.Next = price
-		oracle.PeekAt = r.Now.Truncate(time.Duration(oracle.Hop) * time.Second)
+		if passed {
+			oracle.Current = oracle.Next
+			oracle.PeekAt = time.Unix(ts, 0).Truncate(time.Duration(oracle.Hop) * time.Second)
+		}
 
 		if err := oracles.Save(ctx, oracle, r.Version); err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("oracles.Save")

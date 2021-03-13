@@ -1,6 +1,8 @@
 package oracle
 
 import (
+	"time"
+
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/actions"
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/pay"
 	"github.com/fox-one/pando/core"
@@ -9,9 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewFeedCmd() *cobra.Command {
+func NewPokeCmd() *cobra.Command {
+	var ts int64
+
 	cmd := &cobra.Command{
-		Use:  "feed <asset_id> <price>",
+		Use:  "poke <asset_id> <price>",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, price := args[0], args[1]
@@ -19,9 +23,10 @@ func NewFeedCmd() *cobra.Command {
 			memo, err := actions.Build(
 				cmd,
 				core.ActionProposalMake,
-				core.ActionOracleFeed,
+				core.ActionOraclePoke,
 				types.UUID(id),
 				types.Decimal(price),
+				ts,
 			)
 
 			if err != nil {
@@ -32,5 +37,6 @@ func NewFeedCmd() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().Int64Var(&ts, "ts", time.Now().Unix(), "timestamp")
 	return cmd
 }

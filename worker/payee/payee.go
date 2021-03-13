@@ -61,7 +61,6 @@ func New(
 		core.ActionFlipDeal: flip.HandleDeal(collaterals, flips, wallets),
 		// oracle
 		core.ActionOraclePoke: oracle.HandlePoke(collaterals, oracles),
-		core.ActionOracleFeed: oracle.HandleFeed(collaterals, oracles),
 		core.ActionOracleStep: oracle.HandleStep(oracles),
 		// proposal
 		core.ActionProposalMake:  proposal.HandleMake(proposals, walletz, parliaments, system),

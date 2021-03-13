@@ -9,6 +9,7 @@ func NewCmd() *cobra.Command {
 		Use: "oracle",
 	}
 
+	cmd.AddCommand(NewPokeCmd())
 	cmd.AddCommand(NewFeedCmd())
 	cmd.AddCommand(NewStepCmd())
 
