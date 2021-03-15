@@ -695,6 +695,9 @@
                 "beg": {
                     "type": "string"
                 },
+                "box": {
+                    "type": "string"
+                },
                 "chop": {
                     "type": "string"
                 },
@@ -728,6 +731,9 @@
                     "type": "string"
                 },
                 "line": {
+                    "type": "string"
+                },
+                "litter": {
                     "type": "string"
                 },
                 "live": {

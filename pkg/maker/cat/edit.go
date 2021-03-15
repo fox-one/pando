@@ -42,6 +42,8 @@ func HandleEdit(collaterals core.CollateralStore) maker.HandlerFunc {
 					c.Chop = number.Decimal(value)
 				case "dunk":
 					c.Dunk = number.Decimal(value)
+				case "box":
+					c.Box = number.Decimal(value)
 				case "beg":
 					c.Beg = number.Decimal(value)
 				case "ttl":

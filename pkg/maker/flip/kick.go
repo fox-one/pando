@@ -85,6 +85,7 @@ func HandleKick(
 			c.Art = c.Art.Sub(flip.Art)
 			c.Debt = c.Debt.Sub(flip.Bid)
 			c.Ink = c.Ink.Sub(flip.Lot)
+			c.Litter = c.Litter.Add(flip.Tab)
 
 			if err := collaterals.Update(ctx, c, r.Version); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")
@@ -101,8 +102,13 @@ func Kick(r *maker.Request, c *core.Collateral, v *core.Vault) (*core.Flip, erro
 		return nil, err
 	}
 
+	room := c.Box.Sub(c.Litter)
+	if err := require(c.Litter.LessThan(c.Box) && room.GreaterThanOrEqual(c.Dust), "liquidation-limit-hit"); err != nil {
+		return nil, err
+	}
+
 	dart := decimal.Min(
-		c.Dunk.Div(c.Rate).Div(c.Chop),
+		decimal.Min(c.Dunk, room).Div(c.Rate).Div(c.Chop),
 		v.Art,
 	)
 

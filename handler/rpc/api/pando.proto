@@ -74,6 +74,8 @@ message Collateral {
     int32 tau = 20;
     bool live = 21;
     int64 number_of_vaults = 22;
+    string box = 23;
+    string litter = 24;
 }
 
 message Vault {

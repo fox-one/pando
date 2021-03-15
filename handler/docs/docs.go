@@ -706,6 +706,9 @@ var doc = `{
                 "beg": {
                     "type": "string"
                 },
+                "box": {
+                    "type": "string"
+                },
                 "chop": {
                     "type": "string"
                 },
@@ -739,6 +742,9 @@ var doc = `{
                     "type": "string"
                 },
                 "line": {
+                    "type": "string"
+                },
+                "litter": {
                     "type": "string"
                 },
                 "live": {

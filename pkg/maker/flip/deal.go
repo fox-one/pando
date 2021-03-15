@@ -80,6 +80,15 @@ func HandleDeal(
 			}
 		}
 
+		if c.Version < r.Version {
+			c.Litter = c.Litter.Sub(f.Tab)
+
+			if err := collaterals.Update(ctx, c, r.Version); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")
+				return err
+			}
+		}
+
 		if f.Version < r.Version {
 			f.Action = r.Action
 

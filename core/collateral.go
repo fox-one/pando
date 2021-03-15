@@ -45,6 +45,10 @@ type (
 		// Dunk, max liquidation Quantity, eg 50000
 		Dunk decimal.Decimal `sql:"type:decimal(64,8)" json:"dunk,omitempty"`
 		// Flip Options
+		// Box, Max Dai out for liquidation
+		Box decimal.Decimal `sql:"type:decimal(64,8)" json:"box,omitempty"`
+		// Litter, Balance of Dai out for liquidation
+		Litter decimal.Decimal `sql:"type:decimal(64,8)" json:"litter,omitempty"`
 		// Beg minimum bid increase
 		Beg decimal.Decimal `sql:"type:decimal(8,4)" json:"beg,omitempty"`
 		// TTL bid duration in seconds

@@ -62,6 +62,7 @@ func HandleCreate(
 			Duty:      number.Decimal("1.05"),
 			Chop:      number.Decimal("1.13"),
 			Dunk:      number.Decimal("5000"),
+			Box:       number.Decimal("500000"),
 			Beg:       number.Decimal("0.03"),
 			TTL:       15 * 60,     // 15m
 			Tau:       3 * 60 * 60, // 3h

@@ -58,6 +58,8 @@ definitions:
         type: string
       beg:
         type: string
+      box:
+        type: string
       chop:
         type: string
       created_at:
@@ -81,6 +83,8 @@ definitions:
       ink:
         type: string
       line:
+        type: string
+      litter:
         type: string
       live:
         type: boolean
