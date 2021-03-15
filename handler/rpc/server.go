@@ -189,7 +189,7 @@ func (s *Server) ListOracles(ctx context.Context, _ *api.Req_ListOracles) (*api.
 func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral) (*api.Collateral, error) {
 	cat, err := s.collaterals.Find(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Error("rpc: collaterals.Find")
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: collaterals.Find")
 		return nil, err
 	}
 
@@ -197,7 +197,16 @@ func (s *Server) FindCollateral(ctx context.Context, req *api.Req_FindCollateral
 		return nil, twirp.NotFoundError("cat not init")
 	}
 
-	return views.Collateral(cat), nil
+	resp := views.Collateral(cat)
+
+	counts, err := s.vaults.CountCollateral(ctx)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: vaults.CountCollateral")
+		return nil, err
+	}
+
+	resp.NumberOfVaults = counts[cat.TraceID]
+	return resp, nil
 }
 
 // ListCollaterals godoc
@@ -215,9 +224,18 @@ func (s *Server) ListCollaterals(ctx context.Context, _ *api.Req_ListCollaterals
 		return nil, err
 	}
 
+	counts, err := s.vaults.CountCollateral(ctx)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: vaults.CountCollateral")
+		return nil, err
+	}
+
 	resp := &api.Resp_ListCollaterals{}
 	for _, cat := range cats {
-		resp.Collaterals = append(resp.Collaterals, views.Collateral(cat))
+		c := views.Collateral(cat)
+		c.NumberOfVaults = counts[cat.TraceID]
+		resp.Collaterals = append(resp.Collaterals, c)
+
 	}
 
 	return resp, nil

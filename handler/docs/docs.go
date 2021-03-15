@@ -750,6 +750,9 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "number_of_vaults": {
+                    "type": "integer"
+                },
                 "price": {
                     "type": "string"
                 },

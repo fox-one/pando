@@ -73,6 +73,7 @@ message Collateral {
     int32 ttl = 19;
     int32 tau = 20;
     bool live = 21;
+    int64 number_of_vaults = 22;
 }
 
 message Vault {
