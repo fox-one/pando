@@ -131,6 +131,37 @@ func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*co
 	return vaults, nil
 }
 
+func (s *vaultStore) CountCollateral(ctx context.Context) (map[string]int64, error) {
+	tx := s.db.View().Model(core.Vault{}).
+		Select("collateral_id,Count(id) as count").
+		Group("collateral_id")
+
+	rows, err := tx.Rows()
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var (
+		results = make(map[string]int64)
+		row     struct {
+			CollateralID string
+			Count        int64
+		}
+	)
+
+	for rows.Next() {
+		if err := tx.ScanRows(rows, &row); err != nil {
+			return nil, err
+		}
+
+		results[row.CollateralID] = row.Count
+	}
+
+	return results, nil
+}
+
 func (s *vaultStore) CreateEvent(ctx context.Context, event *core.VaultEvent) error {
 	if err := s.db.Update().Where("vault_id = ? AND version = ?", event.VaultID, event.Version).FirstOrCreate(event).Error; err != nil {
 		return err

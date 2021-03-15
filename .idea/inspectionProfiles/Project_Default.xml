@@ -9,6 +9,7 @@
         <function importPath="fmt" name="Println" />
         <function importPath="fmt" name="Print" />
         <function importPath="net/http" name="ListenAndServe" />
+        <function importPath="github.com/fox-one/pando/store/dbtest" name="Disconnect" />
       </functions>
       <methods>
         <method importPath="hash" receiver="Hash" name="Write" />

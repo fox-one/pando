@@ -13,7 +13,7 @@ type (
 		CreatedAt time.Time `json:"created_at,omitempty"`
 		UpdatedAt time.Time `json:"updated_at,omitempty"`
 		TraceID   string    `sql:"size:36" json:"trace_id,omitempty"`
-		Version   int64     `json:"version,omitempty"`
+		Version   int64     `sql:"not null" json:"version,omitempty"`
 		UserID    string    `sql:"size:36" json:"user_id,omitempty"`
 		// CollateralID represent collateral id
 		CollateralID string `sql:"size:36" json:"collateral_id,omitempty"`
@@ -50,6 +50,7 @@ type (
 		Update(ctx context.Context, vault *Vault, version int64) error
 		Find(ctx context.Context, traceID string) (*Vault, error)
 		List(ctx context.Context, req ListVaultRequest) ([]*Vault, error)
+		CountCollateral(ctx context.Context) (map[string]int64, error)
 		// Events
 		CreateEvent(ctx context.Context, event *VaultEvent) error
 		FindEvent(ctx context.Context, vaultID string, version int64) (*VaultEvent, error)

@@ -227,6 +227,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/store/vault/testdata/vault.json">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
