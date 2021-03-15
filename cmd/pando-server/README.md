@@ -12,6 +12,14 @@ make pando/server
 
 ## API
 
+### Swagger
+
+```http request
+GET /swagger
+```
+
+> [swagger ui](https://swagger.yiplee.com/?url=https%3A%2F%2Fpando-test-api.fox.one%2Fswagger)
+
 ### Login
 
 ```http request

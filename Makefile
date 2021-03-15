@@ -23,5 +23,9 @@ pando/worker:
 pando/server:
 	docker build -t pando/server:${IMAGE_VERSION} -t pando/server:latest -f ./docker/Dockerfile.server .
 
+.PHONY : test-mysql
+test-mysql:
+	sh hack/test-mysql.sh
+
 clean:
 	@rm -rf ./builds
