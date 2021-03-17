@@ -69,7 +69,6 @@ func (i *Action) UnmarshalBinary(data []byte) error {
 }
 
 type TransactionAction struct {
-	UserID   []byte `msgpack:"u,omitempty"`
 	FollowID []byte `msgpack:"f,omitempty"`
 	Body     []byte `msgpack:"b,omitempty"`
 }

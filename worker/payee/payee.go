@@ -159,10 +159,6 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	if body, err := mtg.Decrypt(message, w.system.PrivateKey); err == nil {
 		if payload, err := core.DecodeTransactionAction(body); err == nil {
 			if req.Body, err = mtg.Scan(payload.Body, &req.Action); err == nil {
-				if sender, _ := uuid.FromBytes(payload.UserID); sender != uuid.Zero && req.Sender == "" {
-					req.Sender = sender.String()
-				}
-
 				if follow, _ := uuid.FromBytes(payload.FollowID); follow != uuid.Zero {
 					req.FollowID = follow.String()
 				}

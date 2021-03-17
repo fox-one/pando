@@ -26,7 +26,7 @@ func NewStepCmd() *cobra.Command {
 			memo, err := actions.Build(
 				cmd,
 				core.ActionProposalMake,
-				core.ActionOracleFeed,
+				core.ActionOracleStep,
 				types.UUID(id),
 				cast.ToInt64(ts),
 			)

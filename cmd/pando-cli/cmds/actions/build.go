@@ -17,13 +17,11 @@ func Build(cmd *cobra.Command, values ...interface{}) (string, error) {
 		return "", err
 	}
 
-	user, _ := uuid.FromString(cfg.GetAuthMixinID())
 	follow, _ := uuid.FromString(uuid.New())
 
 	cmd.Println("tx follow id:", follow)
 
 	action := core.TransactionAction{
-		UserID:   user.Bytes(),
 		FollowID: follow.Bytes(),
 		Body:     body,
 	}

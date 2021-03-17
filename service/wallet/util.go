@@ -14,6 +14,7 @@ func convertToOutput(utxo *mixin.MultisigUTXO) *core.Output {
 		TraceID:         utxo.UTXOID,
 		AssetID:         utxo.AssetID,
 		Amount:          utxo.Amount,
+		Sender:          utxo.Sender,
 		Memo:            utxo.Memo,
 		State:           utxo.State,
 		TransactionHash: utxo.TransactionHash.String(),

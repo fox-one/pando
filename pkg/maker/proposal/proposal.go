@@ -38,12 +38,10 @@ func From(r *maker.Request, proposals core.ProposalStore) (*core.Proposal, error
 }
 
 func handleProposal(r *maker.Request, walletz core.WalletService, system *core.System, action core.Action, p *core.Proposal) error {
-	uid, _ := uuid.FromString(system.ClientID)
 	pid, _ := uuid.FromString(p.TraceID)
 	data, _ := mtg.Encode(action, pid)
 	data, _ = core.TransactionAction{
-		UserID: uid.Bytes(),
-		Body:   data,
+		Body: data,
 	}.Encode()
 	data, _ = mtg.Encrypt(data, mixin.GenerateEd25519Key(), system.PublicKey)
 	memo := base64.StdEncoding.EncodeToString(data)

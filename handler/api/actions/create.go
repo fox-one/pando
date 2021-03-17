@@ -17,9 +17,8 @@ import (
 )
 
 type CreateRequest struct {
-	UserID string `json:"user_id,omitempty" format:"uuid"`
 	// follow id to track tx (uuid)
-	FollowID string `json:"follow_id,omitempty" format:"uuid" valid:"required"`
+	FollowID string `json:"follow_id,omitempty" format:"uuid" valid:"uuid,required"`
 	// tx parameters
 	Parameters []string `json:"parameters,omitempty" valid:"required"`
 	// payment asset id (optional)
@@ -56,12 +55,10 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 			return
 		}
 
-		user, _ := uuid.FromString(body.UserID)
 		follow, _ := uuid.FromString(body.FollowID)
 		data, err := types.EncodeWithTypes(body.Parameters...)
 		if err == nil {
 			data, _ = core.TransactionAction{
-				UserID:   user.Bytes(),
 				FollowID: follow.Bytes(),
 				Body:     data,
 			}.Encode()

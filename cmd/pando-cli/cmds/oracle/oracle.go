@@ -10,7 +10,6 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(NewPokeCmd())
-	cmd.AddCommand(NewFeedCmd())
 	cmd.AddCommand(NewStepCmd())
 
 	return cmd

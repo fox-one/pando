@@ -50,10 +50,8 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 		return "", err
 	}
 
-	user, _ := uuid.FromString(s.system.ClientID)
 	data, err := core.TransactionAction{
-		UserID: user.Bytes(),
-		Body:   body,
+		Body: body,
 	}.Encode()
 	if err != nil {
 		return "", err
