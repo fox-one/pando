@@ -28,9 +28,7 @@ func (s *messageService) Send(ctx context.Context, messages []*core.Message) err
 
 	err := s.c.SendRawMessages(ctx, raws)
 
-	// 如果 message.UserID 是机器人创建出来的账号，
-	// 或者 conversation id 没有创建，发消息会报 10002
-	// 忽略这种错误
+	// contain messages to unavailable users, ignore
 	if mixin.IsErrorCodes(err, 10002) {
 		return nil
 	}
@@ -43,6 +41,9 @@ func (s *messageService) Meet(ctx context.Context, userID string) error {
 		return nil
 	}
 
-	_, err := s.c.CreateContactConversation(ctx, userID)
-	return err
+	if _, err := s.c.CreateContactConversation(ctx, userID); err != nil && !mixin.IsErrorCodes(err, 10002) {
+		return err
+	}
+
+	return nil
 }

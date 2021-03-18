@@ -9,6 +9,7 @@ import (
 )
 
 type (
+	// Oracle represent price information
 	Oracle struct {
 		ID        int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt time.Time `json:"created_at,omitempty"`
@@ -25,6 +26,7 @@ type (
 		PeekAt time.Time `json:"peek_at,omitempty"`
 	}
 
+	// OracleStore defines operations for working with oracles on db.
 	OracleStore interface {
 		Save(ctx context.Context, oracle *Oracle, version int64) error
 		Find(ctx context.Context, assetID string) (*Oracle, error)
@@ -32,6 +34,7 @@ type (
 		ListCurrent(ctx context.Context) (number.Values, error)
 	}
 
+	// OracleService define operations to parse new price from oracle service outside
 	OracleService interface {
 		Parse(b []byte) ([]byte, error)
 	}

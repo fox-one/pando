@@ -59,6 +59,7 @@ type (
 		Live int `json:"live,omitempty"`
 	}
 
+	// CollateralStore define operations for working with collateral on db
 	CollateralStore interface {
 		Create(ctx context.Context, collateral *Collateral) error
 		Update(ctx context.Context, collateral *Collateral, version int64) error

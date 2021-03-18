@@ -13,44 +13,67 @@ import (
 type Action int
 
 const (
+	// System Actions
 	ActionSys Action = iota + 0
+	// Withdraw Asset from multisig wallet, Gov required
 	ActionSysWithdraw
 )
 
 const (
+	// System Actions
 	ActionProposal Action = iota + 10
+	// Make a new proposal
 	ActionProposalMake
+	// Call on other mtg members to vote for this proposal, mtg member only
 	ActionProposalShout
+	// Vote for this proposal, mtg member only
 	ActionProposalVote
 )
 
 const (
+	// Collateral Actions
 	ActionCat Action = iota + 20
+	// Create a new collateral type, Gov required
 	ActionCatCreate
+	// Supply Dai to this collateral type
 	ActionCatSupply
+	// Edit Collateral parameters, Gov required
 	ActionCatEdit
+	// Update Collateral's Rate
 	ActionCatFold
 )
 
 const (
+	// Vault Actions
 	ActionVat Action = iota + 30
+	// Open a new Vault
 	ActionVatOpen
+	// Deposit gem into Vault
 	ActionVatDeposit
+	// Withdraw gem from Vault
 	ActionVatWithdraw
+	// Pay back dai for Vault
 	ActionVatPayback
+	// Generate dai from Vault
 	ActionVatGenerate
 )
 
 const (
 	ActionFlip Action = iota + 40
+	// Launch an auction from an unsafe Vault by Keeper
 	ActionFlipKick
+	// Auction bid
 	ActionFlipBid
+	// Auction done
 	ActionFlipDeal
 )
 
 const (
+	// Oracle Actions
 	ActionOracle Action = iota + 50
+	// Updates the current feed value and queue up the next one
 	ActionOraclePoke
+	// Adjust oracle price delay
 	ActionOracleStep
 )
 

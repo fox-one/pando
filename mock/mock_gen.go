@@ -1049,6 +1049,21 @@ func (m *MockVaultStore) EXPECT() *MockVaultStoreMockRecorder {
 	return m.recorder
 }
 
+// CountCollateral mocks base method
+func (m *MockVaultStore) CountCollateral(arg0 context.Context) (map[string]int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountCollateral", arg0)
+	ret0, _ := ret[0].(map[string]int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountCollateral indicates an expected call of CountCollateral
+func (mr *MockVaultStoreMockRecorder) CountCollateral(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountCollateral", reflect.TypeOf((*MockVaultStore)(nil).CountCollateral), arg0)
+}
+
 // Create mocks base method
 func (m *MockVaultStore) Create(arg0 context.Context, arg1 *core.Vault) error {
 	m.ctrl.T.Helper()

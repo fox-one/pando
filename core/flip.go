@@ -8,6 +8,7 @@ import (
 )
 
 type (
+	// Flip represent auction by kicking unsafe vaults
 	Flip struct {
 		ID           int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt    time.Time `json:"created_at,omitempty"`
@@ -33,6 +34,7 @@ type (
 		Guy string `sql:"size:36" json:"guy,omitempty"`
 	}
 
+	// FlipEvent define operation history on flip
 	FlipEvent struct {
 		ID        int64           `sql:"PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt time.Time       `json:"created_at,omitempty"`
@@ -43,6 +45,7 @@ type (
 		Lot       decimal.Decimal `sql:"type:decimal(64,8)" json:"lot,omitempty"`
 	}
 
+	// FlipStore define operations for working on Flip & FlipEvent on db
 	FlipStore interface {
 		Create(ctx context.Context, flip *Flip) error
 		Update(ctx context.Context, flip *Flip, version int64) error

@@ -13,7 +13,6 @@ func Replay(walletz core.WalletService) core.WalletService {
 	return &replayMode{walletz}
 }
 
-// replay mode 不会 pull 新的 outputs，也只消费已经是 spent 状态的 utxo
 type replayMode struct {
 	core.WalletService
 }

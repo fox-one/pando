@@ -13,16 +13,17 @@ import (
 type (
 	// Output represent Mixin Network multisig Outputs
 	Output struct {
-		ID              int64           `sql:"PRIMARY_KEY" json:"id,omitempty"`
-		CreatedAt       time.Time       `json:"created_at,omitempty"`
-		UpdatedAt       time.Time       `json:"updated_at,omitempty"`
-		Version         int64           `sql:"NOT NULL" json:"version,omitempty"`
-		TraceID         string          `sql:"type:char(36)" json:"trace_id,omitempty"`
+		ID        int64     `sql:"PRIMARY_KEY" json:"id,omitempty"`
+		CreatedAt time.Time `json:"created_at,omitempty"`
+		UpdatedAt time.Time `json:"updated_at,omitempty"`
+		Version   int64     `sql:"NOT NULL" json:"version,omitempty"`
+		TraceID   string    `sql:"type:char(36)" json:"trace_id,omitempty"`
+		// mixin id of operator
 		Sender          string          `sql:"type:char(36)" json:"sender,omitempty"`
 		AssetID         string          `sql:"type:char(36)" json:"asset_id,omitempty"`
 		Amount          decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
 		Memo            string          `sql:"size:320" json:"memo,omitempty"`
-		State           string          `sql:"size:24" json:"state,omitempty"`
+		State           string          `sql:"size:24" json:"state,omitempty"`       // unspent,signed,spent
 		TransactionHash string          `sql:"size:64" json:"hash,omitempty"`        // utxo.transaction_hash.hex
 		OutputIndex     int             `json:"output_index,omitempty"`              // utxo.output_index
 		SignedTx        string          `sql:"type:TEXT" json:"signed_tx,omitempty"` // utxo.signed_tx

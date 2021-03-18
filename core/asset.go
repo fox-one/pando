@@ -8,6 +8,7 @@ import (
 )
 
 type (
+	// Asset represent mixin asset
 	Asset struct {
 		ID        string          `sql:"size:36;PRIMARY_KEY" json:"id,omitempty"`
 		CreatedAt time.Time       `json:"created_at,omitempty"`
@@ -28,7 +29,7 @@ type (
 		List(ctx context.Context) ([]*Asset, error)
 	}
 
-	// AssetService provides access to assets information
+	// AssetService provides access to remote mixin assets information
 	AssetService interface {
 		Find(ctx context.Context, id string) (*Asset, error)
 	}

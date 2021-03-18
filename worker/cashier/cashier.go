@@ -129,14 +129,14 @@ func (w *Cashier) spend(ctx context.Context, outputs []*core.Output, transfer *c
 		logger.FromContext(ctx).WithError(err).Errorln("walletz.Spend")
 		return err
 	} else if tx != nil {
-		// 签名收集完成，需要提交至主网
-		// 此时将该上链 tx 存储至数据库，等待 tx sender worker 完成上链
+		// signature completed, prepare to send this tx to mixin mainnet
 		if err := w.wallets.CreateRawTransaction(ctx, tx); err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("wallets.CreateRawTransaction")
 			return err
 		}
 	}
 
+	// mark these outputs spent & transfer handled
 	if err := w.wallets.Spent(ctx, outputs, transfer); err != nil {
 		logger.FromContext(ctx).WithError(err).Errorln("wallets.Spend")
 		return err
