@@ -11,6 +11,7 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(NewVoteCmd())
+	cmd.AddCommand(NewShoutCmd())
 
 	return cmd
 }
