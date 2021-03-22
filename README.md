@@ -22,7 +22,7 @@ Several teams will be selected and arranged as the “Trust Group” in Pando, t
 
 ## An intro to Pando
 
-## pUSD
+### pUSD
 
 pUSD is a stable coin launched on Dec 25, 2020. Thereafter the launch, the backing ratio of pUSD is always higher than 200%.
 
