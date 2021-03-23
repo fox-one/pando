@@ -11,11 +11,10 @@ tx_ok: |
 tx_abort: |
   ❌ {{.Action}}失败
 
-  - 🙅：错误代码 "{{.Message}}"
+  - 错误代码 "{{.Message}}"
 
-
-vat_name: 🔑：金库 {{.Name}}
-vat_deposit: 💰： 抵押 {{.Dink}} {{.Gem}}
-vat_withdraw: 💰：取出 {{.Dink}} {{.Gem}}
-vat_generate: 💰：借出 {{.Debt}} {{.Dai}}
-vat_payback: 💰：还款 {{.Debt}} {{.Dai}}
+vat_name: "金库 {{.Name}} #{{.ID}}"
+vat_deposit: 抵押 {{.Dink}} {{.Gem}}
+vat_withdraw: 取出 {{.Dink}} {{.Gem}}
+vat_generate: 借出 {{.Debt}} {{.Dai}}
+vat_payback: 还款 {{.Debt}} {{.Dai}}

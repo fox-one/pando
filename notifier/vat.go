@@ -54,7 +54,7 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, data *
 		return err
 	}
 
-	data.Lines = append(data.Lines, n.localize("vat_name", "Name", cat.Name))
+	data.Lines = append(data.Lines, n.localize("vat_name", "Name", cat.Name, "ID", vat.ID))
 
 	if event.Dink.IsPositive() {
 		data.Lines = append(data.Lines, n.localize("vat_deposit", "Dink", event.Dink.String(), "Gem", gem.Symbol))

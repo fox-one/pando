@@ -11,7 +11,7 @@ import (
 const tx_ok = `
 ✅ {{.Action}}成功
 
-{{ range .Lines -}}
+{{range .Lines -}}
 - {{.}}
 {{end}}
 `
