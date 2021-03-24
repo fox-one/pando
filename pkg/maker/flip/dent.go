@@ -11,7 +11,7 @@ func Dent(r *maker.Request, c *core.Collateral, f *core.Flip, lot decimal.Decima
 		return err
 	}
 
-	if err := require(f.EndFinished(r.Now), "finished-end"); err != nil {
+	if err := require(f.EndFinished(r.Now) == false, "finished-end"); err != nil {
 		return err
 	}
 
