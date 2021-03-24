@@ -157,17 +157,17 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 
 	// 2. decode tx message
 	if body, err := mtg.Decrypt(message, w.system.PrivateKey); err == nil {
-		if payload, err := core.DecodeTransactionAction(body); err == nil {
-			if req.Body, err = mtg.Scan(payload.Body, &req.Action); err == nil {
-				if follow, _ := uuid.FromBytes(payload.FollowID); follow != uuid.Zero {
-					req.FollowID = follow.String()
-				}
+		message = body
+	}
 
-				return w.handleRequest(req.WithContext(ctx))
+	if payload, err := core.DecodeTransactionAction(message); err == nil {
+		if req.Body, err = mtg.Scan(payload.Body, &req.Action); err == nil {
+			if follow, _ := uuid.FromBytes(payload.FollowID); follow != uuid.Zero {
+				req.FollowID = follow.String()
 			}
-		}
 
-		return nil
+			return w.handleRequest(req.WithContext(ctx))
+		}
 	}
 
 	return nil

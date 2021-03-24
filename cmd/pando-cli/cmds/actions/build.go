@@ -33,10 +33,15 @@ func Build(cmd *cobra.Command, values ...interface{}) (string, error) {
 
 	key := mixin.GenerateEd25519Key()
 	pub := cfg.GetGroupVerify()
-	data, err = mtg.Encrypt(data, key, pub)
+	encryptedData, err := mtg.Encrypt(data, key, pub)
 	if err != nil {
 		return "", err
 	}
 
-	return base64.StdEncoding.EncodeToString(data), nil
+	memo := base64.StdEncoding.EncodeToString(encryptedData)
+	if len(memo) > 200 {
+		memo = base64.StdEncoding.EncodeToString(data)
+	}
+
+	return memo, nil
 }
