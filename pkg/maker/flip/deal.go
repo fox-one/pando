@@ -103,7 +103,7 @@ func HandleDeal(
 }
 
 func Deal(r *maker.Request, f *core.Flip) error {
-	if err := require(f.TicFinished(r.Now) && f.EndFinished(r.Now), "not-finished"); err != nil {
+	if err := require(f.TicFinished(r.Now) || f.EndFinished(r.Now), "not-finished"); err != nil {
 		return err
 	}
 
