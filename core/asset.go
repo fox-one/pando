@@ -23,8 +23,7 @@ type (
 
 	// AssetStore defines operations for working with assets on db.
 	AssetStore interface {
-		Create(ctx context.Context, asset *Asset) error
-		Update(ctx context.Context, asset *Asset) error
+		Save(ctx context.Context, asset *Asset) error
 		Find(ctx context.Context, id string) (*Asset, error)
 		List(ctx context.Context) ([]*Asset, error)
 	}
@@ -32,5 +31,6 @@ type (
 	// AssetService provides access to remote mixin assets information
 	AssetService interface {
 		Find(ctx context.Context, id string) (*Asset, error)
+		List(ctx context.Context) ([]*Asset, error)
 	}
 )

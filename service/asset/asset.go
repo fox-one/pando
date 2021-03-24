@@ -28,6 +28,15 @@ func (s *assetService) Find(ctx context.Context, id string) (*core.Asset, error)
 	return convertAsset(asset), nil
 }
 
+func (s *assetService) List(ctx context.Context) ([]*core.Asset, error) {
+	assets, err := s.c.ReadMultisigAssets(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertAssets(assets), nil
+}
+
 func convertAsset(asset *mixin.Asset) *core.Asset {
 	return &core.Asset{
 		ID:      asset.AssetID,

@@ -31,7 +31,7 @@ func (w *Sync) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
-		case <-time.After(time.Second):
+		case <-time.After(5 * time.Second):
 			_ = w.run(ctx)
 		}
 	}
@@ -40,23 +40,15 @@ func (w *Sync) Run(ctx context.Context) error {
 func (w *Sync) run(ctx context.Context) error {
 	log := logger.FromContext(ctx)
 
-	assets, err := w.assets.List(ctx)
+	assets, err := w.assetz.List(ctx)
 	if err != nil {
-		log.WithError(err).Error("assets.List")
+		log.WithError(err).Error("assetz.List")
 		return err
 	}
 
 	for _, asset := range assets {
-		r, err := w.assetz.Find(ctx, asset.ID)
-		if err != nil {
-			log.WithError(err).Errorf("assetz.Find(%s)", asset.Symbol)
-			continue
-		}
-
-		asset.Price = r.Price
-		asset.Logo = r.Logo
-		if err := w.assets.Update(ctx, asset); err != nil {
-			log.WithError(err).Errorf("assets.Update(%s)", asset.ID)
+		if err := w.assets.Save(ctx, asset); err != nil {
+			log.WithError(err).Error("assets.Save")
 			return err
 		}
 	}

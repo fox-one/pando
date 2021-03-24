@@ -30,7 +30,7 @@ func TestCatCreate(t *testing.T) {
 		assets := mock.NewMockAssetStore(ctrl)
 
 		req := makertest.Next().WithBody(types.UUID(gem), types.UUID(dai), name)
-		err := cat.HandleCreate(collaterals, oracles, assets, assets)(req)
+		err := cat.HandleCreate(collaterals, oracles)(req)
 		require.NotNil(t, err)
 		assert.Equal(t, "Cat/not-authorized", err.Error())
 	})
@@ -83,7 +83,7 @@ func TestCatCreate(t *testing.T) {
 			}).Times(2)
 
 		req.Gov = true
-		err := cat.HandleCreate(collaterals, oracles, assets, assets)(req)
+		err := cat.HandleCreate(collaterals, oracles)(req)
 		require.Nil(t, err)
 	})
 }

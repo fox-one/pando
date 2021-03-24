@@ -47,7 +47,7 @@ func New(
 		// cat
 		core.ActionCatEdit:   cat.HandleEdit(collaterals),
 		core.ActionCatFold:   cat.HandleFold(collaterals),
-		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles, assets, assetz),
+		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
 		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets),

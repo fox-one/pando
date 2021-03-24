@@ -5,6 +5,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -27,28 +28,23 @@ type assetStore struct {
 	db *db.DB
 }
 
-func (s *assetStore) Create(ctx context.Context, asset *core.Asset) error {
-	return s.db.Update().Where("id = ?", asset.ID).FirstOrCreate(asset).Error
-}
-
 func toUpdateParams(asset *core.Asset) map[string]interface{} {
 	return map[string]interface{}{
-		"logo":  asset.Logo,
-		"price": asset.Price,
+		"logo":    asset.Logo,
+		"price":   asset.Price,
+		"version": gorm.Expr("version + 1"),
 	}
 }
 
-func (s *assetStore) Update(ctx context.Context, asset *core.Asset) error {
+func (s *assetStore) Save(ctx context.Context, asset *core.Asset) error {
 	updates := toUpdateParams(asset)
-	updates["version"] = asset.Version + 1
-
-	tx := s.db.Update().Model(asset).Where("version = ?", asset.Version).Updates(updates)
+	tx := s.db.Update().Model(asset).Where("id = ?", asset.ID).Updates(updates)
 	if err := tx.Error; err != nil {
 		return err
 	}
 
 	if tx.RowsAffected == 0 {
-		return db.ErrOptimisticLock
+		return s.db.Update().Create(asset).Error
 	}
 
 	return nil
