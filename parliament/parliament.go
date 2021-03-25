@@ -13,7 +13,6 @@ import (
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pando/service/asset"
-	"github.com/shopspring/decimal"
 )
 
 func New(
@@ -145,111 +144,7 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 	}
 
 	data, _ := base64.StdEncoding.DecodeString(p.Data)
-
-	switch p.Action {
-	case core.ActionCatCreate:
-		var (
-			gem, dai uuid.UUID
-			name     string
-		)
-
-		_, _ = mtg.Scan(data, &gem, &dai, &name)
-
-		view.Meta = []Item{
-			{
-				Key:   "name",
-				Value: name,
-			},
-			{
-				Key:    "gem",
-				Value:  s.fetchAssetSymbol(ctx, gem.String()),
-				Action: assetAction(gem.String()),
-			},
-			{
-				Key:    "dai",
-				Value:  s.fetchAssetSymbol(ctx, dai.String()),
-				Action: assetAction(dai.String()),
-			},
-		}
-	case core.ActionCatEdit:
-		var id uuid.UUID
-		data, err := mtg.Scan(data, &id)
-
-		view.Meta = []Item{
-			{
-				Key:   "cat",
-				Value: s.fetchCatName(ctx, id.String()),
-			},
-		}
-
-		for {
-			var item Item
-			if data, err = mtg.Scan(data, &item.Key, &item.Value); err != nil {
-				break
-			}
-
-			view.Meta = append(view.Meta, item)
-		}
-	case core.ActionOraclePoke:
-		var (
-			id    uuid.UUID
-			price decimal.Decimal
-		)
-
-		_, _ = mtg.Scan(data, &id, &price)
-
-		view.Meta = []Item{
-			{
-				Key:    "asset",
-				Value:  s.fetchAssetSymbol(ctx, id.String()),
-				Action: assetAction(id.String()),
-			},
-			{
-				Key:   "price",
-				Value: number.Humanize(price),
-			},
-		}
-	case core.ActionOracleStep:
-		var (
-			id uuid.UUID
-			ts int64
-		)
-
-		_, _ = mtg.Scan(data, &id, &ts)
-
-		view.Meta = []Item{
-			{
-				Key:    "asset",
-				Value:  s.fetchAssetSymbol(ctx, id.String()),
-				Action: assetAction(id.String()),
-			},
-			{
-				Key:   "step",
-				Value: (time.Duration(ts) * time.Second).String(),
-			},
-		}
-	case core.ActionSysWithdraw:
-		var (
-			assetID  uuid.UUID
-			amount   decimal.Decimal
-			opponent uuid.UUID
-		)
-
-		_, _ = mtg.Scan(data, &assetID, &amount, &opponent)
-
-		view.Meta = []Item{
-			{
-				Key:    "asset",
-				Value:  fmt.Sprintf("%s %s", number.Humanize(amount), s.fetchAssetSymbol(ctx, assetID.String())),
-				Action: assetAction(assetID.String()),
-			},
-			{
-				Key:    "opponent",
-				Value:  s.fetchUserName(ctx, opponent.String()),
-				Action: userAction(opponent.String()),
-			},
-		}
-	}
+	view.Meta = s.renderProposalItems(ctx, p.Action, data)
 
 	items := append(view.Info, view.Meta...)
 	voteAction, err := s.requestVoteAction(ctx, p)

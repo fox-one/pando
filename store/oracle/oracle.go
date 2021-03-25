@@ -21,6 +21,19 @@ func init() {
 
 		return nil
 	})
+
+	db.RegisterMigrate(func(db *db.DB) error {
+		tx := db.Update().Model(core.OracleFeed{})
+		if err := tx.AutoMigrate(core.OracleFeed{}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.AddUniqueIndex("idx_oracle_feeds_user", "user_id").Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func New(db *db.DB) core.OracleStore {
@@ -31,27 +44,24 @@ type oracleStore struct {
 	db *db.DB
 }
 
-func toUpdateParams(oracle *core.Oracle) map[string]interface{} {
-	return map[string]interface{}{
-		"hop":     oracle.Hop,
-		"current": oracle.Current,
-		"next":    oracle.Next,
-		"peek_at": oracle.PeekAt,
-	}
+func (s *oracleStore) Create(ctx context.Context, oracle *core.Oracle) error {
+	return s.db.Update().Where("asset_id = ?", oracle.AssetID).FirstOrCreate(oracle).Error
 }
 
-func (s *oracleStore) Save(ctx context.Context, oracle *core.Oracle, version int64) error {
-	if oracle.ID == 0 {
-		oracle.Version = version
-		return s.db.Update().Create(oracle).Error
-	}
-
+func (s *oracleStore) Update(ctx context.Context, oracle *core.Oracle, version int64) error {
 	if oracle.Version >= version {
 		return nil
 	}
 
-	updates := toUpdateParams(oracle)
-	updates["version"] = version
+	updates := map[string]interface{}{
+		"hop":       oracle.Hop,
+		"current":   oracle.Current,
+		"next":      oracle.Next,
+		"peek_at":   oracle.PeekAt,
+		"threshold": oracle.Threshold,
+		"poked_by":  oracle.PokedBy,
+		"version":   version,
+	}
 
 	tx := s.db.Update().Model(oracle).Where("version = ?", oracle.Version).Updates(updates)
 	if tx.Error != nil {
@@ -101,4 +111,26 @@ func (s *oracleStore) ListCurrent(ctx context.Context) (number.Values, error) {
 	}
 
 	return prices, nil
+}
+
+func (s *oracleStore) Rely(ctx context.Context, userID, publicKey string) error {
+	feed := &core.OracleFeed{
+		UserID:    userID,
+		PublicKey: publicKey,
+	}
+
+	return s.db.Update().Where("user_id = ?", userID).FirstOrCreate(feed).Error
+}
+
+func (s *oracleStore) Deny(ctx context.Context, userID string) error {
+	return s.db.Update().Where("user_id = ?", userID).Delete(core.OracleFeed{}).Error
+}
+
+func (s *oracleStore) ListFeeds(ctx context.Context) ([]*core.OracleFeed, error) {
+	var feeds []*core.OracleFeed
+	if err := s.db.View().Find(&feeds).Error; err != nil {
+		return nil, err
+	}
+
+	return feeds, nil
 }

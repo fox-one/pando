@@ -30,8 +30,11 @@ func _() {
 	_ = x[ActionFlipBid-42]
 	_ = x[ActionFlipDeal-43]
 	_ = x[ActionOracle-50]
-	_ = x[ActionOraclePoke-51]
-	_ = x[ActionOracleStep-52]
+	_ = x[ActionOracleCreate-51]
+	_ = x[ActionOracleEdit-52]
+	_ = x[ActionOraclePoke-53]
+	_ = x[ActionOracleRely-54]
+	_ = x[ActionOracleDeny-55]
 }
 
 const (
@@ -40,7 +43,7 @@ const (
 	_Action_name_2 = "CatCatCreateCatSupplyCatEditCatFold"
 	_Action_name_3 = "VatVatOpenVatDepositVatWithdrawVatPaybackVatGenerate"
 	_Action_name_4 = "FlipFlipKickFlipBidFlipDeal"
-	_Action_name_5 = "OracleOraclePokeOracleStep"
+	_Action_name_5 = "OracleOracleCreateOracleEditOraclePokeOracleRelyOracleDeny"
 )
 
 var (
@@ -49,7 +52,7 @@ var (
 	_Action_index_2 = [...]uint8{0, 3, 12, 21, 28, 35}
 	_Action_index_3 = [...]uint8{0, 3, 10, 20, 31, 41, 52}
 	_Action_index_4 = [...]uint8{0, 4, 12, 19, 27}
-	_Action_index_5 = [...]uint8{0, 6, 16, 26}
+	_Action_index_5 = [...]uint8{0, 6, 18, 28, 38, 48, 58}
 )
 
 func (i Action) String() string {
@@ -68,7 +71,7 @@ func (i Action) String() string {
 	case 40 <= i && i <= 43:
 		i -= 40
 		return _Action_name_4[_Action_index_4[i]:_Action_index_4[i+1]]
-	case 50 <= i && i <= 52:
+	case 50 <= i && i <= 55:
 		i -= 50
 		return _Action_name_5[_Action_index_5[i]:_Action_index_5[i+1]]
 	default:

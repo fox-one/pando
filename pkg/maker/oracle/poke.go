@@ -16,12 +16,16 @@ func HandlePoke(
 	return func(r *maker.Request) error {
 		ctx := r.Context()
 
-		if err := require(r.Gov || r.Oracle, "not-authorized"); err != nil {
+		if err := require(r.Gov(), "not-authorized"); err != nil {
 			return err
 		}
 
 		oracle, err := From(r, oracles)
 		if err != nil {
+			return err
+		}
+
+		if err := require(oracle.Threshold > 0 && int(oracle.Threshold) <= len(r.Governors), "threshold-not-reach"); err != nil {
 			return err
 		}
 
@@ -39,29 +43,16 @@ func HandlePoke(
 			return err
 		}
 
-		if oracle.ID == 0 {
-			oracle.Hop = 30 * 60 // 30m
-			oracle.Next = price
-		}
-
-		if err := require(ts > oracle.PeekAt.Unix(), "out-of-date"); err != nil {
+		if err := require(ts > oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
 			return err
 		}
 
-		passed := ts > oracle.PeekAt.Unix()+oracle.Hop
-
-		// Gov 可以随意更改 Next Price
-		if err := require(r.Gov || passed, "not-passed"); err != nil {
-			return err
-		}
-
+		oracle.Current = oracle.Next
 		oracle.Next = price
-		if passed {
-			oracle.Current = oracle.Next
-			oracle.PeekAt = time.Unix(ts, 0).Truncate(time.Duration(oracle.Hop) * time.Second)
-		}
+		oracle.PeekAt = time.Unix(ts, 0).Truncate(time.Duration(oracle.Hop) * time.Second)
+		oracle.PokedBy = r.Governors
 
-		if err := oracles.Save(ctx, oracle, r.Version); err != nil {
+		if err := oracles.Update(ctx, oracle, r.Version); err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("oracles.Save")
 			return err
 		}

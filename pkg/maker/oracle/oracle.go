@@ -26,6 +26,10 @@ func From(r *maker.Request, oracles core.OracleStore) (*core.Oracle, error) {
 		return nil, err
 	}
 
+	if err := require(oracle.ID > 0, "not-init"); err != nil {
+		return nil, err
+	}
+
 	return oracle, nil
 }
 
@@ -47,13 +51,8 @@ func List(r *maker.Request, oracles core.OracleStore) ([]*core.Oracle, error) {
 			return nil, err
 		}
 	} else {
-		oracle, err := oracles.Find(ctx, id.String())
+		oracle, err := From(r.WithBody(id), oracles)
 		if err != nil {
-			log.WithError(err).Errorln("oracles.Find")
-			return nil, err
-		}
-
-		if err := require(oracle.ID > 0, "not-init"); err != nil {
 			return nil, err
 		}
 

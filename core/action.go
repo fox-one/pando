@@ -71,10 +71,16 @@ const (
 const (
 	// Oracle Actions
 	ActionOracle Action = iota + 50
-	// Updates the current feed value and queue up the next one
+	// Create a new price
+	ActionOracleCreate
+	// Edit can modify Next, hop & Threshold
+	ActionOracleEdit
+	// Poke push the next price to be current
 	ActionOraclePoke
-	// Adjust oracle price delay
-	ActionOracleStep
+	// Rely add a new oracle feed
+	ActionOracleRely
+	// Deny remove a existed oracle feed
+	ActionOracleDeny
 )
 
 func (i Action) MarshalBinary() (data []byte, err error) {

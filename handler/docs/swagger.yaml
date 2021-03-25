@@ -18,9 +18,6 @@ definitions:
         items:
           type: string
         type: array
-      user_id:
-        format: uuid
-        type: string
     type: object
   actions.CreateResponse:
     properties:

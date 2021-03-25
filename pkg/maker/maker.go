@@ -27,9 +27,8 @@ type Request struct {
 	values   []interface{}
 
 	// Permission
-	Gov    bool //  Action from approved proposal
-	Oracle bool // Action from price oracle
-
+	Governors []string
+	// Next Request from proposal
 	Next *Request
 }
 
@@ -90,6 +89,10 @@ func (r *Request) Context() context.Context {
 	return context.Background()
 }
 
+func (r *Request) Gov() bool {
+	return len(r.Governors) > 0
+}
+
 func (r *Request) WithProposal(p *core.Proposal) *Request {
 	r2 := r.Copy()
 	r2.TraceID = uuid.Modify(r.TraceID, p.TraceID)
@@ -100,7 +103,7 @@ func (r *Request) WithProposal(p *core.Proposal) *Request {
 	r2.Action = p.Action
 	r2.Body, _ = base64.StdEncoding.DecodeString(p.Data)
 	r2.values = nil
-	r2.Gov = true
+	r2.Governors = p.Votes
 
 	return r2
 }

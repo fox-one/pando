@@ -17,7 +17,7 @@ func HandleCreate(
 		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
-		if err := require(r.Gov, "not-authorized"); err != nil {
+		if err := require(r.Gov(), "not-authorized"); err != nil {
 			return err
 		}
 

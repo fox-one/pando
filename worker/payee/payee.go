@@ -60,8 +60,11 @@ func New(
 		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets),
 		core.ActionFlipDeal: flip.HandleDeal(collaterals, flips, wallets),
 		// oracle
-		core.ActionOraclePoke: oracle.HandlePoke(collaterals, oracles),
-		core.ActionOracleStep: oracle.HandleStep(oracles),
+		core.ActionOracleCreate: oracle.HandleCreate(oracles),
+		core.ActionOracleEdit:   oracle.HandleEdit(oracles),
+		core.ActionOraclePoke:   oracle.HandlePoke(collaterals, oracles),
+		core.ActionOracleRely:   oracle.HandleRely(oracles),
+		core.ActionOracleDeny:   oracle.HandleDeny(oracles),
 		// proposal
 		core.ActionProposalMake:  proposal.HandleMake(proposals, walletz, parliaments, system),
 		core.ActionProposalShout: proposal.HandleShout(proposals, parliaments, system),
@@ -151,7 +154,7 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	if body, err := w.oraclez.Parse(message); err == nil {
 		req.Action = core.ActionOraclePoke
 		req.Body = body
-		req.Gov = true
+		// req.Gov = true
 		return w.handleRequest(req.WithContext(ctx))
 	}
 

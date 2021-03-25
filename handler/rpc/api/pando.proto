@@ -34,8 +34,12 @@ enum Action {
     FlipBid = 42;
     FlipDeal = 43;
     // Oracles
-    OraclePoke = 51;
-    OracleStep = 52;
+
+    OracleCreate = 51;
+    OracleEdit = 52;
+    OraclePoke = 53;
+    OracleRely = 54;
+    OracleDeny = 55;
 }
 
 message Asset {

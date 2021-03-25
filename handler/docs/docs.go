@@ -646,10 +646,6 @@ var doc = `{
                     "items": {
                         "type": "string"
                     }
-                },
-                "user_id": {
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },

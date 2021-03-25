@@ -11,7 +11,7 @@ import (
 func HandleWithdraw(wallets core.WalletStore) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()
-		if err := require(r.Gov, "not-authorized"); err != nil {
+		if err := require(r.Gov(), "not-authorized"); err != nil {
 			return err
 		}
 
