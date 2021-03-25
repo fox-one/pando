@@ -2,6 +2,7 @@ package asset
 
 import (
 	"context"
+	"strings"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
@@ -29,12 +30,24 @@ func (s *assetService) Find(ctx context.Context, id string) (*core.Asset, error)
 }
 
 func (s *assetService) List(ctx context.Context) ([]*core.Asset, error) {
-	assets, err := s.c.ReadMultisigAssets(ctx)
+	assets, err := mixin.ReadMultisigAssets(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertAssets(assets), nil
+	const blankLogo = "yH_I5b0GiV2zDmvrXRyr3bK5xusjfy5q7FX3lw3mM2Ryx4Dfuj6Xcw8SHNRnDKm7ZVE3_LvpKlLdcLrlFQUBhds"
+	var idx int
+
+	for _, asset := range assets {
+		if strings.Contains(asset.IconURL, blankLogo) {
+			continue
+		}
+
+		assets[idx] = asset
+		idx += 1
+	}
+
+	return convertAssets(assets[:idx]), nil
 }
 
 func convertAsset(asset *mixin.Asset) *core.Asset {

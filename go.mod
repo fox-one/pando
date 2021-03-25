@@ -10,7 +10,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/drone/signal v1.0.0
 	github.com/dustin/go-humanize v1.0.0
-	github.com/fox-one/mixin-sdk-go v1.3.6
+	github.com/fox-one/mixin-sdk-go v1.3.7
 	github.com/fox-one/msgpack v1.0.0
 	github.com/fox-one/pkg v1.5.5
 	github.com/go-chi/chi v4.1.2+incompatible
@@ -42,9 +42,8 @@ require (
 	github.com/swaggo/swag v1.7.0
 	github.com/twitchtv/twirp v7.1.1+incompatible
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/net v0.0.0-20210323141857-08027d57d8cf // indirect
+	golang.org/x/net v0.0.0-20210324205630-d1beb07c2056 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 // indirect
 	golang.org/x/text v0.3.4
 	google.golang.org/protobuf v1.26.0
 )
