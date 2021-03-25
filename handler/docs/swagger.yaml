@@ -158,6 +158,10 @@ definitions:
         type: string
       current:
         type: string
+      governors:
+        items:
+          type: string
+        type: array
       hop:
         type: integer
       next:
@@ -168,6 +172,8 @@ definitions:
           last update of current price
         format: date
         type: string
+      threshold:
+        type: integer
     type: object
   api.Pagination:
     properties:

@@ -29,7 +29,7 @@ type (
 		// don't accept any updates by set to zero
 		Threshold int64 `json:"threshold,omitempty"`
 		// next price providers
-		PokedBy pq.StringArray `sql:"type:varchar(1024)" json:"poked_by,omitempty"`
+		Governors pq.StringArray `sql:"type:varchar(1024)" json:"governors,omitempty"`
 	}
 
 	OracleFeed struct {

@@ -44,7 +44,7 @@ func HandleCreate(oracles core.OracleStore) maker.HandlerFunc {
 			PeekAt:    time.Unix(ts, 0).Truncate(time.Duration(hop) * time.Second),
 			Hop:       hop,
 			Threshold: threshold,
-			PokedBy:   r.Governors,
+			Governors: r.Governors,
 		}
 
 		if err := oracles.Create(ctx, oracle); err != nil {

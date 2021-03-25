@@ -137,6 +137,8 @@ message Oracle {
     // @inject_tag: swaggertype:"string" format:"date"
     // last update of current price
     google.protobuf.Timestamp peek_at = 5;
+    int32 threshold = 6;
+    repeated string governors = 7;
 }
 
 message Transaction {

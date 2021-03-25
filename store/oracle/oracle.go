@@ -59,7 +59,7 @@ func (s *oracleStore) Update(ctx context.Context, oracle *core.Oracle, version i
 		"next":      oracle.Next,
 		"peek_at":   oracle.PeekAt,
 		"threshold": oracle.Threshold,
-		"poked_by":  oracle.PokedBy,
+		"governors": oracle.Governors,
 		"version":   version,
 	}
 

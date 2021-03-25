@@ -50,7 +50,7 @@ func HandlePoke(
 		oracle.Current = oracle.Next
 		oracle.Next = price
 		oracle.PeekAt = time.Unix(ts, 0).Truncate(time.Duration(oracle.Hop) * time.Second)
-		oracle.PokedBy = r.Governors
+		oracle.Governors = r.Governors
 
 		if err := oracles.Update(ctx, oracle, r.Version); err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("oracles.Save")

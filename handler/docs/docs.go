@@ -852,6 +852,12 @@ var doc = `{
                 "current": {
                     "type": "string"
                 },
+                "governors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "hop": {
                     "type": "integer"
                 },
@@ -862,6 +868,9 @@ var doc = `{
                     "description": "@inject_tag: swaggertype:\"string\" format:\"date\"\nlast update of current price",
                     "type": "string",
                     "format": "date"
+                },
+                "threshold": {
+                    "type": "integer"
                 }
             }
         },
