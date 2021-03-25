@@ -9,8 +9,11 @@ func NewCmd() *cobra.Command {
 		Use: "oracle",
 	}
 
+	cmd.AddCommand(NewCreateCmd())
+	cmd.AddCommand(NewEditCmd())
 	cmd.AddCommand(NewPokeCmd())
-	cmd.AddCommand(NewStepCmd())
+	cmd.AddCommand(NewRelyCmd())
+	cmd.AddCommand(NewDenyCmd())
 
 	return cmd
 }
