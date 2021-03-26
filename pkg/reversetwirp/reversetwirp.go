@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path"
-	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/oxtoacart/bpool"
@@ -16,17 +15,7 @@ type ReverseTwirp struct {
 	Path   string
 }
 
-type ParamTransfer func(key, value string) interface{}
-
-func passThrough(_, value string) interface{} {
-	return value
-}
-
-func (t *ReverseTwirp) Handle(method string, tr ParamTransfer) http.HandlerFunc {
-	if tr == nil {
-		tr = passThrough
-	}
-
+func (t *ReverseTwirp) Handle(method string) http.HandlerFunc {
 	bufferPool := bpool.NewBufferPool(64)
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -34,15 +23,15 @@ func (t *ReverseTwirp) Handle(method string, tr ParamTransfer) http.HandlerFunc 
 		if ctx := chi.RouteContext(r.Context()); ctx != nil {
 			params := ctx.URLParams
 			for idx, key := range params.Keys {
-				body[key] = tr(key, params.Values[idx])
+				body[key] = params.Values[idx]
 			}
 
 			ctx.Reset()
 		}
 
-		for key, items := range r.URL.Query() {
-			value := strings.Join(items, ",")
-			body[key] = tr(key, value)
+		query := r.URL.Query()
+		for key := range query {
+			body[key] = query.Get(key)
 		}
 
 		if len(body) > 0 {

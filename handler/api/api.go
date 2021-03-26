@@ -75,39 +75,39 @@ func (s *Server) Handler() http.Handler {
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListAssets", nil))
-		r.Get("/{id}", rt.Handle("FindAsset", nil))
+		r.Get("/", rt.Handle("ListAssets"))
+		r.Get("/{id}", rt.Handle("FindAsset"))
 	})
 
 	r.Route("/oracles", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListOracles", nil))
-		r.Get("/{id}", rt.Handle("FindOracle", nil))
+		r.Get("/", rt.Handle("ListOracles"))
+		r.Get("/{id}", rt.Handle("FindOracle"))
 	})
 
 	r.Route("/cats", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListCollaterals", nil))
-		r.Get("/{id}", rt.Handle("FindCollateral", nil))
+		r.Get("/", rt.Handle("ListCollaterals"))
+		r.Get("/{id}", rt.Handle("FindCollateral"))
 	})
 
 	r.Route("/vats", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListVaults", nil))
-		r.Get("/{id}", rt.Handle("FindVault", nil))
-		r.Get("/{id}/events", rt.Handle("ListVaultEvents", nil))
+		r.Get("/", rt.Handle("ListVaults"))
+		r.Get("/{id}", rt.Handle("FindVault"))
+		r.Get("/{id}/events", rt.Handle("ListVaultEvents"))
 	})
 
 	r.Route("/me", func(r chi.Router) {
-		r.Get("/vats", rt.Handle("ListMyVaults", nil))
+		r.Get("/vats", rt.Handle("ListMyVaults"))
 	})
 
 	r.Route("/flips", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListFlips", nil))
-		r.Get("/{id}", rt.Handle("FindFlip", nil))
-		r.Get("/{id}/events", rt.Handle("ListFlipEvents", nil))
+		r.Get("/", rt.Handle("ListFlips"))
+		r.Get("/{id}", rt.Handle("FindFlip"))
+		r.Get("/{id}/events", rt.Handle("ListFlipEvents"))
 	})
 
 	r.Route("/transactions", func(r chi.Router) {
-		r.Get("/{id}", rt.Handle("FindTransaction", nil))
-		r.Get("/", rt.Handle("ListTransactions", nil))
+		r.Get("/{id}", rt.Handle("FindTransaction"))
+		r.Get("/", rt.Handle("ListTransactions"))
 	})
 
 	r.Route("/actions", func(r chi.Router) {
