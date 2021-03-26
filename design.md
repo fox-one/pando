@@ -226,7 +226,7 @@ put collateral up for auction from an unsafe vault.
 bid for the collateral.
 
 > Starting in the tend-phase, bidders compete for a fixed lot amount of Gem with increasing bid amounts of Dai. Once tab amount of Dai has been raised, the auction moves to the dent-phase. The point of the tend phase is to raise Dai to cover the system's debt.
-> During the dent-phase bidders compete for decreasing lot amounts of Gem for the fixed tab amount of Dai. Forfeited Gem is returned to the liquidated Urn for the owner to retrieve. The point of the dent phase is to return as much collateral to the Vault holder as the market will allow.
+> During the dent-phase bidders compete for decreasing lot amounts of Gem for the fixed tab amount of Dai. Forfeited Gem is returned to the liquidated vault for the owner to retrieve. The point of the dent phase is to return as much collateral to the Vault holder as the market will allow.
 
 [pkg/maker/flip/bid](pkg/maker/flip/bid.go)
 
