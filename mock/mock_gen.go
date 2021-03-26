@@ -36,20 +36,6 @@ func (m *MockAssetStore) EXPECT() *MockAssetStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
-func (m *MockAssetStore) Create(arg0 context.Context, arg1 *core.Asset) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create
-func (mr *MockAssetStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAssetStore)(nil).Create), arg0, arg1)
-}
-
 // Find mocks base method
 func (m *MockAssetStore) Find(arg0 context.Context, arg1 string) (*core.Asset, error) {
 	m.ctrl.T.Helper()
@@ -80,18 +66,18 @@ func (mr *MockAssetStoreMockRecorder) List(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAssetStore)(nil).List), arg0)
 }
 
-// Update mocks base method
-func (m *MockAssetStore) Update(arg0 context.Context, arg1 *core.Asset) error {
+// Save mocks base method
+func (m *MockAssetStore) Save(arg0 context.Context, arg1 *core.Asset) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret := m.ctrl.Call(m, "Save", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Update indicates an expected call of Update
-func (mr *MockAssetStoreMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+// Save indicates an expected call of Save
+func (mr *MockAssetStoreMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockAssetStore)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockAssetStore)(nil).Save), arg0, arg1)
 }
 
 // MockAssetService is a mock of AssetService interface
@@ -130,6 +116,21 @@ func (m *MockAssetService) Find(arg0 context.Context, arg1 string) (*core.Asset,
 func (mr *MockAssetServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockAssetService)(nil).Find), arg0, arg1)
+}
+
+// List mocks base method
+func (m *MockAssetService) List(arg0 context.Context) ([]*core.Asset, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", arg0)
+	ret0, _ := ret[0].([]*core.Asset)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List
+func (mr *MockAssetServiceMockRecorder) List(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAssetService)(nil).List), arg0)
 }
 
 // MockCollateralStore is a mock of CollateralStore interface
@@ -543,6 +544,34 @@ func (m *MockOracleStore) EXPECT() *MockOracleStoreMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method
+func (m *MockOracleStore) Create(arg0 context.Context, arg1 *core.Oracle) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create
+func (mr *MockOracleStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOracleStore)(nil).Create), arg0, arg1)
+}
+
+// Deny mocks base method
+func (m *MockOracleStore) Deny(arg0 context.Context, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Deny", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Deny indicates an expected call of Deny
+func (mr *MockOracleStoreMockRecorder) Deny(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deny", reflect.TypeOf((*MockOracleStore)(nil).Deny), arg0, arg1)
+}
+
 // Find mocks base method
 func (m *MockOracleStore) Find(arg0 context.Context, arg1 string) (*core.Oracle, error) {
 	m.ctrl.T.Helper()
@@ -588,18 +617,47 @@ func (mr *MockOracleStoreMockRecorder) ListCurrent(arg0 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCurrent", reflect.TypeOf((*MockOracleStore)(nil).ListCurrent), arg0)
 }
 
-// Save mocks base method
-func (m *MockOracleStore) Save(arg0 context.Context, arg1 *core.Oracle, arg2 int64) error {
+// ListFeeds mocks base method
+func (m *MockOracleStore) ListFeeds(arg0 context.Context) ([]*core.OracleFeed, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Save", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "ListFeeds", arg0)
+	ret0, _ := ret[0].([]*core.OracleFeed)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListFeeds indicates an expected call of ListFeeds
+func (mr *MockOracleStoreMockRecorder) ListFeeds(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*MockOracleStore)(nil).ListFeeds), arg0)
+}
+
+// Rely mocks base method
+func (m *MockOracleStore) Rely(arg0 context.Context, arg1, arg2 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Rely", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Save indicates an expected call of Save
-func (mr *MockOracleStoreMockRecorder) Save(arg0, arg1, arg2 interface{}) *gomock.Call {
+// Rely indicates an expected call of Rely
+func (mr *MockOracleStoreMockRecorder) Rely(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockOracleStore)(nil).Save), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rely", reflect.TypeOf((*MockOracleStore)(nil).Rely), arg0, arg1, arg2)
+}
+
+// Update mocks base method
+func (m *MockOracleStore) Update(arg0 context.Context, arg1 *core.Oracle, arg2 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *MockOracleStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockOracleStore)(nil).Update), arg0, arg1, arg2)
 }
 
 // MockOracleService is a mock of OracleService interface
