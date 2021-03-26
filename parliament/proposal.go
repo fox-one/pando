@@ -144,8 +144,9 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 		_, _ = mtg.Scan(data, &id, &publicKey)
 		items = []Item{
 			{
-				Key:   "id",
-				Value: id.String(),
+				Key:    "id",
+				Value:  s.fetchUserName(ctx, id.String()),
+				Action: userAction(id.String()),
 			},
 			{
 				Key:   "key",
@@ -158,8 +159,9 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 		_, _ = mtg.Scan(data, &id)
 		items = []Item{
 			{
-				Key:   "id",
-				Value: id.String(),
+				Key:    "id",
+				Value:  s.fetchUserName(ctx, id.String()),
+				Action: userAction(id.String()),
 			},
 		}
 	case core.ActionSysWithdraw:
