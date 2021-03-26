@@ -1,8 +1,9 @@
-# Pando 设计文档
+# Pando Design Document
 
-## 与 Pando 交互
+## Interact with Pando
 
-Pando 里面的所有角色都是通过给 Pando 多签收款地址转账来完成，把要操作的方法和参数写在 memo 里面；节点 Syncer（worker/syncer）会把这些外部转账即 Mixin Multisig Output 同步过来，然后交给 Payee（worker/payee）去按顺序处理。
+All participants of Pando complete the interaction by transferring token to the multisig wallet; 
+Node worker **Syncer** syncs the payments as mixin multisig outputs, all outputs will be processed by another worker **Payee** in order.
 
 ### Mixin Multisig Output
 
@@ -14,20 +15,20 @@ Pando 里面的所有角色都是通过给 Pando 多签收款地址转账来完�
 | CreatedAt | payment time     |
 | AssetID   | payment asset id |
 | Amount    | payment amount   |
-| Mmeo      | extra message    |
+| Memo      | extra message    |
 
 **Output Memo:**
 
-如果 memo 是 aes 加密的，那么前 32 位是用于计算 aes key/iv 的 ed25519 公钥，后面为加密后的附加信息。
+Memo contain the **TransactionAction** information, see details in [DecodeTransactionAction](core/action.go).
 
-memo 解密之后得到 **TransactionAction** (core/action.go#TransactionAction)
+The memo is maybe AES encrypted, an ed25519 public key used for compound AES key/iv will be in the first 32 bytes.
 
-### TransactionAction
+### TransactionAction Definition
 
 | field    | description                                | type  |
 | -------- | ------------------------------------------ | ----- |
 | FollowID | user defined trace id for this transaction | uuid  |
-| Body     | action type & parameters                   | bytes |
+| Body     | action type & relevant parameters          | bytes |
 
 ## Actions
 
@@ -37,9 +38,9 @@ all actions supported by Pando with groups cat,flip,oracle,proposal,sys and vat.
 
 #### #1 Withdraw
 
-withdraw any assets from the multisig wallet, proposal required.
+> [pkg/maker/sys/withdraw.go](pkg/maker/sys/withdraw.go)
 
-[pkg/maker/sys/withdraw](pkg/maker/sys/withdraw.go)
+withdraw any assets from the multisig wallet, proposal required.
 
 **Parameters:**
 
@@ -51,11 +52,11 @@ withdraw any assets from the multisig wallet, proposal required.
 
 ### Proposal - governance system
 
-#### #11 Make 
+#### #11 Make
+
+> [pkg/maker/proposal/make.go](pkg/maker/proposal/make.go)
 
 create a new proposal
-
-[pkg/maker/proposal/make](pkg/maker/proposal/make.go)
 
 **Parameters:**
 
@@ -65,9 +66,9 @@ create a new proposal
 
 #### #12 Shout
 
-request node administrator to vote for this proposal
+> [pkg/maker/proposal/shout.go](pkg/maker/proposal/shout.go)
 
-[pkg/maker/proposal/shout](pkg/maker/proposal/shout.go)
+request node administrator to vote for this proposal
 
 **Parameters:**
 
@@ -77,9 +78,9 @@ request node administrator to vote for this proposal
 
 #### #13 Vote
 
-vote for a proposal, node only. If enough votes collected, the attached action will be executed on all nodes automatically.
+> [pkg/maker/proposal/vote.go](pkg/maker/proposal/vote.go)
 
-[pkg/maker/proposal/vote](pkg/maker/proposal/vote.go)
+vote for a proposal, node only. If enough votes collected, the attached action will be executed on all nodes automatically.
 
 **Parameters:**
 
@@ -91,9 +92,9 @@ vote for a proposal, node only. If enough votes collected, the attached action w
 
 #### #21 Create
 
-create a new collateral type, proposal required.
+> [pkg/maker/cat/create.go](pkg/maker/cat/create.go)
 
-[pkg/maker/cat/create](pkg/maker/cat/create.go)
+create a new collateral type, proposal required.
 
 **Parameters:**
 
@@ -105,10 +106,10 @@ create a new collateral type, proposal required.
 
 #### #22 Supply
 
+> [pkg/maker/cat/supply.go](pkg/maker/cat/supply.go)
+
 supply dai token to increase the total debt ceiling for this collateral type.
 Payment asset id must be equal with the debt asset id.
-
-[pkg/maker/cat/supply](pkg/maker/cat/supply.go)
 
 **Parameters:**
 
@@ -118,9 +119,9 @@ Payment asset id must be equal with the debt asset id.
 
 #### #23 Edit
 
-modify collateral's one or more attributes, proposal required.
+> [pkg/maker/cat/edit.go](pkg/maker/cat/edit.go)
 
-[pkg/maker/cat/edit](pkg/maker/cat/edit.go)
+modify collateral's one or more attributes, proposal required.
 
 **Parameters:**
 
@@ -132,9 +133,9 @@ modify collateral's one or more attributes, proposal required.
 
 #### #24 Fold
 
-modify the debt multiplier(rate), creating / destroying corresponding debt.
+> [pkg/maker/cat/fold.go](pkg/maker/cat/fold.go)
 
-[pkg/maker/cat/fold](pkg/maker/cat/fold.go)
+modify the debt multiplier(rate), creating / destroying corresponding debt.
 
 **Parameters:**
 
@@ -144,11 +145,11 @@ modify the debt multiplier(rate), creating / destroying corresponding debt.
 
 ### Vat - manager vaults
 
-#### #31 Open 
+#### #31 Open
+
+> [pkg/maker/vat/open.go](pkg/maker/vat/open.go)
 
 open a new vault with the special collateral type
-
-[pkg/maker/vat/open](pkg/maker/vat/open.go)
 
 **Parameters:**
 
@@ -159,9 +160,9 @@ open a new vault with the special collateral type
 
 #### #32 Deposit
 
-transfer collateral into a Vault.
+> [pkg/maker/vat/deposit.go](pkg/maker/vat/deposit.go)
 
-[pkg/maker/vat/deposit](pkg/maker/vat/deposit.go)
+transfer collateral into a Vault.
 
 **Parameters:**
 
@@ -171,9 +172,9 @@ transfer collateral into a Vault.
 
 #### #33 Withdraw
 
-withdraw collateral from a Vault, vault owner only.
+> [pkg/maker/vat/withdraw.go](pkg/maker/vat/withdraw.go)
 
-[pkg/maker/vat/withdraw](pkg/maker/vat/withdraw.go)
+withdraw collateral from a Vault, vault owner only.
 
 **Parameters:**
 
@@ -184,9 +185,9 @@ withdraw collateral from a Vault, vault owner only.
 
 #### #34 Payback
 
- decrease Vault debt.
+> [pkg/maker/vat/payback.go](pkg/maker/vat/payback.go)
 
- [pkg/maker/vat/payback](pkg/maker/vat/payback.go)
+decrease Vault debt.
 
 **Parameters:**
 
@@ -196,9 +197,9 @@ withdraw collateral from a Vault, vault owner only.
 
 #### #35 Generate
 
-increase Vault debt, vault owner only.
+> [pkg/maker/vat/generate.go](pkg/maker/vat/generate.go)
 
- [pkg/maker/vat/generate](pkg/maker/vat/generate.go)
+increase Vault debt, vault owner only.
 
 **Parameters:**
 
@@ -211,9 +212,9 @@ increase Vault debt, vault owner only.
 
 #### #41 Kick
 
-put collateral up for auction from an unsafe vault.
+> [pkg/maker/flip/kick.go](pkg/maker/flip/kick.go)
 
-[pkg/maker/flip/kick](pkg/maker/flip/kick.go)
+put collateral up for auction from an unsafe vault.
 
 **Parameters:**
 
@@ -223,12 +224,12 @@ put collateral up for auction from an unsafe vault.
 
 #### #42 Bid
 
+> [pkg/maker/flip/bid.go](pkg/maker/flip/bid.go)
+
 bid for the collateral.
 
 > Starting in the tend-phase, bidders compete for a fixed lot amount of Gem with increasing bid amounts of Dai. Once tab amount of Dai has been raised, the auction moves to the dent-phase. The point of the tend phase is to raise Dai to cover the system's debt.
 > During the dent-phase bidders compete for decreasing lot amounts of Gem for the fixed tab amount of Dai. Forfeited Gem is returned to the liquidated vault for the owner to retrieve. The point of the dent phase is to return as much collateral to the Vault holder as the market will allow.
-
-[pkg/maker/flip/bid](pkg/maker/flip/bid.go)
 
 **Parameters:**
 
@@ -239,9 +240,9 @@ bid for the collateral.
 
 #### #43 Deal
 
-claim a winning bid / settles a completed auction
+> [pkg/maker/flip/deal.go](pkg/maker/flip/deal.go)
 
-[pkg/maker/flip/deal](pkg/maker/flip/deal.go)
+claim a winning bid / settles a completed auction
 
 **Parameters:**
 
@@ -253,9 +254,9 @@ claim a winning bid / settles a completed auction
 
 #### #51 Create
 
-register a new oracle for asset, proposal required.
+> [pkg/maker/oracle/create.go](pkg/maker/oracle/create.go)
 
-[pkg/maker/oracle/create](pkg/maker/oracle/create.go)
+register a new oracle for the asset, proposal required.
 
 **Parameters:**
 
@@ -269,9 +270,9 @@ register a new oracle for asset, proposal required.
 
 #### #52 Edit
 
-modify a oracle's next price, hop & threshold, proposal required.
+> [pkg/maker/oracle/edit.go](pkg/maker/oracle/edit.go)
 
-[pkg/maker/oracle/edit](pkg/maker/oracle/edit.go)
+modify an oracle's next price, hop & threshold, proposal required.
 
 **Parameters:**
 
@@ -283,9 +284,9 @@ modify a oracle's next price, hop & threshold, proposal required.
 
 #### #53 Poke
 
-updates the current feed value and queue up the next one.
+> [pkg/maker/oracle/poke.go](pkg/maker/oracle/poke.go)
 
-[pkg/maker/oracle/poke](pkg/maker/oracle/poke.go)
+updates the current feed value and queue up the next one.
 
 **Parameters:**
 
@@ -297,9 +298,11 @@ updates the current feed value and queue up the next one.
 
 #### #54 Rely
 
+> [pkg/maker/oracle/rely.go](pkg/maker/oracle/rely.go)
+
 add a new price feed to the whitelist, proposal required
 
-[pkg/maker/oracle/rely](pkg/maker/oracle/rely.go)
+**Parameters:**
 
 | name | type  | description   |
 | ---- | ----- | ------------- |
@@ -308,9 +311,11 @@ add a new price feed to the whitelist, proposal required
 
 #### #55 Deny
 
+> [pkg/maker/oracle/deny.go](pkg/maker/oracle/deny.go)
+
 remove a price feed from the whitelist, proposal required
 
-[pkg/maker/oracle/deny](pkg/maker/oracle/deny.go)
+**Parameters:**
 
 | name | type | description   |
 | ---- | ---- | ------------- |
