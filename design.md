@@ -18,7 +18,7 @@ Pando 里面的所有角色都是通过给 Pando 多签收款地址转账来完�
 
 **Output Memo:**
 
-如果 memo 是 aes 加密的，那么前 32 位位用于计算 aes key/iv 的 ed25519 公钥，后面为加密后的附加信息。
+如果 memo 是 aes 加密的，那么前 32 位是用于计算 aes key/iv 的 ed25519 公钥，后面为加密后的附加信息。
 
 memo 解密之后得到 **TransactionAction** (core/action.go#TransactionAction)
 
