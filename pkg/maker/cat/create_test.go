@@ -27,7 +27,6 @@ func TestCatCreate(t *testing.T) {
 	t.Run("not gov", func(t *testing.T) {
 		collaterals := mock.NewMockCollateralStore(ctrl)
 		oracles := mock.NewMockOracleStore(ctrl)
-		assets := mock.NewMockAssetStore(ctrl)
 
 		req := makertest.Next().WithBody(types.UUID(gem), types.UUID(dai), name)
 		err := cat.HandleCreate(collaterals, oracles)(req)
@@ -82,7 +81,7 @@ func TestCatCreate(t *testing.T) {
 				}, nil
 			}).Times(2)
 
-		req.Gov = true
+		req.Governors = []string{"a", "b"}
 		err := cat.HandleCreate(collaterals, oracles)(req)
 		require.Nil(t, err)
 	})

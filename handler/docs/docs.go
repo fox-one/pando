@@ -766,6 +766,9 @@ var doc = `{
                     "type": "string",
                     "format": "date"
                 },
+                "supply": {
+                    "type": "string"
+                },
                 "tau": {
                     "type": "integer"
                 },

@@ -92,6 +92,7 @@ func (s *Server) Handler() http.Handler {
 	r.Route("/vats", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListVaults", nil))
 		r.Get("/{id}", rt.Handle("FindVault", nil))
+		r.Get("/{id}/events", rt.Handle("ListVaultEvents", nil))
 	})
 
 	r.Route("/me", func(r chi.Router) {

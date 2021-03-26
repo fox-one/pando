@@ -80,6 +80,7 @@ message Collateral {
     int64 number_of_vaults = 22;
     string box = 23;
     string litter = 24;
+    string supply = 25;
 }
 
 message Vault {

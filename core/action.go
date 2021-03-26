@@ -20,7 +20,7 @@ const (
 )
 
 const (
-	// System Actions
+	// Proposal Actions
 	ActionProposal Action = iota + 10
 	// Make a new proposal
 	ActionProposalMake

@@ -43,6 +43,7 @@ func toUpdateParams(collateral *core.Collateral) map[string]interface{} {
 		"rho":    collateral.Rho,
 		"debt":   collateral.Debt,
 		"line":   collateral.Line,
+		"supply": collateral.Supply,
 		"dust":   collateral.Dust,
 		"price":  collateral.Price,
 		"mat":    collateral.Mat,

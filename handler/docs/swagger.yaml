@@ -99,6 +99,8 @@ definitions:
         description: '@inject_tag: swaggertype:"string" format:"date"'
         format: date
         type: string
+      supply:
+        type: string
       tau:
         type: integer
       ttl:

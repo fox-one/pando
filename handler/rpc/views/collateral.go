@@ -30,5 +30,6 @@ func Collateral(cat *core.Collateral) *api.Collateral {
 		Box:       cat.Box.String(),
 		Litter:    cat.Litter.String(),
 		Live:      cat.Live > 0,
+		Supply:    cat.Supply.String(),
 	}
 }

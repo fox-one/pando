@@ -25,7 +25,7 @@ func HandleSupply(collaterals core.CollateralStore) maker.HandlerFunc {
 		}
 
 		if c.Version < r.Version {
-			c.Line = c.Line.Add(r.Amount)
+			c.Supply = c.Supply.Add(r.Amount)
 
 			if err := collaterals.Update(ctx, c, r.Version); err != nil {
 				log.WithError(err).Errorln("collaterals.Update")

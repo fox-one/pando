@@ -50,6 +50,10 @@ func HandleEdit(collaterals core.CollateralStore) maker.HandlerFunc {
 					c.TTL = cast.ToInt64(value)
 				case "tau":
 					c.Tau = cast.ToInt64(value)
+				case "line":
+					if line := number.Decimal(value); line.LessThanOrEqual(c.Supply) {
+						c.Line = line
+					}
 				case "live":
 					if live := cast.ToBool(value); live {
 						c.Live = 1

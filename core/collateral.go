@@ -32,6 +32,8 @@ type (
 		Debt decimal.Decimal `sql:"type:decimal(64,8)" json:"debt,omitempty"`
 		// the debt ceiling
 		Line decimal.Decimal `sql:"type:decimal(64,8)" json:"line,omitempty"`
+		// total debt supplied
+		Supply decimal.Decimal `sql:"type:decimal(64,8)" json:"supply,omitempty"`
 		// the debt floor, eg 100
 		Dust decimal.Decimal `sql:"type:decimal(64,8)" json:"dust,omitempty"`
 		// Price = Gem.Price / Dai.Price
