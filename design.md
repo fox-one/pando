@@ -2,8 +2,8 @@
 
 ## Interact with Pando
 
-All participants of Pando complete the interaction by transferring token to the multisig wallet; 
-Node worker **Syncer** syncs the payments as mixin multisig outputs, all outputs will be processed by another worker **Payee** in order.
+All participants of Pando complete the interaction by transferring tokens to the multisig wallet. 
+Node worker **Syncer** syncs the payments as mixin multisig outputs; another worker **Payee** processes all outputs in order.
 
 ### Mixin Multisig Output
 
@@ -21,7 +21,7 @@ Node worker **Syncer** syncs the payments as mixin multisig outputs, all outputs
 
 Memo contain the **TransactionAction** information, see details in [DecodeTransactionAction](core/action.go).
 
-The memo is maybe AES encrypted, an ed25519 public key used for compound AES key/iv will be in the first 32 bytes.
+The memo is maybe AES-encrypted, an ed25519 public key used for compound AES key/iv will be in the first 32 bytes.
 
 ### TransactionAction Definition
 
@@ -32,7 +32,7 @@ The memo is maybe AES encrypted, an ed25519 public key used for compound AES key
 
 ## Actions
 
-all actions supported by Pando with groups cat,flip,oracle,proposal,sys and vat. see [core/action](core/action.go) for details.
+All actions supported by Pando with groups cat,flip,oracle,proposal,sys and vat. see [core/action](core/action.go) for details.
 
 ### Sys - system operations
 
@@ -80,7 +80,7 @@ request node administrator to vote for this proposal
 
 > [pkg/maker/proposal/vote.go](pkg/maker/proposal/vote.go)
 
-vote for a proposal, node only. If enough votes collected, the attached action will be executed on all nodes automatically.
+vote for a proposal, nodes only. If enough votes collected, the attached action will be executed on all nodes automatically.
 
 **Parameters:**
 
@@ -109,7 +109,7 @@ create a new collateral type, proposal required.
 > [pkg/maker/cat/supply.go](pkg/maker/cat/supply.go)
 
 supply dai token to increase the total debt ceiling for this collateral type.
-Payment asset id must be equal with the debt asset id.
+Payment asset id must be equal to the debt asset id.
 
 **Parameters:**
 
