@@ -39,7 +39,7 @@ func (s *assetService) List(ctx context.Context) ([]*core.Asset, error) {
 	var idx int
 
 	for _, asset := range assets {
-		if strings.Contains(asset.IconURL, blankLogo) {
+		if asset.PriceUSD.IsZero() && strings.Contains(asset.IconURL, blankLogo) {
 			continue
 		}
 
