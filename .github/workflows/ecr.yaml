@@ -33,6 +33,7 @@ jobs:
         uses: Arduino/actions/setup-taskfile@master
         with:
           version: '3.x'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Image
         run: task pando/server pando/worker
