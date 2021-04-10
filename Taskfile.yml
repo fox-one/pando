@@ -1,0 +1,88 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+
+tasks:
+  build-base:
+    env:
+      CGO_ENABLED: "0"
+    cmds:
+      - cmd: >
+          go build -ldflags
+          "
+            -X 'main.version={{.VERSION}}'
+            -X 'main.commit={{.COMMIT}}'
+            -X 'main.embed={{.CONFIG}}'
+          "
+          -o ./builds/pando-{{.name}}
+          ./cmd/pando-{{.name}}
+
+  build-server:
+    cmds:
+      - task: build-base
+        vars:
+          name: server
+
+  build-worker:
+    cmds:
+      - task: build-base
+        vars:
+          name: worker
+
+  build:
+    cmds:
+      - task: build-worker
+      - task: build-server
+
+  build-cli:
+    cmds:
+      - task: build-base
+        vars:
+          name: cli
+      - mv ./builds/pando-cli ${GOPATH}/bin/pd
+
+  docker-base:
+    vars:
+      image: pando/{{.name}}
+      version:
+        sh: echo {{.VERSION}} | cut -c2-
+    cmds:
+      - cmd: docker rmi {{.image}}
+        ignore_error: true
+      - cmd: docker rmi {{.image}}:{{.version}}
+        ignore_error: true
+      - cmd: >
+          docker build --rm
+          -f docker/Dockerfile.{{.name}}
+          -t {{.image}} .
+      - cmd: >
+          docker tag {{.image}} {{.image}}:{{.version}}
+
+  pando/server:
+    cmds:
+      - task: docker-base
+        vars:
+          name: server
+
+  pando/worker:
+    cmds:
+      - task: docker-base
+        vars:
+          name: worker
+
+  test:
+    cmds:
+      - go test ./...
+
+  generate:
+    cmds:
+      - go generate core
+      - go generate handler/rpc/api
+      - go generate handler
+      - go generate mock

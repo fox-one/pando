@@ -3,7 +3,7 @@ on:
     tags:
       - v*
 
-name: Build & Push pando/worker to AWS ECR
+name: Build & Push pando/server to AWS ECR
 
 jobs:
   build-push:
@@ -29,16 +29,32 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Image
-        run: make pando/worker
+      - name: Install Taskfile
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '3.x'
 
-      - name: Tag, and push image to Amazon ECR
+      - name: Build Image
+        run: task pando/server pando/worker
+
+      - name: Tag, and push server image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: pando/server
+          IMAGE_TAG: ${{ steps.imagetag.outputs.tag }}
+        run: |
+          docker tag pando/server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag pando/server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Tag, and push worker image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: pando/worker
           IMAGE_TAG: ${{ steps.imagetag.outputs.tag }}
         run: |
-          docker tag pando/worker:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag pando/server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag pando/worker:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag pando/server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest

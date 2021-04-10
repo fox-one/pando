@@ -45,6 +45,8 @@ var (
 	// keystore 里面需要指定 pin
 	keystoreFile string
 	debug        bool
+
+	version, commit string
 )
 
 var rootCmd = &cobra.Command{
@@ -53,8 +55,6 @@ var rootCmd = &cobra.Command{
 }
 
 func main() {
-	version := os.Getenv("PANDO_VERSION")
-	commit := os.Getenv("PANDO_COMMIT")
 	rootCmd.Version = fmt.Sprintf("%s(%s)", version, commit)
 
 	if err := rootCmd.Execute(); err != nil {

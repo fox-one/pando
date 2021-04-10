@@ -1,6 +1,10 @@
 package config
 
 import (
+	"bytes"
+	"encoding/base64"
+	"fmt"
+
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pkg/store/db"
 	jsoniter "github.com/json-iterator/go"
@@ -22,12 +26,6 @@ type (
 		Pin          string `json:"pin"`
 	}
 
-	Member struct {
-		ClientID string `json:"client_id,omitempty"`
-		// 节点共享的用户验证签名的公钥
-		VerifyKey string `json:"verify_key,omitempty"`
-	}
-
 	Group struct {
 		// 节点共享的用户解密的私钥
 		PublicKey string   `json:"public_key,omitempty"`
@@ -42,21 +40,30 @@ type (
 	}
 )
 
-// Viperion load config by viper
-func Viperion(cfgFile string) (*Config, error) {
+func viperion(cfgFile, embed string) (*viper.Viper, error) {
 	v := viper.New()
+	v.SetConfigType("yaml")
+	v.SetConfigName("config")
+	v.AddConfigPath(".")
 
 	if cfgFile != "" {
 		v.SetConfigFile(cfgFile)
-	} else {
-		v.SetConfigType("yaml")
-		v.SetConfigName("config")
-		v.AddConfigPath("/etc/pando/server")
-		v.AddConfigPath("$HOME/.pando/server")
-		v.AddConfigPath(".")
+	} else if embed != "" {
+		b, err := base64.StdEncoding.DecodeString(embed)
+		if err != nil {
+			return nil, fmt.Errorf("decode embed config failed: %w", err)
+		}
+
+		return v, v.ReadConfig(bytes.NewReader(b))
 	}
 
-	if err := v.ReadInConfig(); err != nil {
+	return v, v.ReadInConfig()
+}
+
+// Viperion load config by viper
+func Viperion(cfgFile, embed string) (*Config, error) {
+	v, err := viperion(cfgFile, embed)
+	if err != nil {
 		return nil, err
 	}
 

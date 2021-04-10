@@ -1,6 +1,10 @@
 package config
 
 import (
+	"bytes"
+	"encoding/base64"
+	"fmt"
+
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pkg/store/db"
 	jsoniter "github.com/json-iterator/go"
@@ -45,21 +49,30 @@ type (
 	}
 )
 
-// Viperion load config by viper
-func Viperion(cfgFile string) (*Config, error) {
+func viperion(cfgFile, embed string) (*viper.Viper, error) {
 	v := viper.New()
+	v.SetConfigType("yaml")
+	v.SetConfigName("config")
+	v.AddConfigPath(".")
 
 	if cfgFile != "" {
 		v.SetConfigFile(cfgFile)
-	} else {
-		v.SetConfigType("yaml")
-		v.SetConfigName("config")
-		v.AddConfigPath("/etc/pando/worker")
-		v.AddConfigPath("$HOME/.pando/worker")
-		v.AddConfigPath(".")
+	} else if embed != "" {
+		b, err := base64.StdEncoding.DecodeString(embed)
+		if err != nil {
+			return nil, fmt.Errorf("decode embed config failed: %w", err)
+		}
+
+		return v, v.ReadConfig(bytes.NewReader(b))
 	}
 
-	if err := v.ReadInConfig(); err != nil {
+	return v, v.ReadInConfig()
+}
+
+// Viperion load config by viper
+func Viperion(cfgFile, embed string) (*Config, error) {
+	v, err := viperion(cfgFile, embed)
+	if err != nil {
 		return nil, err
 	}
 

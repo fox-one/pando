@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"os"
 
 	"github.com/drone/signal"
 	"github.com/fox-one/pando/cmd/pando-worker/config"
@@ -18,15 +17,17 @@ var (
 	debug   = flag.Bool("debug", false, "debug mode")
 	port    = flag.Int("port", 7777, "server port")
 	cfgFile = flag.String("config", "", "config filename")
+)
 
-	version, commit string
+// build embed
+var (
+	version string
+	commit  string
+	embed   string
 )
 
 func main() {
 	flag.Parse()
-
-	version = os.Getenv("PANDO_VERSION")
-	commit = os.Getenv("PANDO_COMMIT")
 
 	logrus.Infof("pando worker %s(%s) launched at port %d", version, commit, *port)
 
@@ -34,7 +35,7 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	cfg, err := config.Viperion(*cfgFile)
+	cfg, err := config.Viperion(*cfgFile, embed)
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: invalid configuration")
