@@ -3,7 +3,7 @@ on:
     tags:
       - v*
 
-name: Build & Push pando/server to AWS ECR
+name: Build & Push pando/server & pando/worker to AWS ECR
 
 jobs:
   build-push:
@@ -39,9 +39,9 @@ jobs:
 
       - name: Tag, and push server image to Amazon ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: pando/server
           IMAGE_TAG: ${{ steps.imagetag.outputs.tag }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -50,9 +50,9 @@ jobs:
 
       - name: Tag, and push worker image to Amazon ECR
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: pando/worker
           IMAGE_TAG: ${{ steps.imagetag.outputs.tag }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
