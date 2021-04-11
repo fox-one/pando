@@ -12,4 +12,6 @@ type Notifier interface {
 	Transaction(ctx context.Context, tx *Transaction) error
 	// Snapshot called when a transfer confirmed by mixin main net
 	Snapshot(ctx context.Context, transfer *Transfer, TxHash string) error
+	// VaultUnsafe notify the vault's owner the risk
+	VaultUnsafe(ctx context.Context, cat *Collateral, vault *Vault) error
 }

@@ -299,7 +299,7 @@ func (s *Server) ListMyVaults(ctx context.Context, req *api.Req_ListMyVaults) (*
 // @Router /vats [get]
 func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.Resp_ListVaults, error) {
 	fromID := cast.ToInt64(req.Cursor)
-	limit := 50
+	limit := 100
 	if l := int(req.Limit); l > 0 && l < limit {
 		limit = l
 	}

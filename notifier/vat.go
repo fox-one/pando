@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, data *TxData) error {
+func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, user *core.User, data *TxData) error {
 	vatID := tx.TraceID
 
 	if tx.Action != core.ActionVatOpen {
@@ -54,18 +54,18 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, data *
 		return err
 	}
 
-	data.Lines = append(data.Lines, n.localize("vat_name", "Name", cat.Name, "ID", vat.ID))
+	data.Lines = append(data.Lines, n.localize("vat_name", user.Lang, "Name", cat.Name, "ID", vat.ID))
 
 	if event.Dink.IsPositive() {
-		data.Lines = append(data.Lines, n.localize("vat_deposit", "Dink", event.Dink.String(), "Gem", gem.Symbol))
+		data.Lines = append(data.Lines, n.localize("vat_deposit", user.Lang, "Dink", event.Dink.String(), "Gem", gem.Symbol))
 	} else if event.Dink.IsNegative() {
-		data.Lines = append(data.Lines, n.localize("vat_withdraw", "Dink", event.Dink.Abs().String(), "Gem", gem.Symbol))
+		data.Lines = append(data.Lines, n.localize("vat_withdraw", user.Lang, "Dink", event.Dink.Abs().String(), "Gem", gem.Symbol))
 	}
 
 	if event.Debt.IsPositive() {
-		data.Lines = append(data.Lines, n.localize("vat_generate", "Debt", event.Debt.String(), "Dai", dai.Symbol))
+		data.Lines = append(data.Lines, n.localize("vat_generate", user.Lang, "Debt", event.Debt.String(), "Dai", dai.Symbol))
 	} else if event.Debt.IsNegative() {
-		data.Lines = append(data.Lines, n.localize("vat_payback", "Debt", event.Debt.Abs().String(), "Dai", dai.Symbol))
+		data.Lines = append(data.Lines, n.localize("vat_payback", user.Lang, "Debt", event.Debt.Abs().String(), "Dai", dai.Symbol))
 	}
 
 	return nil

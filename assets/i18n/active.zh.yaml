@@ -18,3 +18,6 @@ vat_deposit: 抵押 {{.Dink}} {{.Gem}}
 vat_withdraw: 取出 {{.Dink}} {{.Gem}}
 vat_generate: 借出 {{.Debt}} {{.Dai}}
 vat_payback: 还款 {{.Debt}} {{.Dai}}
+
+vat_unsafe_warn: |
+  🚨 金库 {{.Name}} #{{.ID}} 抵押不足，有被清算的风险。

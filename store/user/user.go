@@ -63,8 +63,8 @@ func (s *userStore) Save(_ context.Context, user *core.User) error {
 }
 
 func (s *userStore) Find(_ context.Context, mixinID string) (*core.User, error) {
-	var user core.User
-	if err := s.db.View().Where("mixin_id = ?", mixinID).Take(&user).Error; err != nil {
+	user := core.User{MixinID: mixinID}
+	if err := s.db.View().Where("mixin_id = ?", mixinID).Take(&user).Error; err != nil && !db.IsErrorNotFound(err) {
 		return nil, err
 	}
 

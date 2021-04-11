@@ -23,3 +23,7 @@ func (d *dumb) Auth(ctx context.Context, user *core.User) error {
 func (d *dumb) Transaction(ctx context.Context, tx *core.Transaction) error {
 	return nil
 }
+
+func (d *dumb) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
+	return nil
+}

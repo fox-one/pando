@@ -1,20 +1,23 @@
 login_done: |
-  授权成功，欢迎来到 Pando。
+  Successfully authorized. Welcome to Pando.
 
 tx_ok: |
-  ✅ {{.Action}}成功
+  ✅ {{.Action}} successfully
 
   {{range .Lines -}}
   - {{.}}
   {{end}}
 
 tx_abort: |
-  ❌ {{.Action}}失败
+  ❌ {{.Action}} failed
 
-  - 错误代码 "{{.Message}}"
+  - error message "{{.Message}}"
 
-vat_name: "金库 {{.Name}} #{{.ID}}"
-vat_deposit: 抵押 {{.Dink}} {{.Gem}}
-vat_withdraw: 取出 {{.Dink}} {{.Gem}}
-vat_generate: 借出 {{.Debt}} {{.Dai}}
-vat_payback: 还款 {{.Debt}} {{.Dai}}
+vat_name: "Vault {{.Name}} #{{.ID}}"
+vat_deposit: Deposit {{.Dink}} {{.Gem}}
+vat_withdraw: Withdraw {{.Dink}} {{.Gem}}
+vat_generate: Generate {{.Debt}} {{.Dai}}
+vat_payback: Payback {{.Debt}} {{.Dai}}
+
+vat_unsafe_warn: |
+  🚨 Vault {{.Name}} #{{.ID}} is At risk of being liquidated.

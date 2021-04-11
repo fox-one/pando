@@ -87,6 +87,6 @@ func defaultI18n(cfg *Config) {
 	}
 
 	if cfg.I18n.Language == "" {
-		cfg.I18n.Language = language.Chinese.String()
+		cfg.I18n.Language = language.English.String()
 	}
 }

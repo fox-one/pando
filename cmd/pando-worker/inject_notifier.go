@@ -17,6 +17,7 @@ func provideNotifier(
 	messages core.MessageStore,
 	vats core.VaultStore,
 	cats core.CollateralStore,
+	users core.UserStore,
 	localizer *localizer.Localizer,
 ) core.Notifier {
 	if *notify {
@@ -26,6 +27,7 @@ func provideNotifier(
 			messages,
 			vats,
 			cats,
+			users,
 			localizer,
 		)
 	}

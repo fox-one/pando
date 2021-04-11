@@ -34,7 +34,6 @@ enum Action {
     FlipBid = 42;
     FlipDeal = 43;
     // Oracles
-
     OracleCreate = 51;
     OracleEdit = 52;
     OraclePoke = 53;

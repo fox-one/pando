@@ -98,7 +98,7 @@ func defaultVote(cfg *Config) {
 	}
 
 	if cfg.Group.Vote.Amount.IsZero() {
-		cfg.Group.Vote.Amount = decimal.NewFromInt(1)
+		cfg.Group.Vote.Amount = decimal.New(1, -8)
 	}
 }
 
@@ -108,6 +108,6 @@ func defaultI18n(cfg *Config) {
 	}
 
 	if cfg.I18n.Language == "" {
-		cfg.I18n.Language = language.Chinese.String()
+		cfg.I18n.Language = language.English.String()
 	}
 }

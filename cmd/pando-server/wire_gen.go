@@ -55,7 +55,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, localizer)
+	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, userStore, localizer)
 	oracleStore := oracle.New(db)
 	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, coreNotifier, oracleStore, system)
 	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore)

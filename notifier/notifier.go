@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/fox-one/mixin-sdk-go"
@@ -20,6 +21,7 @@ func New(
 	messages core.MessageStore,
 	vats core.VaultStore,
 	cats core.CollateralStore,
+	users core.UserStore,
 	i18n *localizer.Localizer,
 ) core.Notifier {
 	return &notifier{
@@ -28,6 +30,7 @@ func New(
 		messages: messages,
 		vats:     vats,
 		cats:     cats,
+		users:    users,
 		i18n:     i18n,
 	}
 }
@@ -38,16 +41,22 @@ type notifier struct {
 	messages core.MessageStore
 	vats     core.VaultStore
 	cats     core.CollateralStore
+	users    core.UserStore
 	i18n     *localizer.Localizer
 }
 
-func (n *notifier) localize(id string, args ...interface{}) string {
-	s := n.i18n.LocalizeOr(id, id, args...)
+func (n *notifier) localize(id, lang string, args ...interface{}) string {
+	l := n.i18n
+	if lang != "" {
+		l = localizer.WithLanguage(l, lang)
+	}
+
+	s := l.LocalizeOr(id, id, args...)
 	return strings.TrimSpace(s)
 }
 
 func (n *notifier) Auth(ctx context.Context, user *core.User) error {
-	msg := n.localize("login_done")
+	msg := n.localize("login_done", user.Lang)
 	req := &mixin.MessageRequest{
 		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
 		RecipientID:    user.MixinID,
@@ -64,7 +73,12 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 		return nil
 	}
 
-	action := n.localize("Action" + tx.Action.String())
+	user, err := n.users.Find(ctx, tx.UserID)
+	if err != nil {
+		return err
+	}
+
+	action := n.localize("Action"+tx.Action.String(), user.Lang)
 	data := TxData{
 		Action:  action,
 		Message: tx.Message,
@@ -74,7 +88,7 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 	if tx.Status == core.TransactionStatusOk {
 		switch tx.Action {
 		case core.ActionVatOpen, core.ActionVatDeposit, core.ActionVatWithdraw, core.ActionVatPayback, core.ActionVatGenerate:
-			if err := n.handleVatTx(ctx, tx, &data); err != nil {
+			if err := n.handleVatTx(ctx, tx, user, &data); err != nil {
 				return err
 			}
 		}
@@ -82,7 +96,7 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 		id = "tx_ok"
 	}
 
-	msg := n.localize(id, data)
+	msg := n.localize(id, user.Lang, data)
 	req := &mixin.MessageRequest{
 		ConversationID: mixin.UniqueConversationID(n.system.ClientID, tx.UserID),
 		RecipientID:    tx.UserID,
@@ -136,6 +150,28 @@ func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signed
 		MessageID:      traceID,
 		Category:       mixin.MessageCategoryAppCard,
 		Data:           base64.StdEncoding.EncodeToString(data),
+	}
+
+	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+}
+
+func (n *notifier) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
+	user, err := n.users.Find(ctx, vault.UserID)
+	if err != nil {
+		return err
+	}
+
+	msg := n.localize("vat_unsafe_warn", user.Lang, map[string]interface{}{
+		"ID":   vault.ID,
+		"Name": cat.Name,
+	})
+
+	req := &mixin.MessageRequest{
+		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+		RecipientID:    user.MixinID,
+		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("versions_%d_%d", cat.Version, vault.Version)),
+		Category:       mixin.MessageCategoryPlainText,
+		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
 	}
 
 	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})

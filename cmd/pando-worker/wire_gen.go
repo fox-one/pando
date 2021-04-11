@@ -21,6 +21,7 @@ import (
 	"github.com/fox-one/pando/store/oracle"
 	"github.com/fox-one/pando/store/proposal"
 	"github.com/fox-one/pando/store/transaction"
+	user2 "github.com/fox-one/pando/store/user"
 	"github.com/fox-one/pando/store/vault"
 	"github.com/fox-one/pando/store/wallet"
 	"github.com/fox-one/pando/worker/cashier"
@@ -68,11 +69,12 @@ func buildApp(cfg *config.Config) (app, error) {
 	oracleService := oracle2.New()
 	payeePayee := payee.New(assetStore, assetService, walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
 	sync := pricesync.New(assetStore, assetService)
+	userStore := user2.New(db)
 	localizer, err := provideLocalizer(cfg)
 	if err != nil {
 		return app{}, err
 	}
-	notifier := provideNotifier(system, assetService, messageStore, vaultStore, collateralStore, localizer)
+	notifier := provideNotifier(system, assetService, messageStore, vaultStore, collateralStore, userStore, localizer)
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)

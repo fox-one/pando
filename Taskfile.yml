@@ -86,3 +86,18 @@ tasks:
       - go generate handler/rpc/api
       - go generate handler
       - go generate mock
+
+  wire-base:
+    dir: cmd/pando-{{.name}}
+    cmds:
+      - cmd: wire
+        silent: true
+
+  wire:
+    cmds:
+      - task: wire-base
+        vars:
+          name: worker
+      - task: wire-base
+        vars:
+          name: server
