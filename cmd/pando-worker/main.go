@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"flag"
+	"os/signal"
+	"syscall"
 
-	"github.com/drone/signal"
 	"github.com/fox-one/pando/cmd/pando-worker/config"
 	"github.com/fox-one/pando/server"
 	"github.com/fox-one/pando/worker"
@@ -47,7 +48,14 @@ func main() {
 		logger.Fatalln("main: cannot initialize worker")
 	}
 
-	g, ctx := errgroup.WithContext(signal.WithContext(context.Background()))
+	ctx, stop := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT,
+		syscall.SIGTERM,
+	)
+	defer stop()
+
+	g, ctx := errgroup.WithContext(ctx)
 
 	for i := range app.workers {
 		w := app.workers[i]

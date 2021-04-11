@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"flag"
+	"os/signal"
+	"syscall"
 
-	"github.com/drone/signal"
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/server"
 	"github.com/sirupsen/logrus"
@@ -39,7 +40,13 @@ func main() {
 		logger.Fatalln("main: cannot initialize worker")
 	}
 
-	ctx := signal.WithContext(context.Background())
+	ctx, stop := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT,
+		syscall.SIGTERM,
+	)
+	defer stop()
+
 	if err := svr.ListenAndServe(ctx); err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("program terminated")

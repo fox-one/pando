@@ -45,7 +45,12 @@ tasks:
       - task: build-base
         vars:
           name: cli
-      - mv ./builds/pando-cli ${GOPATH}/bin/pd
+
+  install-cli:
+    deps:
+      - build-cli
+    cmds:
+      - cp ./builds/pando-cli ${GOPATH}/bin/pd
 
   docker-base:
     vars:
