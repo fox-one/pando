@@ -48,9 +48,10 @@ const (
 	Action_VatPayback  Action = 34
 	Action_VatGenerate Action = 35
 	// Flips
-	Action_FlipKick     Action = 41
-	Action_FlipBid      Action = 42
-	Action_FlipDeal     Action = 43 // Oracles
+	Action_FlipKick Action = 41
+	Action_FlipBid  Action = 42
+	Action_FlipDeal Action = 43
+	// Oracles
 	Action_OracleCreate Action = 51
 	Action_OracleEdit   Action = 52
 	Action_OraclePoke   Action = 53

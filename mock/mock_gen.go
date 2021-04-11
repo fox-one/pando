@@ -9,6 +9,7 @@ import (
 	core "github.com/fox-one/pando/core"
 	number "github.com/fox-one/pando/pkg/number"
 	gomock "github.com/golang/mock/gomock"
+	http "net/http"
 	reflect "reflect"
 	time "time"
 )
@@ -521,6 +522,20 @@ func (mr *MockNotifierMockRecorder) Transaction(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Transaction", reflect.TypeOf((*MockNotifier)(nil).Transaction), arg0, arg1)
 }
 
+// VaultUnsafe mocks base method
+func (m *MockNotifier) VaultUnsafe(arg0 context.Context, arg1 *core.Collateral, arg2 *core.Vault) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VaultUnsafe", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// VaultUnsafe indicates an expected call of VaultUnsafe
+func (mr *MockNotifierMockRecorder) VaultUnsafe(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VaultUnsafe", reflect.TypeOf((*MockNotifier)(nil).VaultUnsafe), arg0, arg1, arg2)
+}
+
 // MockOracleStore is a mock of OracleStore interface
 type MockOracleStore struct {
 	ctrl     *gomock.Controller
@@ -868,18 +883,18 @@ func (m *MockSession) EXPECT() *MockSessionMockRecorder {
 }
 
 // Login mocks base method
-func (m *MockSession) Login(arg0 context.Context, arg1 string) (*core.User, error) {
+func (m *MockSession) Login(arg0 *http.Request) (*core.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Login", arg0, arg1)
+	ret := m.ctrl.Call(m, "Login", arg0)
 	ret0, _ := ret[0].(*core.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Login indicates an expected call of Login
-func (mr *MockSessionMockRecorder) Login(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockSessionMockRecorder) Login(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockSession)(nil).Login), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockSession)(nil).Login), arg0)
 }
 
 // MockTransactionStore is a mock of TransactionStore interface

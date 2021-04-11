@@ -1122,6 +1122,10 @@ var doc = `{
                     "type": "string",
                     "format": "uuid"
                 },
+                "language": {
+                    "description": "Preferred language",
+                    "type": "string"
+                },
                 "name": {
                     "description": "user name",
                     "type": "string"

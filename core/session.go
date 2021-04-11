@@ -1,11 +1,11 @@
 package core
 
 import (
-	"context"
+	"net/http"
 )
 
 // Session define operations to parse authorization token
 type Session interface {
-	// Login return user mixin id
-	Login(ctx context.Context, accessToken string) (*User, error)
+	// Login return user
+	Login(r *http.Request) (*User, error)
 }

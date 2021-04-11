@@ -1,10 +1,11 @@
 package session
 
 import (
-	"context"
+	"net/http"
 
 	"github.com/bluele/gcache"
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/internal/request"
 )
 
 type cacheSession struct {
@@ -12,12 +13,14 @@ type cacheSession struct {
 	tokens gcache.Cache
 }
 
-func (s *cacheSession) Login(ctx context.Context, accessToken string) (*core.User, error) {
+func (s *cacheSession) Login(r *http.Request) (*core.User, error) {
+	accessToken := request.ExtractBearerToken(r)
+
 	if user, err := s.tokens.Get(accessToken); err == nil {
 		return user.(*core.User), nil
 	}
 
-	user, err := s.Session.Login(ctx, accessToken)
+	user, err := s.Session.Login(r)
 	if err != nil {
 		return nil, err
 	}

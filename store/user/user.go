@@ -37,6 +37,7 @@ func toUpdateParams(user *core.User) map[string]interface{} {
 		"name":         user.Name,
 		"avatar":       user.Avatar,
 		"access_token": user.AccessToken,
+		"lang":         user.Lang,
 		"version":      time.Now().UnixNano(),
 	}
 }

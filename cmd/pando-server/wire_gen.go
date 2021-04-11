@@ -12,7 +12,7 @@ import (
 	"github.com/fox-one/pando/notifier"
 	"github.com/fox-one/pando/server"
 	asset2 "github.com/fox-one/pando/service/asset"
-	"github.com/fox-one/pando/service/user"
+	user2 "github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pando/session"
 	"github.com/fox-one/pando/store/asset"
@@ -21,26 +21,26 @@ import (
 	"github.com/fox-one/pando/store/message"
 	"github.com/fox-one/pando/store/oracle"
 	"github.com/fox-one/pando/store/transaction"
-	user2 "github.com/fox-one/pando/store/user"
+	"github.com/fox-one/pando/store/user"
 	"github.com/fox-one/pando/store/vault"
 )
 
 // Injectors from wire.go:
 
 func buildServer(cfg *config.Config) (*server.Server, error) {
+	db, err := provideDatabase(cfg)
+	if err != nil {
+		return nil, err
+	}
+	userStore := user.New(db)
 	client, err := provideMixinClient(cfg)
 	if err != nil {
 		return nil, err
 	}
 	userConfig := provideUserServiceConfig(cfg)
-	userService := user.New(client, userConfig)
-	db, err := provideDatabase(cfg)
-	if err != nil {
-		return nil, err
-	}
-	userStore := user2.New(db)
+	userService := user2.New(client, userConfig)
 	sessionConfig := provideSessionConfig(cfg)
-	coreSession := session.New(userService, userStore, sessionConfig)
+	coreSession := session.New(userStore, userService, sessionConfig)
 	assetStore := asset.New(db)
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)

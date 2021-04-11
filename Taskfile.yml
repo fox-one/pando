@@ -82,10 +82,7 @@ tasks:
 
   generate:
     cmds:
-      - go generate core
-      - go generate handler/rpc/api
-      - go generate handler
-      - go generate mock
+      - go generate ./...
 
   wire-base:
     dir: cmd/pando-{{.name}}

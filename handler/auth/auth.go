@@ -15,13 +15,7 @@ func HandleAuthentication(session core.Session) func(http.Handler) http.Handler 
 			ctx := r.Context()
 			log := logger.FromContext(ctx)
 
-			accessToken := getBearerToken(r)
-			if accessToken == "" {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			user, err := session.Login(ctx, getBearerToken(r))
+			user, err := session.Login(r)
 			if err != nil {
 				next.ServeHTTP(w, r)
 				log.WithError(err).Debugln("api: guest access")

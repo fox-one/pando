@@ -27,9 +27,11 @@ type LoginResponse struct {
 	Token string `json:"token,omitempty"`
 	// mixin oauth scope
 	Scope string `json:"scope,omitempty"`
+	// Preferred language
+	Language string `json:"language,omitempty"`
 }
 
-// LoginByCode godoc
+// HandleOauth godoc
 // @Summary login with mixin oauth code
 // @Description
 // @Tags user
@@ -51,13 +53,15 @@ func HandleOauth(
 		}
 
 		ctx := r.Context()
-		token, err := userz.Auth(ctx, body.Code)
+
+		accessToken, err := userz.Auth(ctx, body.Code)
 		if err != nil {
-			render.Error(w, twirp.InvalidArgumentError("code", err.Error()))
+			render.Error(w, twirp.InvalidArgumentError("token", err.Error()))
 			return
 		}
 
-		user, err := sessions.Login(ctx, token)
+		r.Header.Set("Authorization", "Bearer "+accessToken)
+		user, err := sessions.Login(r)
 		if err != nil {
 			render.Error(w, twirp.InvalidArgumentError("token", err.Error()))
 			return
@@ -68,11 +72,12 @@ func HandleOauth(
 		}
 
 		render.JSON(w, LoginResponse{
-			ID:     user.MixinID,
-			Name:   user.Name,
-			Avatar: user.Avatar,
-			Token:  token,
-			Scope:  extractScope(token),
+			ID:       user.MixinID,
+			Name:     user.Name,
+			Avatar:   user.Avatar,
+			Language: user.Lang,
+			Token:    accessToken,
+			Scope:    extractScope(accessToken),
 		})
 	}
 }
