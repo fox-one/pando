@@ -61,6 +61,11 @@ func (w *Syncer) run(ctx context.Context) error {
 
 	offset := v.Time()
 
+	if now := time.Now().UTC(); now.Sub(offset) > 30*time.Minute {
+		log.Infoln("Active recovery mode")
+		return w.recover(ctx, offset)
+	}
+
 	var (
 		outputs   = make([]*core.Output, 0, 8)
 		positions = make(map[string]int)
@@ -100,7 +105,7 @@ func (w *Syncer) run(ctx context.Context) error {
 	}
 
 	core.SortOutputs(outputs)
-	if err := w.wallets.Save(ctx, outputs); err != nil {
+	if err := w.wallets.Save(ctx, outputs, false); err != nil {
 		log.WithError(err).Errorln("wallets.Save")
 		return err
 	}

@@ -3,6 +3,7 @@ package wallet
 import (
 	"context"
 	"sort"
+	"time"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
@@ -66,7 +67,7 @@ type walletStore struct {
 	db *db.DB
 }
 
-func save(db *db.DB, output *core.Output) error {
+func save(db *db.DB, output *core.Output, recovery bool) error {
 	tx := db.Update().Model(output).Where("trace_id = ?", output.TraceID).Updates(map[string]interface{}{
 		"state":     output.State,
 		"signed_tx": output.SignedTx,
@@ -78,22 +79,34 @@ func save(db *db.DB, output *core.Output) error {
 	}
 
 	if tx.RowsAffected == 0 {
+		if recovery {
+			return saveRawOutput(db, output)
+		}
+
 		return tx.Update().Create(output).Error
 	}
 
 	return nil
 }
 
-func (s *walletStore) Save(_ context.Context, outputs []*core.Output) error {
+func (s *walletStore) Save(_ context.Context, outputs []*core.Output, recovery bool) error {
 	return s.db.Tx(func(tx *db.DB) error {
 		for _, utxo := range outputs {
-			if err := save(tx, utxo); err != nil {
+			if err := save(tx, utxo, recovery); err != nil {
 				return err
 			}
 		}
 
 		return nil
 	})
+}
+
+func (s *walletStore) CountRecovery(ctx context.Context) (int64, error) {
+	return countRawOutputs(s.db)
+}
+
+func (s *walletStore) ListRecovery(ctx context.Context, offset time.Time, limit int) ([]*core.Output, error) {
+	return listRawOutputs(s.db, offset, limit)
 }
 
 func (s *walletStore) List(_ context.Context, fromID int64, limit int) ([]*core.Output, error) {

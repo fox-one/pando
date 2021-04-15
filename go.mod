@@ -8,7 +8,6 @@ require (
 	github.com/bluele/gcache v0.0.2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/drone/signal v1.0.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fox-one/mixin-sdk-go v1.3.7
 	github.com/fox-one/msgpack v1.0.0
@@ -33,6 +32,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/rs/cors v1.7.0
 	github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f
+	github.com/schollz/progressbar/v3 v3.7.6
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cast v1.3.1

@@ -55,7 +55,9 @@ type (
 
 	WalletStore interface {
 		// Save batch update multiple Output
-		Save(ctx context.Context, outputs []*Output) error
+		Save(ctx context.Context, outputs []*Output, recovery bool) error
+		CountRecovery(ctx context.Context) (int64, error)
+		ListRecovery(ctx context.Context, offset time.Time, limit int) ([]*Output, error)
 		// List return a list of Output by order
 		List(ctx context.Context, fromID int64, limit int) ([]*Output, error)
 		// ListUnspent list unspent Output
