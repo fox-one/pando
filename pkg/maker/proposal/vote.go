@@ -24,7 +24,7 @@ func HandleVote(
 		}
 
 		if system.IsMember(r.Sender) {
-			if voted := govalidator.IsIn(r.Sender, p.Votes...); !voted {
+			if handled := p.PassedAt.Valid || govalidator.IsIn(r.Sender, p.Votes...); !handled {
 				p.Votes = append(p.Votes, r.Sender)
 
 				if err := parliaments.Approved(ctx, p); err != nil {
@@ -32,7 +32,7 @@ func HandleVote(
 					return err
 				}
 
-				if !p.PassedAt.Valid && len(p.Votes) >= int(system.Threshold) {
+				if len(p.Votes) >= int(system.Threshold) {
 					p.PassedAt = sql.NullTime{
 						Time:  r.Now,
 						Valid: true,
