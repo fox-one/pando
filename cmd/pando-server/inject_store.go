@@ -1,6 +1,10 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"time"
+
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
@@ -30,15 +34,35 @@ var storeSet = wire.NewSet(
 	message.New,
 )
 
+func connectDatabase(cfg db.Config, timeout time.Duration) (*db.DB, error) {
+	ctx, cancel := context.WithTimeout(context.TODO(), timeout)
+	defer cancel()
+
+	dur := time.Millisecond
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, fmt.Errorf("connect db: %w", ctx.Err())
+		case <-time.After(dur):
+			if conn, err := db.Open(cfg); err == nil {
+				return conn, nil
+			}
+
+			dur = time.Second
+		}
+	}
+}
+
 func provideDatabase(cfg *config.Config) (*db.DB, error) {
-	database, err := db.Open(cfg.DB)
+	conn, err := connectDatabase(cfg.DB, 8*time.Second)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := db.Migrate(database); err != nil {
+	if err := db.Migrate(conn); err != nil {
 		return nil, err
 	}
 
-	return database, nil
+	return conn, nil
 }
