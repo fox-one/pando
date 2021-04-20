@@ -18,6 +18,7 @@ type (
 		DB    db.Config `json:"db"`
 		Dapp  Dapp      `json:"dapp"`
 		Group Group     `json:"group,omitempty"`
+		Gas   Gas       `json:"gas"`
 		I18n  I18n      `json:"i18n,omitempty"`
 	}
 
@@ -38,8 +39,11 @@ type (
 		PrivateKey string   `json:"private_key,omitempty"`
 		Members    []string `json:"members,omitempty"`
 		Threshold  uint8    `json:"threshold,omitempty"`
+	}
 
-		Vote Vote `json:"vote,omitempty"`
+	Gas struct {
+		AssetID string          `json:"asset_id"`
+		Amount  decimal.Decimal `json:"amount"`
 	}
 
 	I18n struct {
@@ -86,19 +90,22 @@ func Viperion(cfgFile, embed string) (*Config, error) {
 		return nil, err
 	}
 
-	defaultVote(&cfg)
+	// disable read write separation
+	cfg.DB.ReadHost = ""
+
+	defaultGas(&cfg)
 	defaultI18n(&cfg)
 
 	return &cfg, nil
 }
 
-func defaultVote(cfg *Config) {
-	if cfg.Group.Vote.Asset == "" {
-		cfg.Group.Vote.Asset = "965e5c6e-434c-3fa9-b780-c50f43cd955c" // cnb
+func defaultGas(cfg *Config) {
+	if cfg.Gas.AssetID == "" {
+		cfg.Gas.AssetID = "965e5c6e-434c-3fa9-b780-c50f43cd955c" // cnb
 	}
 
-	if cfg.Group.Vote.Amount.IsZero() {
-		cfg.Group.Vote.Amount = decimal.New(1, -8)
+	if cfg.Gas.Amount.IsZero() {
+		cfg.Gas.Amount = decimal.New(1, -8)
 	}
 }
 

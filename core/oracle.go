@@ -57,3 +57,13 @@ type (
 		Parse(b []byte) ([]byte, error)
 	}
 )
+
+var distantFuture = time.Now().AddDate(100, 0, 0)
+
+func (oracle *Oracle) NextPeekAt() time.Time {
+	if oracle.Threshold == 0 {
+		return distantFuture
+	}
+
+	return oracle.PeekAt.Add(time.Duration(oracle.Hop) * time.Second)
+}

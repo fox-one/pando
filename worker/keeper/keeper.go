@@ -5,44 +5,51 @@ import (
 	"time"
 
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/worker/keeper/wallet"
 	"github.com/fox-one/pkg/logger"
+	"golang.org/x/sync/errgroup"
 )
 
+func New(
+	cats core.CollateralStore,
+	oracles core.OracleStore,
+	vaults core.VaultStore,
+	walletz core.WalletService,
+	notifier core.Notifier,
+	system *core.System,
+) *Keeper {
+	return &Keeper{
+		cats:     cats,
+		oracles:  oracles,
+		vaults:   vaults,
+		walletz:  wallet.FilterTrace(walletz, time.Minute),
+		notifier: notifier,
+		system:   system,
+	}
+}
+
 type Keeper struct {
-	cats core.CollateralStore
+	cats     core.CollateralStore
+	oracles  core.OracleStore
+	vaults   core.VaultStore
+	walletz  core.WalletService
+	notifier core.Notifier
+	system   *core.System
 }
 
 func (w *Keeper) Run(ctx context.Context) error {
 	log := logger.FromContext(ctx).WithField("worker", "keeper")
 	ctx = logger.WithContext(ctx, log)
 
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-time.After(time.Second):
-			_ = w.run(ctx)
-		}
-	}
-}
+	g := errgroup.Group{}
 
-func (w *Keeper) run(ctx context.Context) error {
-	log := logger.FromContext(ctx)
+	g.Go(func() error {
+		return w.foldAll(ctx)
+	})
 
-	cats, err := w.cats.List(ctx)
-	if err != nil {
-		log.WithError(err).Errorln("cats.List")
-		return err
-	}
+	g.Go(func() error {
+		return w.scan(ctx)
+	})
 
-	// remove cat not live
-	var idx int
-	for _, cat := range cats {
-		if cat.Live > 0 {
-			cats[idx] = cat
-			idx++
-		}
-	}
-
-	cats = cats[:idx]
+	return g.Wait()
 }

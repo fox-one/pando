@@ -122,11 +122,12 @@ func (s *walletStore) List(_ context.Context, fromID int64, limit int) ([]*core.
 	return outputs, nil
 }
 
-func (s *walletStore) ListSpentBy(ctx context.Context, assetID string, spentBy string) ([]*core.Output, error) {
+func (s *walletStore) ListSpentBy(ctx context.Context, assetID string, spentBy string, limit int) ([]*core.Output, error) {
 	var outputs []*core.Output
 	if err := s.db.View().
 		Where("asset_id = ? AND spent_by = ?", assetID, spentBy).
 		Order("id").
+		Limit(limit).
 		Find(&outputs).Error; err != nil {
 		return nil, err
 	}

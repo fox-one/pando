@@ -68,7 +68,7 @@ func (w *SpentSync) run(ctx context.Context) error {
 func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("trace", transfer.TraceID)
 
-	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID)
+	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID, 1)
 	if err != nil {
 		log.WithError(err).Errorln("wallets.ListSpentBy")
 		return err

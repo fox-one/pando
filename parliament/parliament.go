@@ -63,8 +63,8 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 
 	transfer := &core.Transfer{
 		TraceID:   uuid.Modify(proposal.TraceID, s.system.ClientID),
-		AssetID:   s.system.VoteAsset,
-		Amount:    s.system.VoteAmount,
+		AssetID:   s.system.GasAssetID,
+		Amount:    s.system.GasAmount,
 		Memo:      base64.StdEncoding.EncodeToString(memo),
 		Threshold: s.system.Threshold,
 		Opponents: s.system.Members,

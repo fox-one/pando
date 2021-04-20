@@ -62,7 +62,7 @@ type (
 		List(ctx context.Context, fromID int64, limit int) ([]*Output, error)
 		// ListUnspent list unspent Output
 		ListUnspent(ctx context.Context, assetID string, limit int) ([]*Output, error)
-		ListSpentBy(ctx context.Context, assetID string, spentBy string) ([]*Output, error)
+		ListSpentBy(ctx context.Context, assetID string, spentBy string, limit int) ([]*Output, error)
 		// Transfers
 		CreateTransfers(ctx context.Context, transfers []*Transfer) error
 		UpdateTransfer(ctx context.Context, transfer *Transfer) error
@@ -82,7 +82,7 @@ type (
 		Spend(ctx context.Context, outputs []*Output, transfer *Transfer) (*RawTransaction, error)
 		// ReqTransfer generate payment code for multisig transfer
 		ReqTransfer(ctx context.Context, transfer *Transfer) (string, error)
-		// Transfer handle a transfer request
+		// HandleTransfer handle a transfer request
 		HandleTransfer(ctx context.Context, transfer *Transfer) error
 	}
 )

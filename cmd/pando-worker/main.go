@@ -14,10 +14,11 @@ import (
 )
 
 var (
-	notify  = flag.Bool("notify", false, "enable notifier")
-	debug   = flag.Bool("debug", false, "debug mode")
-	port    = flag.Int("port", 7777, "server port")
-	cfgFile = flag.String("config", "", "config filename")
+	_notify  = flag.Bool("notify", false, "enable notifier")
+	_keeper  = flag.Bool("keeper", false, "run keeper")
+	_debug   = flag.Bool("debug", false, "debug mode")
+	_port    = flag.Int("port", 7777, "server port")
+	_cfgFile = flag.String("config", "", "config filename")
 )
 
 // build embed
@@ -30,13 +31,13 @@ var (
 func main() {
 	flag.Parse()
 
-	logrus.Infof("pando worker %s(%s) launched at port %d", version, commit, *port)
+	logrus.Infof("pando worker %s(%s) launched at port %d", version, commit, *_port)
 
-	if *debug {
+	if *_debug {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	cfg, err := config.Viperion(*cfgFile, embed)
+	cfg, err := config.Viperion(*_cfgFile, embed)
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: invalid configuration")

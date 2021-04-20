@@ -4,6 +4,7 @@ import (
 	"github.com/fox-one/pando/worker"
 	"github.com/fox-one/pando/worker/cashier"
 	"github.com/fox-one/pando/worker/events"
+	"github.com/fox-one/pando/worker/keeper"
 	"github.com/fox-one/pando/worker/messenger"
 	"github.com/fox-one/pando/worker/payee"
 	"github.com/fox-one/pando/worker/pricesync"
@@ -22,6 +23,7 @@ var workerSet = wire.NewSet(
 	syncer.New,
 	txsender.New,
 	events.New,
+	keeper.New,
 	provideWorkers,
 )
 
@@ -34,6 +36,13 @@ func provideWorkers(
 	f *txsender.Sender,
 	g *syncer.Syncer,
 	h *events.Events,
+	i *keeper.Keeper,
 ) []worker.Worker {
-	return []worker.Worker{a, b, c, d, e, f, g, h}
+	workers := []worker.Worker{a, b, c, d, e, f, g, h}
+
+	if *_keeper {
+		workers = append(workers, i)
+	}
+
+	return workers
 }

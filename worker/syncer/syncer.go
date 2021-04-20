@@ -61,7 +61,7 @@ func (w *Syncer) run(ctx context.Context) error {
 
 	offset := v.Time()
 
-	if now := time.Now().UTC(); now.Sub(offset) > 30*time.Minute {
+	if now := time.Now().UTC(); now.Sub(offset) > 5*time.Minute {
 		log.Infoln("Active recovery mode")
 		return w.recover(ctx, offset)
 	}

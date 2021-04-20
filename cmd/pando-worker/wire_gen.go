@@ -26,6 +26,7 @@ import (
 	"github.com/fox-one/pando/store/wallet"
 	"github.com/fox-one/pando/worker/cashier"
 	"github.com/fox-one/pando/worker/events"
+	"github.com/fox-one/pando/worker/keeper"
 	"github.com/fox-one/pando/worker/messenger"
 	"github.com/fox-one/pando/worker/payee"
 	"github.com/fox-one/pando/worker/pricesync"
@@ -79,8 +80,9 @@ func buildApp(cfg *config.Config) (app, error) {
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)
 	eventsEvents := events.New(transactionStore, notifier, store)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents)
-	server := node.New(system)
+	keeperKeeper := keeper.New(collateralStore, oracleStore, vaultStore, walletService, notifier, system)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents, keeperKeeper)
+	server := node.New(system, store)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)
 	mainApp := app{

@@ -21,6 +21,8 @@ type (
 		Ink decimal.Decimal `sql:"type:decimal(64,8)" json:"ink,omitempty"`
 		// Normalised Debt
 		Art decimal.Decimal `sql:"type:decimal(64,16)" json:"art,omitempty"`
+		// Rate is art per ink
+		Rate decimal.Decimal `sql:"type:decimal(64,16)" json:"rate,omitempty"`
 	}
 
 	VaultEvent struct {
@@ -40,6 +42,7 @@ type (
 	ListVaultRequest struct {
 		CollateralID string
 		UserID       string
+		Rate         decimal.Decimal
 		Desc         bool
 		FromID       int64
 		Limit        int

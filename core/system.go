@@ -14,8 +14,8 @@ type System struct {
 	ClientSecret string
 	Members      []string
 	Threshold    uint8
-	VoteAsset    string
-	VoteAmount   decimal.Decimal
+	GasAssetID   string
+	GasAmount    decimal.Decimal
 	PrivateKey   ed25519.PrivateKey
 	PublicKey    ed25519.PublicKey
 	Version      string

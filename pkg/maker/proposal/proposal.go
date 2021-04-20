@@ -49,8 +49,8 @@ func handleProposal(r *maker.Request, walletz core.WalletService, system *core.S
 	ctx := r.Context()
 	if err := walletz.HandleTransfer(ctx, &core.Transfer{
 		TraceID:   uuid.Modify(r.TraceID, p.TraceID+system.ClientID),
-		AssetID:   system.VoteAsset,
-		Amount:    system.VoteAmount,
+		AssetID:   system.GasAssetID,
+		Amount:    system.GasAmount,
 		Threshold: system.Threshold,
 		Opponents: system.Members,
 		Memo:      memo,

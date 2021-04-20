@@ -5,6 +5,7 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
+	"github.com/shopspring/decimal"
 )
 
 func init() {
@@ -23,7 +24,7 @@ func init() {
 			return err
 		}
 
-		if err := tx.AddIndex("idx_vaults_collateral", "collateral_id").Error; err != nil {
+		if err := tx.AddIndex("idx_vaults_collateral_rate", "collateral_id", "rate").Error; err != nil {
 			return err
 		}
 
@@ -54,6 +55,10 @@ type vaultStore struct {
 }
 
 func (s *vaultStore) Create(ctx context.Context, vault *core.Vault) error {
+	if vault.Ink.IsPositive() {
+		vault.Rate = vault.Art.Div(vault.Ink)
+	}
+
 	if err := s.db.Update().Where("trace_id = ?", vault.TraceID).FirstOrCreate(vault).Error; err != nil {
 		return err
 	}
@@ -62,9 +67,15 @@ func (s *vaultStore) Create(ctx context.Context, vault *core.Vault) error {
 }
 
 func toUpdateParams(vault *core.Vault) map[string]interface{} {
+	rate := decimal.Zero
+	if vault.Ink.IsPositive() {
+		rate = vault.Art.Div(vault.Ink)
+	}
+
 	return map[string]interface{}{
-		"ink": vault.Ink,
-		"art": vault.Art,
+		"ink":  vault.Ink,
+		"art":  vault.Art,
+		"rate": rate,
 	}
 }
 
@@ -104,6 +115,10 @@ func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*co
 	tx := s.db.View()
 	if req.CollateralID != "" {
 		tx = tx.Where("collateral_id = ?", req.CollateralID)
+
+		if req.Rate.IsPositive() {
+			tx = tx.Where("rate > ?", req.Rate)
+		}
 	}
 
 	if req.UserID != "" {

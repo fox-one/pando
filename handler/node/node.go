@@ -6,16 +6,24 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/node/system"
 	"github.com/fox-one/pando/handler/render"
+	"github.com/fox-one/pkg/property"
 	"github.com/go-chi/chi"
 	"github.com/twitchtv/twirp"
 )
 
-func New(system *core.System) *Server {
-	return &Server{system: system}
+func New(
+	system *core.System,
+	property property.Store,
+) *Server {
+	return &Server{
+		system:   system,
+		property: property,
+	}
 }
 
 type Server struct {
-	system *core.System
+	system   *core.System
+	property property.Store
 }
 
 func (s Server) Handler() http.Handler {
@@ -27,6 +35,7 @@ func (s Server) Handler() http.Handler {
 	})
 
 	r.Get("/info", system.HandleInfo(s.system))
+	r.Get("/property", system.HandleProperty(s.property))
 
 	return r
 }

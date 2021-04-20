@@ -20,7 +20,7 @@ func provideNotifier(
 	users core.UserStore,
 	localizer *localizer.Localizer,
 ) core.Notifier {
-	if *notify {
+	if *_notify {
 		return notifier.New(
 			system,
 			assetz,
