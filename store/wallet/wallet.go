@@ -92,7 +92,9 @@ func save(db *db.DB, output *core.Output, ack bool) error {
 
 func (s *walletStore) Save(ctx context.Context, outputs []*core.Output, end bool) error {
 	s.once.Do(func() {
-		_ = s.runSync(ctx)
+		go func() {
+			_ = s.runSync(ctx)
+		}()
 	})
 
 	return s.db.Tx(func(tx *db.DB) error {
