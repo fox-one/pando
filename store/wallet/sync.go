@@ -114,6 +114,8 @@ func syncRawOutputs(tx *db.DB, limit int) (int, error) {
 	}
 
 	outputs := make([]*core.Output, 0, len(raws))
+	ids := make([]int64, 0, len(raws))
+
 	for _, raw := range raws {
 		var output core.Output
 		if err := json.Unmarshal(raw.Data, &output); err != nil {
@@ -121,6 +123,7 @@ func syncRawOutputs(tx *db.DB, limit int) (int, error) {
 		}
 
 		outputs = append(outputs, &output)
+		ids = append(ids, raw.ID)
 	}
 
 	core.SortOutputs(outputs)
@@ -130,13 +133,9 @@ func syncRawOutputs(tx *db.DB, limit int) (int, error) {
 			if err := save(tx, output, true); err != nil {
 				return err
 			}
-
-			if err := tx.Update().Delete(output).Error; err != nil {
-				return err
-			}
 		}
 
-		return nil
+		return tx.Update().Where("id IN (?)", ids).Delete(RawOutput{}).Error
 	}); err != nil {
 		return 0, err
 	}
