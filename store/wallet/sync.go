@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/store/db"
 	"github.com/jinzhu/gorm"
 	"github.com/jmoiron/sqlx/types"
@@ -84,8 +85,13 @@ func (s *walletStore) runSync(ctx context.Context) error {
 			return ctx.Err()
 		case <-time.After(dur):
 			const limit = 500
-			if n, err := syncRawOutputs(s.db, limit); err != nil || n == 0 {
-				dur = 800 * time.Millisecond
+
+			n, err := syncRawOutputs(s.db, limit)
+			if err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("syncRawOutputs")
+				dur = time.Second
+			} else if n == 0 {
+				dur = 600 * time.Millisecond
 			} else {
 				dur = 300 * time.Millisecond
 			}
@@ -128,8 +134,6 @@ func syncRawOutputs(tx *db.DB, limit int) (int, error) {
 			if err := tx.Update().Delete(output).Error; err != nil {
 				return err
 			}
-
-			return nil
 		}
 
 		return nil

@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/store/db"
 	"github.com/jinzhu/gorm"
 )
@@ -93,7 +94,8 @@ func save(db *db.DB, output *core.Output, ack bool) error {
 func (s *walletStore) Save(ctx context.Context, outputs []*core.Output, end bool) error {
 	s.once.Do(func() {
 		go func() {
-			_ = s.runSync(ctx)
+			err := s.runSync(ctx)
+			logger.FromContext(ctx).WithError(err).Infoln("runSync end")
 		}()
 	})
 
