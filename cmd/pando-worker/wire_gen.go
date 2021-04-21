@@ -82,7 +82,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	eventsEvents := events.New(transactionStore, notifier, store)
 	keeperKeeper := keeper.New(collateralStore, oracleStore, vaultStore, walletService, notifier, system)
 	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents, keeperKeeper)
-	server := node.New(system, store, oracleStore)
+	server := node.New(system, store, oracleStore, assetService)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)
 	mainApp := app{

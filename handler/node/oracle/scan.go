@@ -24,6 +24,7 @@ type (
 
 	PriceRequest struct {
 		AssetID   string   `json:"asset_id"`
+		Symbol    string   `json:"symbol"`
 		TraceID   string   `json:"trace_id,omitempty"`
 		Receiver  Receiver `json:"receiver,omitempty"`
 		Signers   []Signer `json:"signers,omitempty"`
@@ -33,6 +34,7 @@ type (
 
 func HandleScanRequests(
 	oracles core.OracleStore,
+	assetz core.AssetService,
 	system *core.System,
 ) http.HandlerFunc {
 	nonce := uuid.New()
@@ -67,8 +69,15 @@ func HandleScanRequests(
 				continue
 			}
 
+			asset, err := assetz.Find(ctx, oracle.AssetID)
+			if err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("api: cannot find asset")
+				render.Error(w, err)
+			}
+
 			resp = append(resp, PriceRequest{
-				AssetID: oracle.AssetID,
+				AssetID: asset.ID,
+				Symbol:  asset.Symbol,
 				TraceID: uuid.Modify(nonce, fmt.Sprintf("%s-%s", oracle.AssetID, next.Format(time.RFC3339Nano))),
 				Receiver: Receiver{
 					Members:   system.Members,
