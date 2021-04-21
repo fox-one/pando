@@ -46,15 +46,16 @@ type (
 		Update(ctx context.Context, oracle *Oracle, version int64) error
 		List(ctx context.Context) ([]*Oracle, error)
 		ListCurrent(ctx context.Context) (number.Values, error)
-		// feeds
+		// Rely approve a new feed
 		Rely(ctx context.Context, userID, publicKey string) error
+		// Deny remove an existing feed
 		Deny(ctx context.Context, userID string) error
 		ListFeeds(ctx context.Context) ([]*OracleFeed, error)
 	}
 
 	// OracleService define operations to parse new price from oracle service outside
 	OracleService interface {
-		Parse(b []byte) ([]byte, error)
+		Parse(ctx context.Context, b []byte) (*Oracle, error)
 	}
 )
 

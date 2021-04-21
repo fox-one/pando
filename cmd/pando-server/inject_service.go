@@ -9,7 +9,6 @@ import (
 	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pando/service/message"
-	"github.com/fox-one/pando/service/oracle"
 	"github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pkg/text/localizer"
@@ -23,7 +22,6 @@ var serviceSet = wire.NewSet(
 	message.New,
 	provideUserServiceConfig,
 	user.New,
-	oracle.New,
 	provideSystem,
 	provideWalletServiceConfig,
 	wallet.New,

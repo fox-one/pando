@@ -16,6 +16,7 @@ import (
 	"github.com/fox-one/pando/pkg/maker/sys"
 	"github.com/fox-one/pando/pkg/maker/vat"
 	"github.com/fox-one/pando/pkg/mtg"
+	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
@@ -150,12 +151,17 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	message := decodeMemo(output.Memo)
 	req := requestFromOutput(output)
 
-	// 1, parse oracle message
-	if body, err := w.oraclez.Parse(message); err == nil {
+	// 1, parse price message
+	if price, err := w.oraclez.Parse(ctx, message); err == nil {
 		req.Action = core.ActionOraclePoke
-		req.Body = body
-		// req.Gov = true
-		return w.handleRequest(req.WithContext(ctx))
+		if body, err := mtg.Encode(types.UUID(price.AssetID), price.Current, price.CreatedAt.Unix()); err == nil {
+			req.Body = body
+			req.Governors = price.Governors
+
+			return w.handleRequest(req.WithContext(ctx))
+		}
+
+		return nil
 	}
 
 	// 2. decode tx message

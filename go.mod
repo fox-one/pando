@@ -28,11 +28,11 @@ require (
 	github.com/lib/pq v1.9.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c
+	github.com/pandodao/blst v1.0.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/rs/cors v1.7.0
 	github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f
-	github.com/schollz/progressbar/v3 v3.7.6
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cast v1.3.1
