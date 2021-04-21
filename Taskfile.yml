@@ -10,6 +10,8 @@ vars:
 
 tasks:
   build-base:
+    env:
+      CGO_ENABLE: "0"
     cmds:
       - cmd: >
           go build -ldflags
