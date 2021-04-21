@@ -61,56 +61,26 @@ func (w *Syncer) run(ctx context.Context) error {
 
 	offset := v.Time()
 
-	if now := time.Now().UTC(); now.Sub(offset) > 5*time.Minute {
-		log.Infoln("Active recovery mode")
-		return w.recover(ctx, offset)
-	}
-
-	var (
-		outputs   = make([]*core.Output, 0, 8)
-		positions = make(map[string]int)
-		pos       = 0
-	)
-
-	const Limit = 500
-
-	for {
-		batch, err := w.walletz.Pull(ctx, offset, Limit)
-		if err != nil {
-			log.WithError(err).Errorln("walletz.Pull")
-			return err
-		}
-
-		for _, u := range batch {
-			offset = u.UpdatedAt
-
-			p, ok := positions[u.TraceID]
-			if ok {
-				outputs[p] = u
-				continue
-			}
-
-			outputs = append(outputs, u)
-			positions[u.TraceID] = pos
-			pos += 1
-		}
-
-		if len(batch) < Limit {
-			break
-		}
+	const limit = 500
+	outputs, err := w.walletz.Pull(ctx, offset, limit)
+	if err != nil {
+		log.WithError(err).Errorln("walletz.Pull")
+		return err
 	}
 
 	if len(outputs) == 0 {
 		return errors.New("EOF")
 	}
 
-	core.SortOutputs(outputs)
-	if err := w.wallets.Save(ctx, outputs, false); err != nil {
+	nextOffset := outputs[len(outputs)-1].UpdatedAt
+	end := len(outputs) < limit
+
+	if err := w.wallets.Save(ctx, outputs, end); err != nil {
 		log.WithError(err).Errorln("wallets.Save")
 		return err
 	}
 
-	if err := w.property.Save(ctx, checkpointKey, offset); err != nil {
+	if err := w.property.Save(ctx, checkpointKey, nextOffset); err != nil {
 		log.WithError(err).Errorln("property.Save", checkpointKey)
 		return err
 	}

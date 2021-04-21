@@ -1,7 +1,9 @@
 package wallet
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/fox-one/pando/core"
@@ -22,7 +24,7 @@ func init() {
 			return err
 		}
 
-		if err := tx.AddIndex("idx_raw_outputs_created", "created_at").Error; err != nil {
+		if err := tx.AddIndex("idx_raw_outputs_ack_created", "ack", "created_at").Error; err != nil {
 			return err
 		}
 
@@ -31,10 +33,11 @@ func init() {
 }
 
 type RawOutput struct {
-	ID        int64          `sql:"PRIMARY_KEY" json:"id,omitempty"`
+	ID        int64          `sql:"PRIMARY_KEY" json:"id"`
 	CreatedAt int64          `json:"created_at"`
 	TraceID   string         `sql:"size:36" json:"trace_id"`
 	Version   int64          `sql:"not null" json:"version"`
+	Ack       types.BitBool  `sql:"type:bit(1)" json:"ack"`
 	Data      types.JSONText `sql:"type:TEXT" json:"data"`
 }
 
@@ -66,6 +69,77 @@ func saveRawOutput(db *db.DB, output *core.Output) error {
 	return nil
 }
 
+func ackRawOutputs(db *db.DB) error {
+	return db.Update().Model(RawOutput{}).
+		Where("ack = ?", 0).
+		Update("ack", 1).Error
+}
+
+func (s *walletStore) runSync(ctx context.Context) error {
+	dur := time.Millisecond
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(dur):
+			const limit = 500
+			if n, err := syncRawOutputs(s.db, limit); err != nil || n == 0 {
+				dur = 800 * time.Millisecond
+			} else {
+				dur = 300 * time.Millisecond
+			}
+		}
+	}
+}
+
+func syncRawOutputs(tx *db.DB, limit int) (int, error) {
+	var raws []*RawOutput
+	if err := tx.View().Where("ack = ?", 1).Order("created_at").Limit(limit).Find(&raws).Error; err != nil {
+		return 0, err
+	}
+
+	if len(raws) == 0 {
+		return 0, nil
+	}
+
+	if len(raws) == limit {
+		raws = trimSuffix(raws)
+	}
+
+	outputs := make([]*core.Output, 0, len(raws))
+	for _, raw := range raws {
+		var output core.Output
+		if err := json.Unmarshal(raw.Data, &output); err != nil {
+			return 0, fmt.Errorf("unmarshal RawOutput failed: %w", err)
+		}
+
+		outputs = append(outputs, &output)
+	}
+
+	core.SortOutputs(outputs)
+
+	if err := tx.Tx(func(tx *db.DB) error {
+		for _, output := range outputs {
+			if err := save(tx, output, true); err != nil {
+				return err
+			}
+
+			if err := tx.Update().Delete(output).Error; err != nil {
+				return err
+			}
+
+			return nil
+		}
+
+		return nil
+	}); err != nil {
+		return 0, err
+	}
+
+	return len(outputs), nil
+}
+
 func trimSuffix(raws []*RawOutput) []*RawOutput {
 	var (
 		r = len(raws) - 1
@@ -85,43 +159,4 @@ func trimSuffix(raws []*RawOutput) []*RawOutput {
 	}
 
 	return raws
-}
-
-func countRawOutputs(db *db.DB) (int64, error) {
-	var count int64
-	if err := db.View().Model(RawOutput{}).Count(&count).Error; err != nil {
-		return 0, err
-	}
-
-	return count, nil
-}
-
-func listRawOutputs(db *db.DB, offset time.Time, limit int) ([]*core.Output, error) {
-	if !offset.IsZero() {
-		if err := db.Update().Where("created_at <= ?", offset.UnixNano()).Delete(RawOutput{}).Error; err != nil {
-			return nil, err
-		}
-	}
-
-	var raws []*RawOutput
-	if err := db.View().Order("created_at").Limit(limit).Find(&raws).Error; err != nil {
-		return nil, err
-	}
-
-	if len(raws) == limit {
-		raws = trimSuffix(raws)
-	}
-
-	outputs := make([]*core.Output, 0, len(raws))
-	for _, raw := range raws {
-		var output core.Output
-		if err := json.Unmarshal(raw.Data, &output); err != nil {
-			return nil, err
-		}
-
-		outputs = append(outputs, &output)
-	}
-
-	core.SortOutputs(outputs)
-	return outputs, nil
 }

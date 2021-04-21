@@ -3,7 +3,7 @@ package wallet
 import (
 	"context"
 	"sort"
-	"time"
+	"sync"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
@@ -64,10 +64,11 @@ func New(db *db.DB) core.WalletStore {
 }
 
 type walletStore struct {
-	db *db.DB
+	db   *db.DB
+	once sync.Once
 }
 
-func save(db *db.DB, output *core.Output, recovery bool) error {
+func save(db *db.DB, output *core.Output, ack bool) error {
 	tx := db.Update().Model(output).Where("trace_id = ?", output.TraceID).Updates(map[string]interface{}{
 		"state":     output.State,
 		"signed_tx": output.SignedTx,
@@ -79,34 +80,34 @@ func save(db *db.DB, output *core.Output, recovery bool) error {
 	}
 
 	if tx.RowsAffected == 0 {
-		if recovery {
-			return saveRawOutput(db, output)
+		if ack {
+			return db.Update().Create(output).Error
 		}
 
-		return tx.Update().Create(output).Error
+		return saveRawOutput(db, output)
 	}
 
 	return nil
 }
 
-func (s *walletStore) Save(_ context.Context, outputs []*core.Output, recovery bool) error {
+func (s *walletStore) Save(ctx context.Context, outputs []*core.Output, end bool) error {
+	s.once.Do(func() {
+		_ = s.runSync(ctx)
+	})
+
 	return s.db.Tx(func(tx *db.DB) error {
 		for _, utxo := range outputs {
-			if err := save(tx, utxo, recovery); err != nil {
+			if err := save(tx, utxo, false); err != nil {
 				return err
 			}
 		}
 
+		if end {
+			return ackRawOutputs(tx)
+		}
+
 		return nil
 	})
-}
-
-func (s *walletStore) CountRecovery(ctx context.Context) (int64, error) {
-	return countRawOutputs(s.db)
-}
-
-func (s *walletStore) ListRecovery(ctx context.Context, offset time.Time, limit int) ([]*core.Output, error) {
-	return listRawOutputs(s.db, offset, limit)
 }
 
 func (s *walletStore) List(_ context.Context, fromID int64, limit int) ([]*core.Output, error) {
