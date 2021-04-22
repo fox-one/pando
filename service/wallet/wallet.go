@@ -88,9 +88,10 @@ func (s *walletService) Spend(ctx context.Context, outputs []*core.Output, trans
 				return nil, valiErr
 			}
 
-			sig, err = s.client.SignMultisig(ctx, sig.RequestID, s.pin)
+			requestID := sig.RequestID
+			sig, err = s.client.SignMultisig(ctx, requestID, s.pin)
 			if err != nil {
-				return nil, fmt.Errorf("SignMultisig failed: %w", err)
+				return nil, fmt.Errorf("SignMultisig %s failed: %w", requestID, err)
 			}
 		}
 
