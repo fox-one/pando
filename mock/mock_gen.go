@@ -699,18 +699,18 @@ func (m *MockOracleService) EXPECT() *MockOracleServiceMockRecorder {
 }
 
 // Parse mocks base method
-func (m *MockOracleService) Parse(arg0 []byte) ([]byte, error) {
+func (m *MockOracleService) Parse(arg0 context.Context, arg1 []byte) (*core.Oracle, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Parse", arg0)
-	ret0, _ := ret[0].([]byte)
+	ret := m.ctrl.Call(m, "Parse", arg0, arg1)
+	ret0, _ := ret[0].(*core.Oracle)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Parse indicates an expected call of Parse
-func (mr *MockOracleServiceMockRecorder) Parse(arg0 interface{}) *gomock.Call {
+func (mr *MockOracleServiceMockRecorder) Parse(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Parse", reflect.TypeOf((*MockOracleService)(nil).Parse), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Parse", reflect.TypeOf((*MockOracleService)(nil).Parse), arg0, arg1)
 }
 
 // MockProposalStore is a mock of ProposalStore interface
@@ -1365,18 +1365,18 @@ func (mr *MockWalletStoreMockRecorder) ListPendingTransfers(arg0 interface{}) *g
 }
 
 // ListSpentBy mocks base method
-func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string) ([]*core.Output, error) {
+func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string, arg3 int) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListSpentBy", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "ListSpentBy", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*core.Output)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListSpentBy indicates an expected call of ListSpentBy
-func (mr *MockWalletStoreMockRecorder) ListSpentBy(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockWalletStoreMockRecorder) ListSpentBy(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSpentBy", reflect.TypeOf((*MockWalletStore)(nil).ListSpentBy), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSpentBy", reflect.TypeOf((*MockWalletStore)(nil).ListSpentBy), arg0, arg1, arg2, arg3)
 }
 
 // ListUnspent mocks base method
@@ -1395,17 +1395,17 @@ func (mr *MockWalletStoreMockRecorder) ListUnspent(arg0, arg1, arg2 interface{})
 }
 
 // Save mocks base method
-func (m *MockWalletStore) Save(arg0 context.Context, arg1 []*core.Output) error {
+func (m *MockWalletStore) Save(arg0 context.Context, arg1 []*core.Output, arg2 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Save", arg0, arg1)
+	ret := m.ctrl.Call(m, "Save", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Save indicates an expected call of Save
-func (mr *MockWalletStoreMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockWalletStoreMockRecorder) Save(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockWalletStore)(nil).Save), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockWalletStore)(nil).Save), arg0, arg1, arg2)
 }
 
 // Spent mocks base method
