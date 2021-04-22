@@ -40,6 +40,7 @@ type (
 		AssetID   string          `sql:"type:char(36)" json:"asset_id,omitempty"`
 		Amount    decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
 		Memo      string          `sql:"size:200" json:"memo,omitempty"`
+		Assigned  types.BitBool   `sql:"type:bit(1)" json:"assigned,omitempty"`
 		Handled   types.BitBool   `sql:"type:bit(1)" json:"handled,omitempty"`
 		Passed    types.BitBool   `sql:"type:bit(1)" json:"passed,omitempty"`
 		Threshold uint8           `json:"threshold,omitempty"`
@@ -60,13 +61,15 @@ type (
 		List(ctx context.Context, fromID int64, limit int) ([]*Output, error)
 		// ListUnspent list unspent Output
 		ListUnspent(ctx context.Context, assetID string, limit int) ([]*Output, error)
-		ListSpentBy(ctx context.Context, assetID string, spentBy string, limit int) ([]*Output, error)
+		FindSpentBy(ctx context.Context, assetID, spentBy string) (*Output, error)
+		ListSpentBy(ctx context.Context, assetID, spentBy string) ([]*Output, error)
 		// Transfers
 		CreateTransfers(ctx context.Context, transfers []*Transfer) error
 		UpdateTransfer(ctx context.Context, transfer *Transfer) error
 		ListPendingTransfers(ctx context.Context) ([]*Transfer, error)
 		ListNotPassedTransfers(ctx context.Context) ([]*Transfer, error)
-		Spent(ctx context.Context, outputs []*Output, transfer *Transfer) error
+		ListNotAssignedTransfers(ctx context.Context) ([]*Transfer, error)
+		Assign(ctx context.Context, outputs []*Output, transfer *Transfer) error
 		// mixin net transaction
 		CreateRawTransaction(ctx context.Context, tx *RawTransaction) error
 		ListPendingRawTransactions(ctx context.Context, limit int) ([]*RawTransaction, error)

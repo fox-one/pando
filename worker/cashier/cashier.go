@@ -3,14 +3,12 @@ package cashier
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
-	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/logger"
-	"github.com/fox-one/pkg/uuid"
-	"github.com/shopspring/decimal"
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 )
 
 func New(
@@ -64,61 +62,41 @@ func (w *Cashier) run(ctx context.Context) error {
 		return errors.New("EOF")
 	}
 
+	g := errgroup.Group{}
+	sem := semaphore.NewWeighted(5)
+
 	for idx := range transfers {
 		transfer := transfers[idx]
-		_ = w.handleTransfer(ctx, transfer)
+
+		if err := sem.Acquire(ctx, 1); err != nil {
+			return g.Wait()
+		}
+
+		g.Go(func() error {
+			defer sem.Release(1)
+			return w.handleTransfer(ctx, transfer)
+		})
 	}
 
-	return nil
+	return g.Wait()
 }
 
 func (w *Cashier) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("transfer", transfer.TraceID)
 
-	const limit = 32
-	outputs, err := w.wallets.ListUnspent(ctx, transfer.AssetID, limit)
+	if valid := !transfer.Handled && transfer.Assigned; !valid {
+		log.Panicln("invalid transfer")
+	}
+
+	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID)
 	if err != nil {
-		log.WithError(err).Errorln("wallets.ListUnspent")
+		log.WithError(err).Errorln("wallets.ListSpentBy")
 		return err
 	}
 
-	var (
-		idx    int
-		sum    decimal.Decimal
-		traces []string
-	)
-
-	for _, output := range outputs {
-		sum = sum.Add(output.Amount)
-		traces = append(traces, output.TraceID)
-		idx += 1
-
-		if sum.GreaterThanOrEqual(transfer.Amount) {
-			break
-		}
-	}
-
-	outputs = outputs[:idx]
-
-	if sum.LessThan(transfer.Amount) {
-		// merge outputs
-		if len(outputs) == limit {
-			traceID := uuid.Modify(transfer.TraceID, mixin.HashMembers(traces))
-			merge := &core.Transfer{
-				TraceID:   traceID,
-				AssetID:   transfer.AssetID,
-				Amount:    sum,
-				Opponents: w.system.Members,
-				Threshold: w.system.Threshold,
-				Memo:      fmt.Sprintf("merge for %s", transfer.TraceID),
-			}
-
-			return w.spend(ctx, outputs, merge)
-		}
-
-		err := errors.New("insufficient balance")
-		log.WithError(err).Errorln("handle transfer", transfer.ID)
-		return err
+	if len(outputs) == 0 {
+		log.Errorln("cannot spent transfer with empty outputs")
+		return nil
 	}
 
 	return w.spend(ctx, outputs, transfer)
@@ -136,9 +114,9 @@ func (w *Cashier) spend(ctx context.Context, outputs []*core.Output, transfer *c
 		}
 	}
 
-	// mark these outputs spent & transfer handled
-	if err := w.wallets.Spent(ctx, outputs, transfer); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("wallets.Spend")
+	transfer.Handled = true
+	if err := w.wallets.UpdateTransfer(ctx, transfer); err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("wallets.UpdateTransfer")
 		return err
 	}
 

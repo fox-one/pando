@@ -127,12 +127,20 @@ func (s *walletStore) List(_ context.Context, fromID int64, limit int) ([]*core.
 	return outputs, nil
 }
 
-func (s *walletStore) ListSpentBy(ctx context.Context, assetID string, spentBy string, limit int) ([]*core.Output, error) {
+func (s *walletStore) FindSpentBy(ctx context.Context, assetID, spentBy string) (*core.Output, error) {
+	var output core.Output
+	if err := s.db.View().Where("asset_id = ? AND spent_by = ?", assetID, spentBy).Take(&output).Error; err != nil {
+		return nil, err
+	}
+
+	return &output, nil
+}
+
+func (s *walletStore) ListSpentBy(ctx context.Context, assetID string, spentBy string) ([]*core.Output, error) {
 	var outputs []*core.Output
 	if err := s.db.View().
 		Where("asset_id = ? AND spent_by = ?", assetID, spentBy).
 		Order("id").
-		Limit(limit).
 		Find(&outputs).Error; err != nil {
 		return nil, err
 	}
@@ -181,8 +189,9 @@ func (s *walletStore) CreateTransfers(_ context.Context, transfers []*core.Trans
 
 func updateTransfer(db *db.DB, transfer *core.Transfer) error {
 	return db.Update().Model(transfer).Updates(map[string]interface{}{
-		"handled": transfer.Handled,
-		"passed":  transfer.Passed,
+		"assigned": transfer.Assigned,
+		"handled":  transfer.Handled,
+		"passed":   transfer.Passed,
 	}).Error
 }
 
@@ -193,28 +202,12 @@ func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfe
 func (s *walletStore) ListPendingTransfers(_ context.Context) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 	if err := s.db.View().
-		Where("handled = ?", 0).
+		Where("handled = ? AND assigned = ?", 0, 1).
 		Limit(128).
 		Order("id").
 		Find(&transfers).Error; err != nil {
 		return nil, err
 	}
-
-	// filter by asset id
-	filter := make(map[string]bool)
-	var idx int
-
-	for _, t := range transfers {
-		if filter[t.AssetID] {
-			continue
-		}
-
-		transfers[idx] = t
-		filter[t.AssetID] = true
-		idx++
-	}
-
-	transfers = transfers[:idx]
 
 	for _, t := range transfers {
 		afterFindTransfer(t)
@@ -241,7 +234,25 @@ func (s *walletStore) ListNotPassedTransfers(ctx context.Context) ([]*core.Trans
 	return transfers, nil
 }
 
-func (s *walletStore) Spent(_ context.Context, outputs []*core.Output, transfer *core.Transfer) error {
+func (s *walletStore) ListNotAssignedTransfers(ctx context.Context) ([]*core.Transfer, error) {
+	var transfers []*core.Transfer
+
+	if err := s.db.View().
+		Where("handled = ? AND assigned = ?", 0, 0).
+		Limit(128).
+		Order("id").
+		Find(&transfers).Error; err != nil {
+		return nil, err
+	}
+
+	for _, t := range transfers {
+		afterFindTransfer(t)
+	}
+
+	return transfers, nil
+}
+
+func (s *walletStore) Assign(_ context.Context, outputs []*core.Output, transfer *core.Transfer) error {
 	return s.db.Tx(func(tx *db.DB) error {
 		for _, output := range outputs {
 			if err := tx.Update().Model(output).Updates(map[string]interface{}{
@@ -251,7 +262,7 @@ func (s *walletStore) Spent(_ context.Context, outputs []*core.Output, transfer 
 			}
 		}
 
-		transfer.Handled = true
+		transfer.Assigned = true
 		if transfer.ID > 0 {
 			if err := updateTransfer(tx, transfer); err != nil {
 				return err
