@@ -42,20 +42,6 @@ func HandleScanRequests(
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		feeds, err := oracles.ListFeeds(ctx)
-		if err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("api: cannot list oracle feeds")
-			render.Error(w, err)
-		}
-
-		signers := make([]Signer, len(feeds))
-		for idx, feed := range feeds {
-			signers[idx] = Signer{
-				Index:     idx + 1,
-				VerifyKey: feed.PublicKey,
-			}
-		}
-
 		list, err := oracles.List(ctx)
 		if err != nil {
 			logger.FromContext(ctx).WithError(err).Errorln("api: cannot list oracles")
@@ -83,9 +69,28 @@ func HandleScanRequests(
 					Members:   system.Members,
 					Threshold: system.Threshold,
 				},
-				Signers:   signers,
 				Threshold: oracle.Threshold,
 			})
+		}
+
+		if len(resp) > 0 {
+			feeds, err := oracles.ListFeeds(ctx)
+			if err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("api: cannot list oracle feeds")
+				render.Error(w, err)
+			}
+
+			signers := make([]Signer, len(feeds))
+			for idx, feed := range feeds {
+				signers[idx] = Signer{
+					Index:     idx + 1,
+					VerifyKey: feed.PublicKey,
+				}
+			}
+
+			for idx := range resp {
+				resp[idx].Signers = signers
+			}
 		}
 
 		render.JSON(w, resp)
