@@ -8,6 +8,7 @@ import (
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/logger"
+	"github.com/fox-one/pkg/store"
 )
 
 func New(
@@ -68,17 +69,20 @@ func (w *SpentSync) run(ctx context.Context) error {
 func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("trace", transfer.TraceID)
 
-	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID, 1)
+	if valid := transfer.Handled; !valid {
+		log.Panicln("invalid transfer")
+	}
+
+	output, err := w.wallets.FindSpentBy(ctx, transfer.AssetID, transfer.TraceID)
 	if err != nil {
+		if store.IsErrNotFound(err) {
+			return nil
+		}
+
 		log.WithError(err).Errorln("wallets.ListSpentBy")
 		return err
 	}
 
-	if len(outputs) == 0 {
-		return nil
-	}
-
-	output := outputs[0]
 	if output.State != mixin.UTXOStateSpent {
 		return nil
 	}

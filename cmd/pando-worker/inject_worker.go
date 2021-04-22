@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/fox-one/pando/worker"
+	"github.com/fox-one/pando/worker/assigner"
 	"github.com/fox-one/pando/worker/cashier"
 	"github.com/fox-one/pando/worker/events"
 	"github.com/fox-one/pando/worker/keeper"
@@ -24,6 +25,7 @@ var workerSet = wire.NewSet(
 	txsender.New,
 	events.New,
 	keeper.New,
+	assigner.New,
 	provideWorkers,
 )
 
@@ -37,8 +39,9 @@ func provideWorkers(
 	g *syncer.Syncer,
 	h *events.Events,
 	i *keeper.Keeper,
+	j *assigner.Assigner,
 ) []worker.Worker {
-	workers := []worker.Worker{a, b, c, d, e, f, g, h}
+	workers := []worker.Worker{a, b, c, d, e, f, g, h, j}
 
 	if *_keeper {
 		workers = append(workers, i)
