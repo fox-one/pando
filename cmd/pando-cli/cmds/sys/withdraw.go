@@ -16,6 +16,7 @@ func NewWithdrawCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			memo, err := actions.Build(
 				cmd,
+				core.ActionProposalMake,
 				core.ActionSysWithdraw,
 				types.UUID(args[0]),
 				types.Decimal(args[1]),
