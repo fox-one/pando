@@ -1262,6 +1262,20 @@ func (m *MockWalletStore) EXPECT() *MockWalletStoreMockRecorder {
 	return m.recorder
 }
 
+// Assign mocks base method
+func (m *MockWalletStore) Assign(arg0 context.Context, arg1 []*core.Output, arg2 *core.Transfer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Assign", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Assign indicates an expected call of Assign
+func (mr *MockWalletStoreMockRecorder) Assign(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Assign", reflect.TypeOf((*MockWalletStore)(nil).Assign), arg0, arg1, arg2)
+}
+
 // CreateRawTransaction mocks base method
 func (m *MockWalletStore) CreateRawTransaction(arg0 context.Context, arg1 *core.RawTransaction) error {
 	m.ctrl.T.Helper()
@@ -1304,6 +1318,21 @@ func (mr *MockWalletStoreMockRecorder) ExpireRawTransaction(arg0, arg1 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpireRawTransaction", reflect.TypeOf((*MockWalletStore)(nil).ExpireRawTransaction), arg0, arg1)
 }
 
+// FindSpentBy mocks base method
+func (m *MockWalletStore) FindSpentBy(arg0 context.Context, arg1, arg2 string) (*core.Output, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindSpentBy", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*core.Output)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindSpentBy indicates an expected call of FindSpentBy
+func (mr *MockWalletStoreMockRecorder) FindSpentBy(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindSpentBy", reflect.TypeOf((*MockWalletStore)(nil).FindSpentBy), arg0, arg1, arg2)
+}
+
 // List mocks base method
 func (m *MockWalletStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
@@ -1317,6 +1346,36 @@ func (m *MockWalletStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*c
 func (mr *MockWalletStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockWalletStore)(nil).List), arg0, arg1, arg2)
+}
+
+// ListNotAssignedTransfers mocks base method
+func (m *MockWalletStore) ListNotAssignedTransfers(arg0 context.Context) ([]*core.Transfer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListNotAssignedTransfers", arg0)
+	ret0, _ := ret[0].([]*core.Transfer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListNotAssignedTransfers indicates an expected call of ListNotAssignedTransfers
+func (mr *MockWalletStoreMockRecorder) ListNotAssignedTransfers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListNotAssignedTransfers", reflect.TypeOf((*MockWalletStore)(nil).ListNotAssignedTransfers), arg0)
+}
+
+// ListNotHandledTransfers mocks base method
+func (m *MockWalletStore) ListNotHandledTransfers(arg0 context.Context) ([]*core.Transfer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListNotHandledTransfers", arg0)
+	ret0, _ := ret[0].([]*core.Transfer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListNotHandledTransfers indicates an expected call of ListNotHandledTransfers
+func (mr *MockWalletStoreMockRecorder) ListNotHandledTransfers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListNotHandledTransfers", reflect.TypeOf((*MockWalletStore)(nil).ListNotHandledTransfers), arg0)
 }
 
 // ListNotPassedTransfers mocks base method
@@ -1349,34 +1408,19 @@ func (mr *MockWalletStoreMockRecorder) ListPendingRawTransactions(arg0, arg1 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPendingRawTransactions", reflect.TypeOf((*MockWalletStore)(nil).ListPendingRawTransactions), arg0, arg1)
 }
 
-// ListPendingTransfers mocks base method
-func (m *MockWalletStore) ListPendingTransfers(arg0 context.Context) ([]*core.Transfer, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListPendingTransfers", arg0)
-	ret0, _ := ret[0].([]*core.Transfer)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListPendingTransfers indicates an expected call of ListPendingTransfers
-func (mr *MockWalletStoreMockRecorder) ListPendingTransfers(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPendingTransfers", reflect.TypeOf((*MockWalletStore)(nil).ListPendingTransfers), arg0)
-}
-
 // ListSpentBy mocks base method
-func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string, arg3 int) ([]*core.Output, error) {
+func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListSpentBy", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "ListSpentBy", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*core.Output)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListSpentBy indicates an expected call of ListSpentBy
-func (mr *MockWalletStoreMockRecorder) ListSpentBy(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockWalletStoreMockRecorder) ListSpentBy(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSpentBy", reflect.TypeOf((*MockWalletStore)(nil).ListSpentBy), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSpentBy", reflect.TypeOf((*MockWalletStore)(nil).ListSpentBy), arg0, arg1, arg2)
 }
 
 // ListUnspent mocks base method
@@ -1406,20 +1450,6 @@ func (m *MockWalletStore) Save(arg0 context.Context, arg1 []*core.Output, arg2 b
 func (mr *MockWalletStoreMockRecorder) Save(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockWalletStore)(nil).Save), arg0, arg1, arg2)
-}
-
-// Spent mocks base method
-func (m *MockWalletStore) Spent(arg0 context.Context, arg1 []*core.Output, arg2 *core.Transfer) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Spent", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Spent indicates an expected call of Spent
-func (mr *MockWalletStoreMockRecorder) Spent(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Spent", reflect.TypeOf((*MockWalletStore)(nil).Spent), arg0, arg1, arg2)
 }
 
 // UpdateTransfer mocks base method

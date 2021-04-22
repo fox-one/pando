@@ -52,7 +52,7 @@ func (w *Cashier) Run(ctx context.Context) error {
 func (w *Cashier) run(ctx context.Context) error {
 	log := logger.FromContext(ctx)
 
-	transfers, err := w.wallets.ListPendingTransfers(ctx)
+	transfers, err := w.wallets.ListNotHandledTransfers(ctx)
 	if err != nil {
 		log.WithError(err).Errorln("list transfers")
 		return err

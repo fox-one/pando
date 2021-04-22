@@ -199,7 +199,7 @@ func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfe
 	return updateTransfer(s.db, transfer)
 }
 
-func (s *walletStore) ListPendingTransfers(_ context.Context) ([]*core.Transfer, error) {
+func (s *walletStore) ListNotHandledTransfers(_ context.Context) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 	if err := s.db.View().
 		Where("handled = ? AND assigned = ?", 0, 1).
