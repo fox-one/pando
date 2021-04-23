@@ -9,12 +9,12 @@ import (
 	"github.com/fox-one/pando/cmd/pando-worker/config"
 	"github.com/fox-one/pando/handler/node"
 	"github.com/fox-one/pando/parliament"
-	asset2 "github.com/fox-one/pando/service/asset"
+	"github.com/fox-one/pando/service/asset"
 	message2 "github.com/fox-one/pando/service/message"
 	oracle2 "github.com/fox-one/pando/service/oracle"
 	"github.com/fox-one/pando/service/user"
 	wallet2 "github.com/fox-one/pando/service/wallet"
-	"github.com/fox-one/pando/store/asset"
+	asset2 "github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
 	"github.com/fox-one/pando/store/flip"
 	"github.com/fox-one/pando/store/message"
@@ -57,8 +57,6 @@ func buildApp(cfg *config.Config) (app, error) {
 	messageStore := message.New(db)
 	messageService := message2.New(client)
 	messengerMessenger := messenger.New(messageStore, messageService)
-	assetStore := asset.New(db)
-	assetService := asset2.New(client)
 	transactionStore := transaction.New(db)
 	proposalStore := proposal.New(db)
 	collateralStore := collateral.New(db)
@@ -67,10 +65,12 @@ func buildApp(cfg *config.Config) (app, error) {
 	store := propertystore.New(db)
 	userConfig := _wireUserConfigValue
 	userService := user.New(client, userConfig)
+	assetService := asset.New(client)
 	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New(oracleStore)
-	payeePayee := payee.New(assetStore, assetService, walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
+	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)
+	assetStore := asset2.New(db)
 	sync := pricesync.New(assetStore, assetService)
 	userStore := user2.New(db)
 	localizer, err := provideLocalizer(cfg)
