@@ -98,10 +98,17 @@ func (w *Assigner) handleTransfer(ctx context.Context, transfer *core.Transfer) 
 		traces []string
 	)
 
+	// spent all utxo if all utxo is older than the transfer
+	wipe := len(outputs) == limit && outputs[limit-1].ID <= transfer.Version
+
 	for _, output := range outputs {
 		sum = sum.Add(output.Amount)
 		traces = append(traces, output.TraceID)
 		idx += 1
+
+		if wipe {
+			continue
+		}
 
 		if sum.GreaterThanOrEqual(transfer.Amount) {
 			break
