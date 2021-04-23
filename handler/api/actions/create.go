@@ -36,7 +36,7 @@ type CreateResponse struct {
 	CodeURL string `json:"code_url,omitempty"`
 }
 
-// RequestPayment godoc
+// HandleCreate godoc
 // @Summary request payment code
 // @Description
 // @Tags actions

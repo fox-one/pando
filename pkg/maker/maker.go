@@ -77,7 +77,7 @@ func (r *Request) WithContext(ctx context.Context) *Request {
 	}
 
 	r2 := r.Copy()
-	r2.ctx = ctx
+	r2.ctx = WithVersion(ctx, r.Version)
 	return r2
 }
 

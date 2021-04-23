@@ -199,28 +199,10 @@ func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfe
 	return updateTransfer(s.db, transfer)
 }
 
-func (s *walletStore) ListNotHandledTransfers(_ context.Context, limit int) ([]*core.Transfer, error) {
+func (s *walletStore) listTransfers(_ context.Context, limit int, query string, args ...interface{}) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 	if err := s.db.View().
-		Where("handled = ? AND assigned = ?", 0, 1).
-		Limit(limit).
-		Order("id").
-		Find(&transfers).Error; err != nil {
-		return nil, err
-	}
-
-	for _, t := range transfers {
-		afterFindTransfer(t)
-	}
-
-	return transfers, nil
-}
-
-func (s *walletStore) ListNotPassedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
-	var transfers []*core.Transfer
-
-	if err := s.db.View().
-		Where("handled = ? AND passed = ?", 1, 0).
+		Where(query, args...).
 		Limit(limit).
 		Order("id").
 		Find(&transfers).Error; err != nil {
@@ -235,21 +217,15 @@ func (s *walletStore) ListNotPassedTransfers(ctx context.Context, limit int) ([]
 }
 
 func (s *walletStore) ListNotAssignedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
-	var transfers []*core.Transfer
+	return s.listTransfers(ctx, limit, "handled = ? AND assigned = ?", 0, 0)
+}
 
-	if err := s.db.View().
-		Where("handled = ? AND assigned = ?", 0, 0).
-		Limit(limit).
-		Order("id").
-		Find(&transfers).Error; err != nil {
-		return nil, err
-	}
+func (s *walletStore) ListNotHandledTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
+	return s.listTransfers(ctx, limit, "handled = ? AND assigned = ?", 0, 1)
+}
 
-	for _, t := range transfers {
-		afterFindTransfer(t)
-	}
-
-	return transfers, nil
+func (s *walletStore) ListNotPassedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
+	return s.listTransfers(ctx, limit, "handled = ? AND passed = ?", 1, 0)
 }
 
 func (s *walletStore) Assign(_ context.Context, outputs []*core.Output, transfer *core.Transfer) error {

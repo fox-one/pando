@@ -18,6 +18,7 @@ import (
 	"github.com/fox-one/pando/pkg/mtg"
 	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/fox-one/pando/pkg/uuid"
+	"github.com/fox-one/pando/worker/payee/wallet"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/property"
 )
@@ -27,8 +28,6 @@ const (
 )
 
 func New(
-	assets core.AssetStore,
-	assetz core.AssetService,
 	wallets core.WalletStore,
 	walletz core.WalletService,
 	transactions core.TransactionStore,
@@ -42,6 +41,8 @@ func New(
 	oraclez core.OracleService,
 	system *core.System,
 ) *Payee {
+	wallets = wallet.BindTransferVersion(wallets)
+
 	actions := map[core.Action]maker.HandlerFunc{
 		// sys
 		core.ActionSysWithdraw: sys.HandleWithdraw(wallets),
