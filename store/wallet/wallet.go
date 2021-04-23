@@ -199,11 +199,11 @@ func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfe
 	return updateTransfer(s.db, transfer)
 }
 
-func (s *walletStore) ListNotHandledTransfers(_ context.Context) ([]*core.Transfer, error) {
+func (s *walletStore) ListNotHandledTransfers(_ context.Context, limit int) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 	if err := s.db.View().
 		Where("handled = ? AND assigned = ?", 0, 1).
-		Limit(128).
+		Limit(limit).
 		Order("id").
 		Find(&transfers).Error; err != nil {
 		return nil, err
@@ -216,12 +216,12 @@ func (s *walletStore) ListNotHandledTransfers(_ context.Context) ([]*core.Transf
 	return transfers, nil
 }
 
-func (s *walletStore) ListNotPassedTransfers(ctx context.Context) ([]*core.Transfer, error) {
+func (s *walletStore) ListNotPassedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 
 	if err := s.db.View().
 		Where("handled = ? AND passed = ?", 1, 0).
-		Limit(128).
+		Limit(limit).
 		Order("id").
 		Find(&transfers).Error; err != nil {
 		return nil, err
@@ -234,12 +234,12 @@ func (s *walletStore) ListNotPassedTransfers(ctx context.Context) ([]*core.Trans
 	return transfers, nil
 }
 
-func (s *walletStore) ListNotAssignedTransfers(ctx context.Context) ([]*core.Transfer, error) {
+func (s *walletStore) ListNotAssignedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 
 	if err := s.db.View().
 		Where("handled = ? AND assigned = ?", 0, 0).
-		Limit(128).
+		Limit(limit).
 		Order("id").
 		Find(&transfers).Error; err != nil {
 		return nil, err

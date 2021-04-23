@@ -20,9 +20,9 @@ import (
 
 var serviceSet = wire.NewSet(
 	provideMixinClient,
+	wire.Value(user.Config{}),
 	asset.New,
 	message.New,
-	wire.Struct(new(user.Config)),
 	user.New,
 	oracle.New,
 	provideSystem,

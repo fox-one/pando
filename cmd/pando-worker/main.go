@@ -19,6 +19,10 @@ var (
 	_debug   = flag.Bool("debug", false, "debug mode")
 	_port    = flag.Int("port", 7777, "server port")
 	_cfgFile = flag.String("config", "", "config filename")
+
+	// worker.cashier.Config
+	_cashierBatch    = flag.Int("cashier.batch", 100, "custom batch for worker cashier")
+	_cashierCapacity = flag.Int64("cashier.capacity", 1, "custom capacity for worker cashier")
 )
 
 // build embed

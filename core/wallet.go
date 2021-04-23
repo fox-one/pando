@@ -66,9 +66,9 @@ type (
 		// Transfers
 		CreateTransfers(ctx context.Context, transfers []*Transfer) error
 		UpdateTransfer(ctx context.Context, transfer *Transfer) error
-		ListNotHandledTransfers(ctx context.Context) ([]*Transfer, error)
-		ListNotPassedTransfers(ctx context.Context) ([]*Transfer, error)
-		ListNotAssignedTransfers(ctx context.Context) ([]*Transfer, error)
+		ListNotHandledTransfers(ctx context.Context, limit int) ([]*Transfer, error)
+		ListNotPassedTransfers(ctx context.Context, limit int) ([]*Transfer, error)
+		ListNotAssignedTransfers(ctx context.Context, limit int) ([]*Transfer, error)
 		Assign(ctx context.Context, outputs []*Output, transfer *Transfer) error
 		// mixin net transaction
 		CreateRawTransaction(ctx context.Context, tx *RawTransaction) error

@@ -9,6 +9,7 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.0
+	github.com/fatih/structs v1.1.0
 	github.com/fox-one/mixin-sdk-go v1.3.7
 	github.com/fox-one/msgpack v1.0.0
 	github.com/fox-one/pkg v1.5.5

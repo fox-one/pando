@@ -44,16 +44,17 @@ func (w *Assigner) Run(ctx context.Context) error {
 			return ctx.Err()
 		case <-time.After(dur):
 			if err := w.run(ctx); err == nil {
-				dur = 100 * time.Millisecond
-			} else {
 				dur = 300 * time.Millisecond
+			} else {
+				dur = 500 * time.Millisecond
 			}
 		}
 	}
 }
 
 func (w *Assigner) run(ctx context.Context) error {
-	transfers, err := w.wallets.ListNotAssignedTransfers(ctx)
+	const limit = 100
+	transfers, err := w.wallets.ListNotAssignedTransfers(ctx, limit)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Errorln("wallets.ListNotAssignedTransfers")
 		return err

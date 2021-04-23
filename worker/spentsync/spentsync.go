@@ -38,9 +38,9 @@ func (w *SpentSync) Run(ctx context.Context) error {
 			return ctx.Err()
 		case <-time.After(dur):
 			if err := w.run(ctx); err == nil {
-				dur = 100 * time.Millisecond
+				dur = 500 * time.Millisecond
 			} else {
-				dur = 300 * time.Millisecond
+				dur = time.Second
 			}
 		}
 	}
@@ -49,7 +49,8 @@ func (w *SpentSync) Run(ctx context.Context) error {
 func (w *SpentSync) run(ctx context.Context) error {
 	log := logger.FromContext(ctx)
 
-	transfers, err := w.wallets.ListNotPassedTransfers(ctx)
+	const limit = 100
+	transfers, err := w.wallets.ListNotPassedTransfers(ctx, limit)
 	if err != nil {
 		log.WithError(err).Errorln("wallets.ListNotPassedTransfers")
 		return err

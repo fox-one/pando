@@ -5,33 +5,56 @@ import (
 	"errors"
 	"time"
 
+	"github.com/asaskevich/govalidator"
+	"github.com/fatih/structs"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/logger"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
 
+type Config struct {
+	Batch    int   `json:"batch" valid:"required"`
+	Capacity int64 `json:"capacity" valid:"required"`
+}
+
 func New(
 	wallets core.WalletStore,
 	walletz core.WalletService,
 	system *core.System,
+	cfg Config,
 ) *Cashier {
-	return &Cashier{
+	if _, err := govalidator.ValidateStruct(cfg); err != nil {
+		panic(err)
+	}
+
+	w := &Cashier{
 		wallets: wallets,
 		walletz: walletz,
 		system:  system,
+		cfg:     cfg,
 	}
+
+	return w
 }
 
 type Cashier struct {
 	wallets core.WalletStore
 	walletz core.WalletService
 	system  *core.System
+	cfg     Config
 }
 
 func (w *Cashier) Run(ctx context.Context) error {
 	log := logger.FromContext(ctx).WithField("worker", "cashier")
 	ctx = logger.WithContext(ctx, log)
+
+	log.WithFields(structs.Map(w.cfg)).Infoln("start")
+
+	f := w.sync
+	if w.cfg.Capacity > 1 {
+		f = w.parallel(w.cfg.Capacity)
+	}
 
 	dur := time.Millisecond
 
@@ -40,19 +63,19 @@ func (w *Cashier) Run(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		case <-time.After(dur):
-			if err := w.run(ctx); err == nil {
-				dur = 100 * time.Millisecond
-			} else {
+			if err := w.run(ctx, f); err == nil {
 				dur = 300 * time.Millisecond
+			} else {
+				dur = 500 * time.Millisecond
 			}
 		}
 	}
 }
 
-func (w *Cashier) run(ctx context.Context) error {
+func (w *Cashier) run(ctx context.Context, f func(context.Context, []*core.Transfer) error) error {
 	log := logger.FromContext(ctx)
 
-	transfers, err := w.wallets.ListNotHandledTransfers(ctx)
+	transfers, err := w.wallets.ListNotHandledTransfers(ctx, w.cfg.Batch)
 	if err != nil {
 		log.WithError(err).Errorln("list transfers")
 		return err
@@ -62,23 +85,40 @@ func (w *Cashier) run(ctx context.Context) error {
 		return errors.New("EOF")
 	}
 
-	g := errgroup.Group{}
-	sem := semaphore.NewWeighted(5)
+	return f(ctx, transfers)
+}
 
-	for idx := range transfers {
-		transfer := transfers[idx]
-
-		if err := sem.Acquire(ctx, 1); err != nil {
-			return g.Wait()
+func (w *Cashier) sync(ctx context.Context, transfers []*core.Transfer) error {
+	for _, transfer := range transfers {
+		if err := w.handleTransfer(ctx, transfer); err != nil {
+			return err
 		}
-
-		g.Go(func() error {
-			defer sem.Release(1)
-			return w.handleTransfer(ctx, transfer)
-		})
 	}
 
-	return g.Wait()
+	return nil
+}
+
+func (w *Cashier) parallel(capacity int64) func(ctx context.Context, transfers []*core.Transfer) error {
+	sem := semaphore.NewWeighted(capacity)
+
+	return func(ctx context.Context, transfers []*core.Transfer) error {
+		g := errgroup.Group{}
+
+		for idx := range transfers {
+			transfer := transfers[idx]
+
+			if err := sem.Acquire(ctx, 1); err != nil {
+				return g.Wait()
+			}
+
+			g.Go(func() error {
+				defer sem.Release(1)
+				return w.handleTransfer(ctx, transfer)
+			})
+		}
+
+		return g.Wait()
+	}
 }
 
 func (w *Cashier) handleTransfer(ctx context.Context, transfer *core.Transfer) error {

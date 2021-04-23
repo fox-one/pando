@@ -16,6 +16,10 @@ import (
 )
 
 var workerSet = wire.NewSet(
+	wire.Value(cashier.Config{
+		Batch:    *_cashierBatch,
+		Capacity: *_cashierCapacity,
+	}),
 	cashier.New,
 	messenger.New,
 	payee.New,
