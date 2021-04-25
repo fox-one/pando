@@ -49,6 +49,10 @@ func (w *Keeper) scanFinishFlips(ctx context.Context, t time.Time) error {
 			flip := flips[idx]
 			from = flip.ID
 
+			if flip.Action == core.ActionFlipDeal {
+				continue
+			}
+
 			if end := flip.EndFinished(t) || flip.TicFinished(t); !end {
 				continue
 			}
