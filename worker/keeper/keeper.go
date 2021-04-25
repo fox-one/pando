@@ -14,6 +14,7 @@ func New(
 	cats core.CollateralStore,
 	oracles core.OracleStore,
 	vaults core.VaultStore,
+	flips core.FlipStore,
 	walletz core.WalletService,
 	notifier core.Notifier,
 	system *core.System,
@@ -22,6 +23,7 @@ func New(
 		cats:     cats,
 		oracles:  oracles,
 		vaults:   vaults,
+		flips:    flips,
 		walletz:  wallet.FilterTrace(walletz, time.Minute),
 		notifier: notifier,
 		system:   system,
@@ -32,6 +34,7 @@ type Keeper struct {
 	cats     core.CollateralStore
 	oracles  core.OracleStore
 	vaults   core.VaultStore
+	flips    core.FlipStore
 	walletz  core.WalletService
 	notifier core.Notifier
 	system   *core.System
@@ -43,13 +46,18 @@ func (w *Keeper) Run(ctx context.Context) error {
 
 	g := errgroup.Group{}
 
-	g.Go(func() error {
-		return w.foldAll(ctx)
-	})
+	jobs := []func(ctx2 context.Context) error{
+		w.foldCats,
+		w.dealFlips,
+		w.scanVaults,
+	}
 
-	g.Go(func() error {
-		return w.scan(ctx)
-	})
+	for idx := range jobs {
+		f := jobs[idx]
+		g.Go(func() error {
+			return f(ctx)
+		})
+	}
 
 	return g.Wait()
 }

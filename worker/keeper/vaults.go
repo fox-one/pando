@@ -14,7 +14,7 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-func (w *Keeper) scan(ctx context.Context) error {
+func (w *Keeper) scanVaults(ctx context.Context) error {
 	running := cache.New(cache.NoExpiration, cache.NoExpiration)
 	var g errgroup.Group
 
@@ -90,7 +90,7 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) err
 
 			g.Go(func() error {
 				if err := sem.Acquire(ctx, 1); err != nil {
-					return err
+					return g.Wait()
 				}
 
 				defer sem.Release(1)

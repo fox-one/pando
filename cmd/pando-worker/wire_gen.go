@@ -82,7 +82,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)
 	eventsEvents := events.New(transactionStore, notifier, store)
-	keeperKeeper := keeper.New(collateralStore, oracleStore, vaultStore, walletService, notifier, system)
+	keeperKeeper := keeper.New(collateralStore, oracleStore, vaultStore, flipStore, walletService, notifier, system)
 	assignerAssigner := assigner.New(walletStore, system)
 	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents, keeperKeeper, assignerAssigner)
 	server := node.New(system, store, oracleStore, assetService)

@@ -8,7 +8,7 @@ import (
 	"github.com/fox-one/pando/pkg/uuid"
 )
 
-func (w *Keeper) foldAll(ctx context.Context) error {
+func (w *Keeper) foldCats(ctx context.Context) error {
 	dur := time.Millisecond
 
 	for {
