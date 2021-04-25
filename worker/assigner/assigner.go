@@ -123,6 +123,7 @@ func (w *Assigner) handleTransfer(ctx context.Context, transfer *core.Transfer) 
 			traceID := uuid.Modify(transfer.TraceID, mixin.HashMembers(traces))
 			merge := &core.Transfer{
 				TraceID:   traceID,
+				Version:   transfer.Version,
 				AssetID:   transfer.AssetID,
 				Amount:    sum,
 				Opponents: w.system.Members,
