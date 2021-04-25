@@ -88,11 +88,11 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) err
 			vat := vats[idx]
 			from = vat.ID
 
-			g.Go(func() error {
-				if err := sem.Acquire(ctx, 1); err != nil {
-					return g.Wait()
-				}
+			if err := sem.Acquire(ctx, 1); err != nil {
+				return g.Wait()
+			}
 
+			g.Go(func() error {
 				defer sem.Release(1)
 
 				trace := uuid.Modify(vat.TraceID, fmt.Sprintf("%s-%d", rate, vat.Version))

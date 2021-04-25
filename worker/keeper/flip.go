@@ -57,11 +57,11 @@ func (w *Keeper) scanFinishFlips(ctx context.Context, t time.Time) error {
 				continue
 			}
 
-			g.Go(func() error {
-				if err := sem.Acquire(ctx, 1); err != nil {
-					return g.Wait()
-				}
+			if err := sem.Acquire(ctx, 1); err != nil {
+				return g.Wait()
+			}
 
+			g.Go(func() error {
 				defer sem.Release(1)
 
 				trace := uuid.Modify(flip.TraceID, "deal"+t.Truncate(time.Minute).String())
