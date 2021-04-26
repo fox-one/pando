@@ -15,3 +15,16 @@ type Proposal struct {
 	ApprovedCount int
 	ApprovedBy    string
 }
+
+type Flip struct {
+	Number int64
+	Info   []Item
+}
+
+type FlipStat struct {
+	Lot string
+	Bid string
+	Tab string
+	Gem string
+	Dai string
+}

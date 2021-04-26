@@ -78,41 +78,6 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 	return paymentAction(code), nil
 }
 
-func (s *parliament) fetchAssetSymbol(ctx context.Context, assetID string) string {
-	if uuid.IsNil(assetID) {
-		return "ALL"
-	}
-
-	coin, err := s.assetz.Find(ctx, assetID)
-	if err != nil {
-		return "NULL"
-	}
-
-	return coin.Symbol
-}
-
-func (s *parliament) fetchUserName(ctx context.Context, userID string) string {
-	user, err := s.userz.Find(ctx, userID)
-	if err != nil {
-		return "NULL"
-	}
-
-	return user.Name
-}
-
-func (s *parliament) fetchCatName(ctx context.Context, id string) string {
-	if uuid.IsNil(id) {
-		return "ALL"
-	}
-
-	c, err := s.collaterals.Find(ctx, id)
-	if err != nil {
-		return "NULL"
-	}
-
-	return c.Name
-}
-
 func (s *parliament) ProposalCreated(ctx context.Context, p *core.Proposal) error {
 	view := Proposal{
 		Number: p.ID,
@@ -164,7 +129,7 @@ func (s *parliament) ProposalCreated(ctx context.Context, p *core.Proposal) erro
 	}
 
 	buttonsData, _ := json.Marshal(buttons)
-	post := renderProposal(view)
+	post := execute("proposal_created", view)
 
 	var messages []*core.Message
 	for _, admin := range s.system.Admins {
@@ -200,7 +165,7 @@ func (s *parliament) ProposalApproved(ctx context.Context, p *core.Proposal) err
 		ApprovedBy:    s.fetchUserName(ctx, by),
 	}
 
-	post := renderApprovedBy(view)
+	post := execute("proposal_approved", view)
 
 	var messages []*core.Message
 	for _, admin := range s.system.Admins {
@@ -208,7 +173,7 @@ func (s *parliament) ProposalApproved(ctx context.Context, p *core.Proposal) err
 		msg := &mixin.MessageRequest{
 			RecipientID:    admin,
 			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
-			MessageID:      uuid.Modify(quote, "proposalApproved By "+by),
+			MessageID:      uuid.Modify(quote, "ProposalApproved By "+by),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString(post),
 			QuoteMessageID: quote,
@@ -223,13 +188,136 @@ func (s *parliament) ProposalApproved(ctx context.Context, p *core.Proposal) err
 func (s *parliament) ProposalPassed(ctx context.Context, proposal *core.Proposal) error {
 	var messages []*core.Message
 
-	post := []byte(passedTpl)
+	post := execute("proposal_passed", nil)
+
 	for _, admin := range s.system.Admins {
 		quote := uuid.Modify(proposal.TraceID, s.system.ClientID+admin)
 		msg := &mixin.MessageRequest{
 			RecipientID:    admin,
 			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
-			MessageID:      uuid.Modify(quote, "Proposal ProposalPassed"),
+			MessageID:      uuid.Modify(quote, "ProposalPassed"),
+			Category:       mixin.MessageCategoryPlainText,
+			Data:           base64.StdEncoding.EncodeToString(post),
+			QuoteMessageID: quote,
+		}
+
+		messages = append(messages, core.BuildMessage(msg))
+	}
+
+	return s.messages.Create(ctx, messages)
+}
+
+func (s *parliament) FlipCreated(ctx context.Context, flip *core.Flip) error {
+	gem, dai := s.fetchCatGemDai(ctx, flip.CollateralID)
+
+	view := Flip{
+		Number: flip.ID,
+		Info: []Item{
+			{
+				Key:   "id",
+				Value: flip.TraceID,
+			},
+			{
+				Key:   "vault",
+				Value: flip.VaultID,
+			},
+			{
+				Key:   "lot",
+				Value: fmt.Sprintf("%s %s", number.Humanize(flip.Lot), gem),
+			},
+			{
+				Key:   "tab",
+				Value: fmt.Sprintf("%s %s", number.Humanize(flip.Tab), dai),
+			},
+			{
+				Key:    "kicker",
+				Value:  s.fetchUserName(ctx, flip.Guy),
+				Action: userAction(flip.Guy),
+			},
+		},
+	}
+
+	buttons := generateButtons(view.Info)
+	if len(buttons) > 6 {
+		buttons = buttons[len(buttons)-6:]
+	}
+
+	buttonsData, _ := json.Marshal(buttons)
+	post := execute("flip_create", view)
+
+	var messages []*core.Message
+	for _, admin := range s.system.Admins {
+		// post
+		postMsg := &mixin.MessageRequest{
+			RecipientID:    admin,
+			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
+			MessageID:      uuid.Modify(flip.TraceID, s.system.ClientID+admin),
+			Category:       mixin.MessageCategoryPlainPost,
+			Data:           base64.StdEncoding.EncodeToString(post),
+		}
+
+		// buttons
+		buttonMsg := &mixin.MessageRequest{
+			RecipientID:    admin,
+			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
+			MessageID:      uuid.Modify(postMsg.MessageID, "buttons"),
+			Category:       mixin.MessageCategoryAppButtonGroup,
+			Data:           base64.StdEncoding.EncodeToString(buttonsData),
+		}
+
+		messages = append(messages, core.BuildMessage(postMsg), core.BuildMessage(buttonMsg))
+	}
+
+	return s.messages.Create(ctx, messages)
+}
+
+func (s *parliament) buildFlipStat(ctx context.Context, flip *core.Flip) FlipStat {
+	gem, dai := s.fetchCatGemDai(ctx, flip.CollateralID)
+
+	return FlipStat{
+		Lot: number.Humanize(flip.Lot),
+		Bid: number.Humanize(flip.Bid),
+		Tab: number.Humanize(flip.Tab),
+		Gem: gem,
+		Dai: dai,
+	}
+}
+
+func (s *parliament) FlipBid(ctx context.Context, flip *core.Flip, _ *core.FlipEvent) error {
+	var messages []*core.Message
+
+	stat := s.buildFlipStat(ctx, flip)
+	post := execute("flip_bid", stat)
+
+	for _, admin := range s.system.Admins {
+		quote := uuid.Modify(flip.TraceID, s.system.ClientID+admin)
+		msg := &mixin.MessageRequest{
+			RecipientID:    admin,
+			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
+			MessageID:      uuid.Modify(quote, "FlipBid"),
+			Category:       mixin.MessageCategoryPlainText,
+			Data:           base64.StdEncoding.EncodeToString(post),
+			QuoteMessageID: quote,
+		}
+
+		messages = append(messages, core.BuildMessage(msg))
+	}
+
+	return s.messages.Create(ctx, messages)
+}
+
+func (s *parliament) FlipDeal(ctx context.Context, flip *core.Flip) error {
+	var messages []*core.Message
+
+	stat := s.buildFlipStat(ctx, flip)
+	post := execute("flip_deal", stat)
+
+	for _, admin := range s.system.Admins {
+		quote := uuid.Modify(flip.TraceID, s.system.ClientID+admin)
+		msg := &mixin.MessageRequest{
+			RecipientID:    admin,
+			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
+			MessageID:      uuid.Modify(quote, "FlipDeal"),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString(post),
 			QuoteMessageID: quote,

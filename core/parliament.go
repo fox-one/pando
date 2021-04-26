@@ -11,5 +11,11 @@ type (
 		ProposalApproved(ctx context.Context, proposal *Proposal) error
 		// ProposalPassed called when a proposal is passed
 		ProposalPassed(ctx context.Context, proposal *Proposal) error
+		// FlipCreated called when a new flip created
+		FlipCreated(ctx context.Context, flip *Flip) error
+		// FlipBid called when a flip bid created
+		FlipBid(ctx context.Context, flip *Flip, event *FlipEvent) error
+		// FlipDeal called when a flip completed
+		FlipDeal(ctx context.Context, flip *Flip) error
 	}
 )

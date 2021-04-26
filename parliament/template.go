@@ -2,75 +2,51 @@ package parliament
 
 import (
 	"bytes"
-	"fmt"
+	"embed"
+	"path"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
 
-func codeBlock(tag string) string {
-	return fmt.Sprintf("```%s", tag)
-}
+//go:embed files/*.tmpl
+var files embed.FS
 
-func toUpper(s string) string {
-	return strings.ToUpper(s)
-}
+var T *template.Template
 
-const proposalTpl = `
-## #{{.Number}} NEW PROPOSAL "{{.Action}}"
+func init() {
+	T = template.New("_").Funcs(template.FuncMap{
+		"upper": strings.ToUpper,
+	})
 
-### INFO
-
-{{ codeBlock "yaml" }}
-{{ range .Info -}}
-{{.Key}}: {{.Value}}
-{{ end }}
-{{- codeBlock ""}}
-
-### {{ .Action | upper }}
-
-{{ codeBlock "yaml" }}
-{{ range .Meta -}}
-{{.Key}}: {{.Value}}
-{{ end }}
-{{- codeBlock ""}}
-`
-
-func renderProposal(p Proposal) []byte {
-	t, err := template.New("-").Funcs(template.FuncMap{
-		"codeBlock": codeBlock,
-		"upper":     toUpper,
-	}).Parse(proposalTpl)
+	dir := "files"
+	entries, err := files.ReadDir(dir)
 	if err != nil {
 		panic(err)
 	}
 
+	for _, entry := range entries {
+		name := entry.Name()
+		b, err := files.ReadFile(path.Join(dir, name))
+		if err != nil {
+			panic(err)
+		}
+
+		ext := filepath.Ext(name)
+		name = name[0 : len(name)-len(ext)]
+
+		T = template.Must(
+			T.New(entry.Name()).Parse(string(b)),
+		)
+	}
+}
+
+func execute(name string, data interface{}) []byte {
 	var b bytes.Buffer
-	if err := t.Execute(&b, p); err != nil {
+
+	if err := T.ExecuteTemplate(&b, name, data); err != nil {
 		panic(err)
 	}
 
 	return bytes.TrimSpace(b.Bytes())
 }
-
-const approvedByTpl = `
-✅ proposalApproved By {{.ApprovedBy}}
-
-({{.ApprovedCount}} Votes In Total)
-`
-
-func renderApprovedBy(p Proposal) []byte {
-	t, err := template.New("-").Parse(approvedByTpl)
-	if err != nil {
-		panic(err)
-	}
-
-	var b bytes.Buffer
-	if err := t.Execute(&b, p); err != nil {
-		panic(err)
-	}
-
-	return bytes.TrimSpace(b.Bytes())
-
-}
-
-const passedTpl = "🎉 Proposal ProposalPassed"

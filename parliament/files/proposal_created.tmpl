@@ -1,0 +1,17 @@
+## #{{.Number}} NEW PROPOSAL "{{.Action}}"
+
+### INFO
+
+```yaml
+{{ range .Info -}}
+{{.Key}}: {{.Value}}
+{{ end }}
+```
+
+### {{ .Action | upper }}
+
+```yaml
+{{range .Meta -}}
+{{.Key}}: {{.Value}}
+{{end }}
+```
