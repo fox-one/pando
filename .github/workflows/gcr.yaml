@@ -1,0 +1,23 @@
+on:
+  push:
+    tags:
+      - v*
+
+name: Build & Push pando/server & pando/worker to GCR
+
+jobs:
+  build-push:
+    name: Build And Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build and Publish latest Docker image
+        uses: VaultVulp/gp-docker-action@1.1.8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: worker
+          dockerfile: docker/Dockerfile.worker
+          extract-git-tag: true
