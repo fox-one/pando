@@ -25,7 +25,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: worker
           dockerfile: docker/Dockerfile.worker
-          extract-git-tag: true
           image-tag: ${{ steps.imagetag.outputs.tag }}
 
       - name: Build and Publish latest pando/server Docker image
@@ -34,5 +33,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: server
           dockerfile: docker/Dockerfile.server
-          extract-git-tag: true
           image-tag: ${{ steps.imagetag.outputs.tag }}
