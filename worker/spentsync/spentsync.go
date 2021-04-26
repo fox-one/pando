@@ -50,7 +50,7 @@ func (w *SpentSync) run(ctx context.Context) error {
 	log := logger.FromContext(ctx)
 
 	const limit = 100
-	transfers, err := w.wallets.ListNotPassedTransfers(ctx, limit)
+	transfers, err := w.wallets.ListTransfers(ctx, core.TransferStatusHandled, limit)
 	if err != nil {
 		log.WithError(err).Errorln("wallets.ListNotPassedTransfers")
 		return err
@@ -69,10 +69,6 @@ func (w *SpentSync) run(ctx context.Context) error {
 
 func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("trace", transfer.TraceID)
-
-	if valid := transfer.Handled; !valid {
-		log.Panicln("invalid transfer")
-	}
 
 	output, err := w.wallets.FindSpentBy(ctx, transfer.AssetID, transfer.TraceID)
 	if err != nil {
@@ -98,8 +94,7 @@ func (w *SpentSync) handleTransfer(ctx context.Context, transfer *core.Transfer)
 		return err
 	}
 
-	transfer.Passed = true
-	if err := w.wallets.UpdateTransfer(ctx, transfer); err != nil {
+	if err := w.wallets.UpdateTransfer(ctx, transfer, core.TransferStatusPassed); err != nil {
 		log.WithError(err).Errorln("wallets.UpdateTransfer")
 		return err
 	}

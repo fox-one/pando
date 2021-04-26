@@ -54,9 +54,9 @@ func (w *Assigner) Run(ctx context.Context) error {
 
 func (w *Assigner) run(ctx context.Context) error {
 	const limit = 100
-	transfers, err := w.wallets.ListNotAssignedTransfers(ctx, limit)
+	transfers, err := w.wallets.ListTransfers(ctx, core.TransferStatusPending, limit)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("wallets.ListNotAssignedTransfers")
+		logger.FromContext(ctx).WithError(err).Errorln("wallets.ListTransfers")
 		return err
 	}
 
@@ -80,10 +80,6 @@ func (w *Assigner) run(ctx context.Context) error {
 
 func (w *Assigner) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("transfer", transfer.TraceID)
-
-	if valid := !transfer.Handled && !transfer.Assigned; !valid {
-		log.Panicln("invalid transfer")
-	}
 
 	const limit = 32
 	outputs, err := w.wallets.ListUnspent(ctx, transfer.AssetID, limit)

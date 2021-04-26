@@ -5,10 +5,20 @@ import (
 	"sort"
 	"time"
 
-	"github.com/jmoiron/sqlx/types"
 	"github.com/lib/pq"
 	"github.com/shopspring/decimal"
 )
+
+type TransferStatus int
+
+const (
+	TransferStatusPending TransferStatus = iota
+	TransferStatusAssigned
+	TransferStatusHandled
+	TransferStatusPassed
+)
+
+//go:generate stringer -type TransferStatus -trimprefix TransferStatus
 
 type (
 	// Output represent Mixin Network multisig Outputs
@@ -41,9 +51,7 @@ type (
 		AssetID   string          `sql:"type:char(36)" json:"asset_id,omitempty"`
 		Amount    decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
 		Memo      string          `sql:"size:200" json:"memo,omitempty"`
-		Assigned  types.BitBool   `sql:"type:bit(1)" json:"assigned,omitempty"`
-		Handled   types.BitBool   `sql:"type:bit(1)" json:"handled,omitempty"`
-		Passed    types.BitBool   `sql:"type:bit(1)" json:"passed,omitempty"`
+		Status    TransferStatus  `sql:"not null" json:"status,omitempty"`
 		Threshold uint8           `json:"threshold,omitempty"`
 		Opponents pq.StringArray  `sql:"type:varchar(1024)" json:"opponents,omitempty"`
 	}
@@ -66,10 +74,8 @@ type (
 		ListSpentBy(ctx context.Context, assetID, spentBy string) ([]*Output, error)
 		// Transfers
 		CreateTransfers(ctx context.Context, transfers []*Transfer) error
-		UpdateTransfer(ctx context.Context, transfer *Transfer) error
-		ListNotHandledTransfers(ctx context.Context, limit int) ([]*Transfer, error)
-		ListNotPassedTransfers(ctx context.Context, limit int) ([]*Transfer, error)
-		ListNotAssignedTransfers(ctx context.Context, limit int) ([]*Transfer, error)
+		UpdateTransfer(ctx context.Context, transfer *Transfer, status TransferStatus) error
+		ListTransfers(ctx context.Context, status TransferStatus, limit int) ([]*Transfer, error)
 		Assign(ctx context.Context, outputs []*Output, transfer *Transfer) error
 		// mixin net transaction
 		CreateRawTransaction(ctx context.Context, tx *RawTransaction) error

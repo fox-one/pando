@@ -39,7 +39,7 @@ func init() {
 			return err
 		}
 
-		if err := tx.AddIndex("idx_transfers_handled_passed", "handled", "passed").Error; err != nil {
+		if err := tx.AddIndex("idx_transfers_status", "status").Error; err != nil {
 			return err
 		}
 
@@ -187,22 +187,27 @@ func (s *walletStore) CreateTransfers(_ context.Context, transfers []*core.Trans
 	})
 }
 
-func updateTransfer(db *db.DB, transfer *core.Transfer) error {
-	return db.Update().Model(transfer).Updates(map[string]interface{}{
-		"assigned": transfer.Assigned,
-		"handled":  transfer.Handled,
-		"passed":   transfer.Passed,
-	}).Error
+func updateTransfer(tx *db.DB, transfer *core.Transfer, status core.TransferStatus) error {
+	update := tx.Update().Model(transfer).Where("status = ?", transfer.Status).Update("status", status)
+	if update.Error != nil {
+		return update.Error
+	}
+
+	if update.RowsAffected == 0 {
+		return db.ErrOptimisticLock
+	}
+
+	return nil
 }
 
-func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfer) error {
-	return updateTransfer(s.db, transfer)
+func (s *walletStore) UpdateTransfer(ctx context.Context, transfer *core.Transfer, status core.TransferStatus) error {
+	return updateTransfer(s.db, transfer, status)
 }
 
-func (s *walletStore) listTransfers(_ context.Context, limit int, query string, args ...interface{}) ([]*core.Transfer, error) {
+func (s *walletStore) ListTransfers(_ context.Context, status core.TransferStatus, limit int) ([]*core.Transfer, error) {
 	var transfers []*core.Transfer
 	if err := s.db.View().
-		Where(query, args...).
+		Where("status = ?", status).
 		Limit(limit).
 		Order("id").
 		Find(&transfers).Error; err != nil {
@@ -216,18 +221,6 @@ func (s *walletStore) listTransfers(_ context.Context, limit int, query string, 
 	return transfers, nil
 }
 
-func (s *walletStore) ListNotAssignedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
-	return s.listTransfers(ctx, limit, "handled = ? AND assigned = ?", 0, 0)
-}
-
-func (s *walletStore) ListNotHandledTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
-	return s.listTransfers(ctx, limit, "handled = ? AND assigned = ?", 0, 1)
-}
-
-func (s *walletStore) ListNotPassedTransfers(ctx context.Context, limit int) ([]*core.Transfer, error) {
-	return s.listTransfers(ctx, limit, "handled = ? AND passed = ?", 1, 0)
-}
-
 func (s *walletStore) Assign(_ context.Context, outputs []*core.Output, transfer *core.Transfer) error {
 	return s.db.Tx(func(tx *db.DB) error {
 		for _, output := range outputs {
@@ -238,12 +231,12 @@ func (s *walletStore) Assign(_ context.Context, outputs []*core.Output, transfer
 			}
 		}
 
-		transfer.Assigned = true
 		if transfer.ID > 0 {
-			if err := updateTransfer(tx, transfer); err != nil {
+			if err := updateTransfer(tx, transfer, core.TransferStatusAssigned); err != nil {
 				return err
 			}
 		} else {
+			transfer.Status = core.TransferStatusAssigned
 			if err := tx.Update().Create(transfer).Error; err != nil {
 				return err
 			}

@@ -75,9 +75,9 @@ func (w *Cashier) Run(ctx context.Context) error {
 func (w *Cashier) run(ctx context.Context, f func(context.Context, []*core.Transfer) error) error {
 	log := logger.FromContext(ctx)
 
-	transfers, err := w.wallets.ListNotHandledTransfers(ctx, w.cfg.Batch)
+	transfers, err := w.wallets.ListTransfers(ctx, core.TransferStatusAssigned, w.cfg.Batch)
 	if err != nil {
-		log.WithError(err).Errorln("list transfers")
+		log.WithError(err).Errorln("wallets.ListTransfers")
 		return err
 	}
 
@@ -124,10 +124,6 @@ func (w *Cashier) parallel(capacity int64) func(ctx context.Context, transfers [
 func (w *Cashier) handleTransfer(ctx context.Context, transfer *core.Transfer) error {
 	log := logger.FromContext(ctx).WithField("transfer", transfer.TraceID)
 
-	if valid := !transfer.Handled && transfer.Assigned; !valid {
-		log.Panicln("invalid transfer")
-	}
-
 	outputs, err := w.wallets.ListSpentBy(ctx, transfer.AssetID, transfer.TraceID)
 	if err != nil {
 		log.WithError(err).Errorln("wallets.ListSpentBy")
@@ -154,8 +150,7 @@ func (w *Cashier) spend(ctx context.Context, outputs []*core.Output, transfer *c
 		}
 	}
 
-	transfer.Handled = true
-	if err := w.wallets.UpdateTransfer(ctx, transfer); err != nil {
+	if err := w.wallets.UpdateTransfer(ctx, transfer, core.TransferStatusHandled); err != nil {
 		logger.FromContext(ctx).WithError(err).Errorln("wallets.UpdateTransfer")
 		return err
 	}
