@@ -36,7 +36,7 @@ func provideRoute(node *node.Server) *chi.Mux {
 
 func provideServer(mux *chi.Mux) *server.Server {
 	return &server.Server{
-		Addr:    fmt.Sprintf(":%d", *_port),
+		Addr:    fmt.Sprintf(":%d", _flag.port),
 		Handler: mux,
 	}
 }

@@ -17,8 +17,8 @@ import (
 
 var workerSet = wire.NewSet(
 	wire.Value(cashier.Config{
-		Batch:    *_cashierBatch,
-		Capacity: *_cashierCapacity,
+		Batch:    _flag.cashier.batch,
+		Capacity: _flag.cashier.capacity,
 	}),
 	cashier.New,
 	messenger.New,
@@ -47,7 +47,7 @@ func provideWorkers(
 ) []worker.Worker {
 	workers := []worker.Worker{a, b, c, d, e, f, g, h, j}
 
-	if *_keeper {
+	if _flag.keeper {
 		workers = append(workers, i)
 	}
 

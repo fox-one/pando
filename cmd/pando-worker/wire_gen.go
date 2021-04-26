@@ -97,8 +97,8 @@ func buildApp(cfg *config.Config) (app, error) {
 
 var (
 	_wireConfigValue = cashier.Config{
-		Batch:    *_cashierBatch,
-		Capacity: *_cashierCapacity,
+		Batch:    _flag.cashier.batch,
+		Capacity: _flag.cashier.capacity,
 	}
 	_wireUserConfigValue = user.Config{}
 )
