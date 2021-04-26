@@ -10,6 +10,7 @@ import (
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/patrickmn/go-cache"
+	"github.com/shopspring/decimal"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
@@ -29,6 +30,12 @@ func (w *Keeper) scanVaults(ctx context.Context) error {
 				break
 			}
 
+			oracles, err := w.oracles.List(ctx)
+			if err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("oracles.List")
+				return err
+			}
+
 			for idx := range cats {
 				cat := cats[idx]
 
@@ -42,20 +49,30 @@ func (w *Keeper) scanVaults(ctx context.Context) error {
 
 				running.SetDefault(cat.TraceID, nil)
 
+				nextPrice, _ := nextPrice(
+					lookupOracle(oracles, cat.Gem),
+					lookupOracle(oracles, cat.Dai),
+				)
+
 				g.Go(func() error {
 					defer running.Delete(cat.TraceID)
-					return w.scanUnsafeVaults(ctx, cat)
+					return w.scanUnsafeVaults(ctx, cat, nextPrice)
 				})
 			}
 		}
 	}
 }
 
-func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) error {
+func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral, nextPrice decimal.Decimal) error {
 	// v.Ink * c.Price >= v.Art * c.Rate * c.Mat
 	// v.Rate = v.Art / v.Ink <= c.Price / c.Rate / c.Mat
 
 	rate := cat.Price.Div(cat.Rate).Div(cat.Mat)
+
+	nextRate := rate
+	if nextPrice.IsPositive() {
+		nextRate = nextPrice.Div(cat.Rate).Div(cat.Mat)
+	}
 
 	var (
 		g     errgroup.Group
@@ -73,7 +90,7 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) err
 
 		vats, err := w.vaults.List(ctx, core.ListVaultRequest{
 			CollateralID: cat.TraceID,
-			Rate:         rate,
+			Rate:         decimal.Min(rate, nextRate),
 			Desc:         true,
 			FromID:       from,
 			Limit:        limit,
@@ -92,6 +109,10 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) err
 				return g.Wait()
 			}
 
+			if willBeLiquidated := vat.Rate.LessThanOrEqual(rate); willBeLiquidated {
+				return w.notifier.VaultUnsafe(ctx, cat, vat)
+			}
+
 			g.Go(func() error {
 				defer sem.Release(1)
 
@@ -108,21 +129,31 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral) err
 	return g.Wait()
 }
 
-// func nextPrice(gem, dai *core.Oracle) (next decimal.Decimal, at time.Time) {
-// 	if gem == nil || dai == nil {
-// 		return
-// 	}
-//
-// 	if n1, n2 := gem.NextPeekAt(), dai.NextPeekAt(); n1.Before(n2) {
-// 		next = gem.Next.Div(dai.Current)
-// 		at = n1
-// 	} else if n1.After(n2) {
-// 		next = gem.Current.Div(dai.Next)
-// 		at = n2
-// 	} else {
-// 		next = gem.Next.Div(dai.Next)
-// 		at = n2
-// 	}
-//
-// 	return
-// }
+func nextPrice(gem, dai *core.Oracle) (next decimal.Decimal, at time.Time) {
+	if gem == nil || dai == nil {
+		return
+	}
+
+	if n1, n2 := gem.NextPeekAt(), dai.NextPeekAt(); n1.Before(n2) {
+		next = gem.Next.Div(dai.Current)
+		at = n1
+	} else if n1.After(n2) {
+		next = gem.Current.Div(dai.Next)
+		at = n2
+	} else {
+		next = gem.Next.Div(dai.Next)
+		at = n2
+	}
+
+	return
+}
+
+func lookupOracle(oracles []*core.Oracle, assetID string) *core.Oracle {
+	for _, oracle := range oracles {
+		if oracle.AssetID == assetID {
+			return oracle
+		}
+	}
+
+	return nil
+}
