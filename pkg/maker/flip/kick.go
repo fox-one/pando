@@ -14,6 +14,7 @@ func HandleKick(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
+	parliaments core.Parliament,
 ) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()
@@ -91,6 +92,11 @@ func HandleKick(
 				logger.FromContext(ctx).WithError(err).Errorln("collaterals.Update")
 				return err
 			}
+		}
+
+		if err := parliaments.FlipCreated(ctx, flip); err != nil {
+			logger.FromContext(ctx).WithError(err).Errorln("parliaments.FlipCreated")
+			return err
 		}
 
 		return nil

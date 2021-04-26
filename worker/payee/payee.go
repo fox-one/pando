@@ -58,9 +58,9 @@ func New(
 		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets),
 		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets),
 		// flip
-		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips),
-		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets),
-		core.ActionFlipDeal: flip.HandleDeal(collaterals, flips, wallets),
+		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, parliaments),
+		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets, parliaments),
+		core.ActionFlipDeal: flip.HandleDeal(collaterals, flips, wallets, parliaments),
 		// oracle
 		core.ActionOracleCreate: oracle.HandleCreate(oracles),
 		core.ActionOracleEdit:   oracle.HandleEdit(oracles),

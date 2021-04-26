@@ -20,6 +20,7 @@ func HandleBid(
 	vaults core.VaultStore,
 	flips core.FlipStore,
 	wallets core.WalletStore,
+	parliaments core.Parliament,
 ) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()
@@ -137,6 +138,11 @@ func HandleBid(
 				logger.FromContext(ctx).WithError(err).Errorln("flips.Update")
 				return err
 			}
+		}
+
+		if err := parliaments.FlipBid(ctx, f, event); err != nil {
+			logger.FromContext(ctx).WithError(err).Errorln("parliaments.FlipBid")
+			return err
 		}
 
 		return nil
