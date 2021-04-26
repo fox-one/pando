@@ -23,8 +23,8 @@ func HandleShout(
 			return err
 		}
 
-		if err := parliaments.Created(ctx, p); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("parliaments.Created")
+		if err := parliaments.ProposalCreated(ctx, p); err != nil {
+			logger.FromContext(ctx).WithError(err).Errorln("parliaments.ProposalCreated")
 			return err
 		}
 

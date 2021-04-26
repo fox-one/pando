@@ -113,7 +113,7 @@ func (s *parliament) fetchCatName(ctx context.Context, id string) string {
 	return c.Name
 }
 
-func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
+func (s *parliament) ProposalCreated(ctx context.Context, p *core.Proposal) error {
 	view := Proposal{
 		Number: p.ID,
 		Action: p.Action.String(),
@@ -192,7 +192,7 @@ func (s *parliament) Created(ctx context.Context, p *core.Proposal) error {
 	return s.messages.Create(ctx, messages)
 }
 
-func (s *parliament) Approved(ctx context.Context, p *core.Proposal) error {
+func (s *parliament) ProposalApproved(ctx context.Context, p *core.Proposal) error {
 	by := p.Votes[len(p.Votes)-1]
 
 	view := Proposal{
@@ -208,7 +208,7 @@ func (s *parliament) Approved(ctx context.Context, p *core.Proposal) error {
 		msg := &mixin.MessageRequest{
 			RecipientID:    admin,
 			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
-			MessageID:      uuid.Modify(quote, "Approved By "+by),
+			MessageID:      uuid.Modify(quote, "proposalApproved By "+by),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString(post),
 			QuoteMessageID: quote,
@@ -220,7 +220,7 @@ func (s *parliament) Approved(ctx context.Context, p *core.Proposal) error {
 	return s.messages.Create(ctx, messages)
 }
 
-func (s *parliament) Passed(ctx context.Context, proposal *core.Proposal) error {
+func (s *parliament) ProposalPassed(ctx context.Context, proposal *core.Proposal) error {
 	var messages []*core.Message
 
 	post := []byte(passedTpl)
@@ -229,7 +229,7 @@ func (s *parliament) Passed(ctx context.Context, proposal *core.Proposal) error 
 		msg := &mixin.MessageRequest{
 			RecipientID:    admin,
 			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
-			MessageID:      uuid.Modify(quote, "Proposal Passed"),
+			MessageID:      uuid.Modify(quote, "Proposal ProposalPassed"),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString(post),
 			QuoteMessageID: quote,

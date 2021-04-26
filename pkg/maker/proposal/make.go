@@ -38,8 +38,8 @@ func HandleMake(
 		}
 
 		if system.IsMember(p.Creator) {
-			if err := parliaments.Created(ctx, p); err != nil {
-				logger.FromContext(ctx).WithError(err).Errorln("parliaments.Created")
+			if err := parliaments.ProposalCreated(ctx, p); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("parliaments.ProposalCreated")
 				return err
 			}
 		} else if system.IsStaff(p.Creator) {

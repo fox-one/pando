@@ -27,8 +27,8 @@ func HandleVote(
 			if handled := p.PassedAt.Valid || govalidator.IsIn(r.Sender, p.Votes...); !handled {
 				p.Votes = append(p.Votes, r.Sender)
 
-				if err := parliaments.Approved(ctx, p); err != nil {
-					logger.FromContext(ctx).WithError(err).Errorln("parliaments.Approved")
+				if err := parliaments.ProposalApproved(ctx, p); err != nil {
+					logger.FromContext(ctx).WithError(err).Errorln("parliaments.proposalApproved")
 					return err
 				}
 
@@ -38,8 +38,8 @@ func HandleVote(
 						Valid: true,
 					}
 
-					if err := parliaments.Passed(ctx, p); err != nil {
-						logger.FromContext(ctx).WithError(err).Errorln("parliaments.Passed")
+					if err := parliaments.ProposalPassed(ctx, p); err != nil {
+						logger.FromContext(ctx).WithError(err).Errorln("parliaments.ProposalPassed")
 						return err
 					}
 				}

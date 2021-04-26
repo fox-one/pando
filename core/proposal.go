@@ -35,14 +35,4 @@ type (
 		Update(ctx context.Context, proposal *Proposal, version int64) error
 		List(ctx context.Context, fromID int64, limit int) ([]*Proposal, error)
 	}
-
-	// Parliament is a proposal version notifier to mtg member admins
-	Parliament interface {
-		// Created Called when a new proposal created
-		Created(ctx context.Context, proposal *Proposal) error
-		// Approved called when a proposal has a new vote
-		Approved(ctx context.Context, proposal *Proposal) error
-		// Passed called when a proposal is passed
-		Passed(ctx context.Context, proposal *Proposal) error
-	}
 )

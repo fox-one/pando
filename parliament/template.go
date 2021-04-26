@@ -53,7 +53,7 @@ func renderProposal(p Proposal) []byte {
 }
 
 const approvedByTpl = `
-✅ Approved By {{.ApprovedBy}}
+✅ proposalApproved By {{.ApprovedBy}}
 
 ({{.ApprovedCount}} Votes In Total)
 `
@@ -73,4 +73,4 @@ func renderApprovedBy(p Proposal) []byte {
 
 }
 
-const passedTpl = "🎉 Proposal Passed"
+const passedTpl = "🎉 Proposal ProposalPassed"
