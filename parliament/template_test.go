@@ -13,20 +13,28 @@ func Test_execute(t *testing.T) {
 		name string
 		data interface{}
 	}
-	tests := []struct {
+
+	type testData struct {
 		name string
 		args args
 		want []byte
-	}{
-		{
-			name: "nil data",
-			args: args{
-				name: "proposal_passed",
-				data: nil,
-			},
-			want: loadTestData("proposal_passed"),
-		},
 	}
+
+	addTestData := func(name string, data interface{}) testData {
+		return testData{
+			name: name,
+			args: args{
+				name: name,
+				data: data,
+			},
+			want: loadTestData(name),
+		}
+	}
+
+	tests := []testData{
+		addTestData("proposal_passed", nil),
+	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := execute(tt.args.name, tt.args.data); !reflect.DeepEqual(got, tt.want) {
