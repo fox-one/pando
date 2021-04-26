@@ -36,7 +36,7 @@ func init() {
 		name = name[0 : len(name)-len(ext)]
 
 		T = template.Must(
-			T.New(entry.Name()).Parse(string(b)),
+			T.New(name).Parse(string(b)),
 		)
 	}
 }
