@@ -283,7 +283,7 @@ func (s *parliament) buildFlipStat(ctx context.Context, flip *core.Flip) FlipSta
 	}
 }
 
-func (s *parliament) FlipBid(ctx context.Context, flip *core.Flip, _ *core.FlipEvent) error {
+func (s *parliament) FlipBid(ctx context.Context, flip *core.Flip, event *core.FlipEvent) error {
 	var messages []*core.Message
 
 	stat := s.buildFlipStat(ctx, flip)
@@ -294,7 +294,7 @@ func (s *parliament) FlipBid(ctx context.Context, flip *core.Flip, _ *core.FlipE
 		msg := &mixin.MessageRequest{
 			RecipientID:    admin,
 			ConversationID: mixin.UniqueConversationID(s.system.ClientID, admin),
-			MessageID:      uuid.Modify(quote, "FlipBid"),
+			MessageID:      uuid.Modify(quote, fmt.Sprintf("FlipBid %d", event.Version)),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString(post),
 			QuoteMessageID: quote,
