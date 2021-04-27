@@ -52,7 +52,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	walletConfig := provideWalletServiceConfig(cfg)
 	walletService := wallet2.New(client, walletConfig)
 	system := provideSystem(cfg)
-	cashierConfig := _wireConfigValue
+	cashierConfig := provideCashierConfig()
 	cashierCashier := cashier.New(walletStore, walletService, system, cashierConfig)
 	messageStore := message.New(db)
 	messageService := message2.New(client)
@@ -63,7 +63,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	vaultStore := vault.New(db)
 	flipStore := flip.New(db)
 	store := propertystore.New(db)
-	userConfig := _wireUserConfigValue
+	userConfig := _wireConfigValue
 	userService := user.New(client, userConfig)
 	assetService := asset.New(client)
 	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system)
@@ -96,9 +96,5 @@ func buildApp(cfg *config.Config) (app, error) {
 }
 
 var (
-	_wireConfigValue = cashier.Config{
-		Batch:    _flag.cashier.batch,
-		Capacity: _flag.cashier.capacity,
-	}
-	_wireUserConfigValue = user.Config{}
+	_wireConfigValue = user.Config{}
 )

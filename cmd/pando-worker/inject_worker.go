@@ -16,10 +16,7 @@ import (
 )
 
 var workerSet = wire.NewSet(
-	wire.Value(cashier.Config{
-		Batch:    _flag.cashier.batch,
-		Capacity: _flag.cashier.capacity,
-	}),
+	provideCashierConfig,
 	cashier.New,
 	messenger.New,
 	payee.New,
@@ -32,6 +29,13 @@ var workerSet = wire.NewSet(
 	assigner.New,
 	provideWorkers,
 )
+
+func provideCashierConfig() cashier.Config {
+	return cashier.Config{
+		Batch:    _flag.cashier.batch,
+		Capacity: _flag.cashier.capacity,
+	}
+}
 
 func provideWorkers(
 	a *cashier.Cashier,
