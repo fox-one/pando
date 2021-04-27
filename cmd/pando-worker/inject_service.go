@@ -62,16 +62,16 @@ func provideSystem(cfg *config.Config) *core.System {
 	}
 }
 
-func provideLocalizer(cfg *config.Config) (*localizer.Localizer, error) {
+func provideLocalizer(cfg *config.Config) *localizer.Localizer {
 	files, err := localizer.FindMessageFiles(cfg.I18n.Path)
-	if err != nil {
-		return nil, err
+	if err != nil && _flag.notify {
+		panic(err)
 	}
 
 	lang, err := language.Parse(cfg.I18n.Language)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return localizer.New(lang, files...), nil
+	return localizer.New(lang, files...)
 }
