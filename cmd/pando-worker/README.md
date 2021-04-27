@@ -41,9 +41,18 @@ go install github.com/go-task/task/v3/cmd/task@latest
 
 # build docker image
 task pando/worker
+
+# build binary
+task build-worker
 ```
 
 ## Deploy
+
+### Run Binary
+
+```bash
+./pando-worker --config config.yaml
+```
 
 ### Docker Compose
 
