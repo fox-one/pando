@@ -46,6 +46,7 @@ func New(
 	actions := map[core.Action]maker.HandlerFunc{
 		// sys
 		core.ActionSysWithdraw: sys.HandleWithdraw(wallets),
+		core.ActionSysProperty: sys.HandleProperty(properties),
 		// cat
 		core.ActionCatEdit:   cat.HandleEdit(collaterals),
 		core.ActionCatFold:   cat.HandleFold(collaterals),

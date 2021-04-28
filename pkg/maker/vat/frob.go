@@ -188,6 +188,7 @@ func frob(
 ) error {
 	version, err := properties.Get(ctx, frobVersionKey)
 	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("properties.Get", frobVersionKey)
 		return err
 	}
 
