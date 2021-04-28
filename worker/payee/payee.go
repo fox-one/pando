@@ -35,7 +35,7 @@ func New(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	flips core.FlipStore,
-	property property.Store,
+	properties property.Store,
 	parliaments core.Parliament,
 	oracles core.OracleStore,
 	oraclez core.OracleService,
@@ -52,11 +52,11 @@ func New(
 		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
-		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets),
-		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, wallets),
-		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, wallets),
-		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets),
-		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets),
+		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets, properties),
+		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, wallets, properties),
+		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, wallets, properties),
+		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets, properties),
+		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets, properties),
 		// flip
 		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, parliaments),
 		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets, parliaments),
@@ -75,7 +75,7 @@ func New(
 
 	return &Payee{
 		wallets:      wallets,
-		property:     property,
+		property:     properties,
 		oraclez:      oraclez,
 		transactions: transactions,
 		system:       system,
