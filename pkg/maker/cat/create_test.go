@@ -71,16 +71,6 @@ func TestCatCreate(t *testing.T) {
 				assert.True(t, c.Live == 0)
 			})
 
-		assets := mock.NewMockAssetStore(ctrl)
-		assets.EXPECT().Find(gomock.Any(), gomock.Any()).
-			DoAndReturn(func(_ context.Context, id string) (*core.Asset, error) {
-				return &core.Asset{
-					ID:      id,
-					Symbol:  "XIN",
-					ChainID: id,
-				}, nil
-			}).Times(2)
-
 		req.Governors = []string{"a", "b"}
 		err := cat.HandleCreate(collaterals, oracles)(req)
 		require.Nil(t, err)
