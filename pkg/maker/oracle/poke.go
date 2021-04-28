@@ -43,7 +43,7 @@ func HandlePoke(
 			return err
 		}
 
-		if err := require(ts > oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
+		if err := require(ts >= oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
 			return err
 		}
 
