@@ -10,5 +10,6 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(NewWithdrawCmd())
+	cmd.AddCommand(NewPropertyCmd())
 	return cmd
 }

@@ -83,7 +83,7 @@ func HandleFrob(
 				dart = dart.Add(decimal.New(1, -16))
 			}
 
-			if err := frob(c, v, dink, dart); err != nil {
+			if err := frob(r, c, v, dink, dart); err != nil {
 				return maker.WithFlag(err, maker.FlagRefund)
 			}
 
@@ -172,16 +172,31 @@ func HandleFrob(
 }
 
 // Frob modify a Vault
-func frob(c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
-	if err := require(dart.IsNegative() || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
-		return err
+func frob(r *maker.Request, c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
+	switch {
+	case r.SysVersion >= 2:
+		if err := require(dart.Sign() <= 0 || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
+			return err
+		}
+	default:
+		if err := require(dart.IsNegative() || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
+			return err
+		}
 	}
 
 	ink, art := v.Ink.Add(dink), v.Art.Add(dart)
 	tab := art.Mul(c.Rate)
 
-	if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
-		return err
+	switch {
+	case r.SysVersion >= 2:
+		// either less risky than before, or it is safe
+		if err := require((dart.Sign() <= 0 && dink.Sign() >= 0) || ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
+			return err
+		}
+	default:
+		if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
+			return err
+		}
 	}
 
 	if err := require(tab.IsZero() || tab.GreaterThanOrEqual(c.Dust), "dust"); err != nil {

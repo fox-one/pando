@@ -184,6 +184,15 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 				Action: userAction(opponent.String()),
 			},
 		}
+	case core.ActionSysProperty:
+		var key, value string
+		_, _ = mtg.Scan(data, &key, &value)
+		items = []Item{
+			{
+				Key:   key,
+				Value: value,
+			},
+		}
 	}
 
 	return

@@ -14,17 +14,18 @@ import (
 type HandlerFunc func(r *Request) error
 
 type Request struct {
-	Now      time.Time
-	Version  int64
-	TraceID  string
-	Sender   string
-	FollowID string
-	AssetID  string
-	Amount   decimal.Decimal
-	Action   core.Action
-	Body     []byte
-	ctx      context.Context
-	values   []interface{}
+	Now        time.Time
+	Version    int64
+	TraceID    string
+	Sender     string
+	FollowID   string
+	AssetID    string
+	Amount     decimal.Decimal
+	Action     core.Action
+	SysVersion int
+	Body       []byte
+	ctx        context.Context
+	values     []interface{}
 
 	// Permission
 	Governors []string

@@ -62,7 +62,7 @@ func HandleOpen(
 				CollateralID: c.TraceID,
 			}
 
-			if err := frob(c, v, dink, dart); err != nil {
+			if err := frob(r, c, v, dink, dart); err != nil {
 				return maker.WithFlag(err, maker.FlagRefund)
 			}
 

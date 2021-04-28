@@ -13,10 +13,12 @@ import (
 type Action int
 
 const (
-	// System Actions
+	// ActionSys System Actions
 	ActionSys Action = iota + 0
-	// Withdraw Asset from multisig wallet, Gov required
+	// ActionSysWithdraw Withdraw Asset from multisig wallet, Gov required
 	ActionSysWithdraw
+	// ActionSysProperty set custom property
+	ActionSysProperty
 )
 
 const (
