@@ -1,14 +1,11 @@
 package vat
 
 import (
-	"context"
-
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/maker/cat"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
-	"github.com/fox-one/pkg/property"
 	"github.com/shopspring/decimal"
 )
 
@@ -16,7 +13,6 @@ func HandleFrob(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	wallets core.WalletStore,
-	properties property.Store,
 ) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()
@@ -87,7 +83,7 @@ func HandleFrob(
 				dart = dart.Add(decimal.New(1, -16))
 			}
 
-			if err := frob(ctx, properties, c, v, dink, dart); err != nil {
+			if err := frob(r, c, v, dink, dart); err != nil {
 				return maker.WithFlag(err, maker.FlagRefund)
 			}
 
@@ -175,61 +171,32 @@ func HandleFrob(
 	}
 }
 
-const (
-	frobVersionKey = "frob_version"
-)
-
-func frob(
-	ctx context.Context,
-	properties property.Store,
-	c *core.Collateral,
-	v *core.Vault,
-	dink, dart decimal.Decimal,
-) error {
-	version, err := properties.Get(ctx, frobVersionKey)
-	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("properties.Get", frobVersionKey)
-		return err
-	}
-
-	if version.Int() >= 2 {
-		return frobV2(c, v, dink, dart)
-	}
-
-	return frobV1(c, v, dink, dart)
-}
-
 // Frob modify a Vault
-func frobV1(c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
-	if err := require(dart.IsNegative() || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
-		return err
+func frob(r *maker.Request, c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
+	switch {
+	case r.SysVersion >= 2:
+		if err := require(dart.Sign() <= 0 || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
+			return err
+		}
+	default:
+		if err := require(dart.IsNegative() || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
+			return err
+		}
 	}
 
 	ink, art := v.Ink.Add(dink), v.Art.Add(dart)
 	tab := art.Mul(c.Rate)
 
-	if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
-		return err
-	}
-
-	if err := require(tab.IsZero() || tab.GreaterThanOrEqual(c.Dust), "dust"); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func frobV2(c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
-	if err := require(dart.Sign() <= 0 || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
-		return err
-	}
-
-	ink, art := v.Ink.Add(dink), v.Art.Add(dart)
-	tab := art.Mul(c.Rate)
-
-	// either less risky than before, or it is safe
-	if err := require((dart.Sign() <= 0 && dink.Sign() >= 0) || ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
-		return err
+	switch {
+	case r.SysVersion >= 2:
+		// either less risky than before, or it is safe
+		if err := require((dart.Sign() <= 0 && dink.Sign() >= 0) || ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
+			return err
+		}
+	default:
+		if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
+			return err
+		}
 	}
 
 	if err := require(tab.IsZero() || tab.GreaterThanOrEqual(c.Dust), "dust"); err != nil {

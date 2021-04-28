@@ -43,8 +43,15 @@ func HandlePoke(
 			return err
 		}
 
-		if err := require(ts >= oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
-			return err
+		switch {
+		case r.SysVersion >= 2:
+			if err := require(ts >= oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
+				return err
+			}
+		default:
+			if err := require(ts > oracle.PeekAt.Unix()+oracle.Hop, "not-passed"); err != nil {
+				return err
+			}
 		}
 
 		oracle.Current = oracle.Next

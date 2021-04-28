@@ -53,11 +53,11 @@ func New(
 		core.ActionCatCreate: cat.HandleCreate(collaterals, oracles),
 		core.ActionCatSupply: cat.HandleSupply(collaterals),
 		// vat
-		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets, properties),
-		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, wallets, properties),
-		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, wallets, properties),
-		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets, properties),
-		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets, properties),
+		core.ActionVatOpen:     vat.HandleOpen(collaterals, vaults, wallets),
+		core.ActionVatDeposit:  vat.HandleDeposit(collaterals, vaults, wallets),
+		core.ActionVatWithdraw: vat.HandleWithdraw(collaterals, vaults, wallets),
+		core.ActionVatPayback:  vat.HandlePayback(collaterals, vaults, wallets),
+		core.ActionVatGenerate: vat.HandleGenerated(collaterals, vaults, wallets),
 		// flip
 		core.ActionFlipKick: flip.HandleKick(collaterals, vaults, flips, parliaments),
 		core.ActionFlipBid:  flip.HandleBid(collaterals, vaults, flips, wallets, parliaments),
@@ -76,7 +76,7 @@ func New(
 
 	return &Payee{
 		wallets:      wallets,
-		property:     properties,
+		properties:   properties,
 		oraclez:      oraclez,
 		transactions: transactions,
 		system:       system,
@@ -86,7 +86,7 @@ func New(
 
 type Payee struct {
 	wallets      core.WalletStore
-	property     property.Store
+	properties   property.Store
 	oraclez      core.OracleService
 	transactions core.TransactionStore
 	system       *core.System
@@ -115,9 +115,9 @@ func (w *Payee) Run(ctx context.Context) error {
 func (w *Payee) run(ctx context.Context) error {
 	log := logger.FromContext(ctx)
 
-	v, err := w.property.Get(ctx, checkpointKey)
+	v, err := w.properties.Get(ctx, checkpointKey)
 	if err != nil {
-		log.WithError(err).Errorln("property.Get", err)
+		log.WithError(err).Errorln("properties.Get", err)
 		return err
 	}
 
@@ -137,8 +137,8 @@ func (w *Payee) run(ctx context.Context) error {
 			return err
 		}
 
-		if err := w.property.Save(ctx, checkpointKey, u.ID); err != nil {
-			log.WithError(err).Errorln("property.Save", checkpointKey)
+		if err := w.properties.Save(ctx, checkpointKey, u.ID); err != nil {
+			log.WithError(err).Errorln("properties.Save", checkpointKey)
 			return err
 		}
 	}
@@ -152,6 +152,15 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 
 	message := decodeMemo(output.Memo)
 	req := requestFromOutput(output)
+
+	// bind system version
+	sysVersion, err := w.properties.Get(ctx, sys.SystemVersionkey)
+	if err != nil {
+		log.WithError(err).Errorln("properties.Get", sys.SystemVersionkey)
+		return err
+	}
+
+	req.SysVersion = sysVersion.Int()
 
 	// 1, parse price message
 	if price, err := w.oraclez.Parse(ctx, message); err == nil {

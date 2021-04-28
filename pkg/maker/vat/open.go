@@ -6,7 +6,6 @@ import (
 	"github.com/fox-one/pando/pkg/maker/cat"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
-	"github.com/fox-one/pkg/property"
 	"github.com/shopspring/decimal"
 )
 
@@ -14,7 +13,6 @@ func HandleOpen(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	wallets core.WalletStore,
-	properties property.Store,
 ) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()
@@ -64,7 +62,7 @@ func HandleOpen(
 				CollateralID: c.TraceID,
 			}
 
-			if err := frob(ctx, properties, c, v, dink, dart); err != nil {
+			if err := frob(r, c, v, dink, dart); err != nil {
 				return maker.WithFlag(err, maker.FlagRefund)
 			}
 

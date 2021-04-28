@@ -8,6 +8,10 @@ import (
 	"github.com/fox-one/pkg/property"
 )
 
+const (
+	SystemVersionkey = "system_version"
+)
+
 func HandleProperty(
 	properties property.Store,
 ) maker.HandlerFunc {
