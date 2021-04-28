@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	SystemVersionkey = "system_version"
+	SystemVersionKey = "system_version"
 )
 
 func HandleProperty(

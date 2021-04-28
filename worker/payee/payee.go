@@ -154,9 +154,9 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	req := requestFromOutput(output)
 
 	// bind system version
-	sysVersion, err := w.properties.Get(ctx, sys.SystemVersionkey)
+	sysVersion, err := w.properties.Get(ctx, sys.SystemVersionKey)
 	if err != nil {
-		log.WithError(err).Errorln("properties.Get", sys.SystemVersionkey)
+		log.WithError(err).Errorln("properties.Get", sys.SystemVersionKey)
 		return err
 	}
 
