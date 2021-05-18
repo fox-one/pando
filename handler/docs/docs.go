@@ -780,9 +780,6 @@ var doc = `{
         "api.Flip": {
             "type": "object",
             "properties": {
-                "Guy": {
-                    "type": "string"
-                },
                 "action": {
                     "type": "integer"
                 },
@@ -804,6 +801,9 @@ var doc = `{
                     "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
                     "type": "string",
                     "format": "date"
+                },
+                "guy": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"

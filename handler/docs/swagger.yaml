@@ -108,8 +108,6 @@ definitions:
     type: object
   api.Flip:
     properties:
-      Guy:
-        type: string
       action:
         type: integer
       art:
@@ -125,6 +123,8 @@ definitions:
       end:
         description: '@inject_tag: swaggertype:"string" format:"date"'
         format: date
+        type: string
+      guy:
         type: string
       id:
         type: string

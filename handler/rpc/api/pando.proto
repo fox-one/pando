@@ -126,7 +126,7 @@ message Flip {
     string art = 8;
     string collateral_id = 9;
     string vault_id = 10;
-    string Guy = 11;
+    string guy = 11;
     Action action = 12;
 }
 
