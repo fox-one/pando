@@ -72,6 +72,8 @@ func (w *Syncer) run(ctx context.Context) error {
 		return errors.New("EOF")
 	}
 
+	log.Debugln("walletz.Pull", len(outputs), "outputs")
+
 	nextOffset := outputs[len(outputs)-1].UpdatedAt
 	end := len(outputs) < limit
 
