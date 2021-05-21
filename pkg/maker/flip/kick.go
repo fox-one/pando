@@ -73,6 +73,22 @@ func HandleKick(
 		}
 
 		if v.Version < r.Version {
+			// create vault event
+			event := &core.VaultEvent{
+				CreatedAt: r.Now,
+				VaultID:   v.TraceID,
+				Version:   r.Version,
+				Action:    r.Action,
+				Dink:      flip.Lot.Neg(),
+				Dart:      flip.Art.Neg(),
+				Debt:      flip.Art.Mul(c.Rate).Truncate(8).Neg(),
+			}
+
+			if err := vaults.CreateEvent(ctx, event); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("vaults.CreateEvent")
+				return err
+			}
+
 			v.Art = v.Art.Sub(flip.Art)
 			v.Ink = v.Ink.Sub(flip.Lot)
 

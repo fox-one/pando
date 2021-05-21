@@ -119,6 +119,20 @@ func HandleBid(
 		}
 
 		if v.Version < r.Version && event.Lot.LessThan(f.Lot) {
+			// create event
+			vaultEvent := &core.VaultEvent{
+				CreatedAt: r.Now,
+				VaultID:   v.TraceID,
+				Version:   r.Version,
+				Action:    r.Action,
+				Dink:      event.Lot.Sub(f.Lot),
+			}
+
+			if err := vaults.CreateEvent(ctx, vaultEvent); err != nil {
+				logger.FromContext(ctx).WithError(err).Errorln("vaults.CreateEvent")
+				return err
+			}
+
 			v.Ink = v.Ink.Add(f.Lot.Sub(event.Lot))
 
 			if err := vaults.Update(ctx, v, r.Version); err != nil {
