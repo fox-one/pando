@@ -66,7 +66,8 @@ func buildApp(cfg *config.Config) (app, error) {
 	userConfig := _wireConfigValue
 	userService := user.New(client, userConfig)
 	assetService := asset.New(client)
-	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system)
+	parliamentConfig := provideParliamentConfig(cfg)
+	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system, parliamentConfig)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New(oracleStore)
 	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)

@@ -17,9 +17,10 @@ type (
 	Config struct {
 		DB    db.Config `json:"db"`
 		Dapp  Dapp      `json:"dapp"`
-		Group Group     `json:"group,omitempty"`
+		Group Group     `json:"group"`
 		Gas   Gas       `json:"gas"`
-		I18n  I18n      `json:"i18n,omitempty"`
+		Flip  Flip      `json:"flip"`
+		I18n  I18n      `json:"i18n"`
 	}
 
 	Dapp struct {
@@ -44,6 +45,10 @@ type (
 	Gas struct {
 		AssetID string          `json:"asset_id"`
 		Amount  decimal.Decimal `json:"amount"`
+	}
+
+	Flip struct {
+		DetailPage string `json:"detail_page,omitempty"`
 	}
 
 	I18n struct {

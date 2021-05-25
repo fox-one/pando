@@ -7,16 +7,25 @@ import (
 )
 
 func generateButtons(items []Item) mixin.AppButtonGroupMessage {
-	var buttons mixin.AppButtonGroupMessage
+	var (
+		color   = randomHexColor()
+		buttons = mixin.AppButtonGroupMessage{}
+		idx     int
+	)
 
-	color := randomHexColor()
 	for _, item := range items {
-		if item.Action != "" {
-			buttons = append(buttons, mixin.AppButtonMessage{
-				Label:  item.Value,
-				Action: item.Action,
-				Color:  color,
-			})
+		if item.Action == "" {
+			continue
+		}
+
+		buttons = append(buttons, mixin.AppButtonMessage{
+			Label:  item.Value,
+			Action: item.Action,
+			Color:  color,
+		})
+
+		if idx = idx + 1; idx >= 6 {
+			break
 		}
 	}
 

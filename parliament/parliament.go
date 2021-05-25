@@ -1,10 +1,12 @@
 package parliament
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"text/template"
 	"time"
 
 	"github.com/fox-one/mixin-sdk-go"
@@ -15,6 +17,10 @@ import (
 	"github.com/fox-one/pando/service/asset"
 )
 
+type Config struct {
+	Links map[string]string
+}
+
 func New(
 	messages core.MessageStore,
 	userz core.UserService,
@@ -22,7 +28,15 @@ func New(
 	walletz core.WalletService,
 	collaterals core.CollateralStore,
 	system *core.System,
+	cfg Config,
 ) core.Parliament {
+	links := &template.Template{}
+	for name, tpl := range cfg.Links {
+		links = template.Must(
+			links.New(name).Parse(tpl),
+		)
+	}
+
 	return &parliament{
 		messages:    messages,
 		userz:       userz,
@@ -30,6 +44,7 @@ func New(
 		walletz:     walletz,
 		collaterals: collaterals,
 		system:      system,
+		links:       links,
 	}
 }
 
@@ -40,6 +55,16 @@ type parliament struct {
 	walletz     core.WalletService
 	collaterals core.CollateralStore
 	system      *core.System
+	links       *template.Template
+}
+
+func (s *parliament) executeLink(name string, data interface{}) (string, error) {
+	b := bytes.Buffer{}
+	if err := s.links.ExecuteTemplate(&b, name, data); err != nil {
+		return "", err
+	}
+
+	return b.String(), nil
 }
 
 func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Proposal) (string, error) {
@@ -124,10 +149,6 @@ func (s *parliament) ProposalCreated(ctx context.Context, p *core.Proposal) erro
 	})
 
 	buttons := generateButtons(items)
-	if len(buttons) > 6 {
-		buttons = buttons[len(buttons)-6:]
-	}
-
 	buttonsData, _ := json.Marshal(buttons)
 	post := execute("proposal_created", view)
 
@@ -237,11 +258,18 @@ func (s *parliament) FlipCreated(ctx context.Context, flip *core.Flip) error {
 		},
 	}
 
-	buttons := generateButtons(view.Info)
-	if len(buttons) > 6 {
-		buttons = buttons[len(buttons)-6:]
+	buttonInfos := view.Info
+	if link, err := s.executeLink("flip_detail", map[string]interface{}{
+		"flip_id": flip.TraceID,
+	}); err == nil {
+		buttonInfos = append(buttonInfos, Item{
+			Key:    "detail",
+			Value:  "detail",
+			Action: link,
+		})
 	}
 
+	buttons := generateButtons(buttonInfos)
 	buttonsData, _ := json.Marshal(buttons)
 	post := execute("flip_create", view)
 
