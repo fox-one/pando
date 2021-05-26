@@ -36,6 +36,7 @@ require (
 	github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
