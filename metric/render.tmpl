@@ -1,0 +1,6 @@
+{{range . -}}
+**{{.Name}}**
+{{range .Entries -}}
+{{.Name}}: {{.Value}}
+{{end}}
+{{end}}

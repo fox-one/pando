@@ -15,12 +15,13 @@ import (
 
 type (
 	Config struct {
-		DB    db.Config `json:"db"`
-		Dapp  Dapp      `json:"dapp"`
-		Group Group     `json:"group"`
-		Gas   Gas       `json:"gas"`
-		Flip  Flip      `json:"flip"`
-		I18n  I18n      `json:"i18n"`
+		DB      db.Config `json:"db"`
+		Dapp    Dapp      `json:"dapp"`
+		Group   Group     `json:"group"`
+		Gas     Gas       `json:"gas"`
+		Flip    Flip      `json:"flip"`
+		I18n    I18n      `json:"i18n"`
+		DataDog DataDog   `json:"data_dog"`
 	}
 
 	Dapp struct {
@@ -55,6 +56,10 @@ type (
 		Path string `json:"path,omitempty"`
 		// default language
 		Language string `json:"language,omitempty"`
+	}
+
+	DataDog struct {
+		ConversationID string `json:"conversation_id,omitempty"`
 	}
 )
 

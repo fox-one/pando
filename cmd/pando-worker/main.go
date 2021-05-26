@@ -5,6 +5,7 @@ import (
 	"flag"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/fox-one/pando/cmd/pando-worker/config"
 	"github.com/fox-one/pando/server"
@@ -25,6 +26,10 @@ var (
 			batch    int
 			capacity int64
 		}
+
+		datadog struct {
+			interval time.Duration
+		}
 	}
 
 	// go build -ldflags -X main.version={{.version}}
@@ -43,6 +48,9 @@ func init() {
 	// worker.cashier.Config
 	flag.IntVar(&_flag.cashier.batch, "cashier.batch", 100, "custom batch for worker cashier")
 	flag.Int64Var(&_flag.cashier.capacity, "cashier.capacity", 1, "custom capacity for worker cashier")
+
+	// worker.datadog.Config
+	flag.DurationVar(&_flag.datadog.interval, "datadog.interval", 5*time.Minute, "custom datadog trigger interval")
 }
 
 func main() {
