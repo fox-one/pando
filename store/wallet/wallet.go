@@ -273,7 +273,7 @@ func (s *walletStore) CountOutputs(ctx context.Context) (int64, error) {
 
 func (s *walletStore) CountUnhandledTransfers(ctx context.Context) (int64, error) {
 	var count int64
-	if err := s.db.View().Where("status < ?", core.TransferStatusHandled).Count(&count).Error; err != nil {
+	if err := s.db.View().Model(core.Transfer{}).Where("status < ?", core.TransferStatusHandled).Count(&count).Error; err != nil {
 		return 0, err
 	}
 
