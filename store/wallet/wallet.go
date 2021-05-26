@@ -261,3 +261,21 @@ func (s *walletStore) ListPendingRawTransactions(_ context.Context, limit int) (
 func (s *walletStore) ExpireRawTransaction(_ context.Context, tx *core.RawTransaction) error {
 	return s.db.Update().Model(tx).Where("id = ?", tx.ID).Delete(tx).Error
 }
+
+func (s *walletStore) CountOutputs(ctx context.Context) (int64, error) {
+	var output core.Output
+	if err := s.db.View().Select("id").Last(&output).Error; err != nil && !db.IsErrorNotFound(err) {
+		return 0, err
+	}
+
+	return output.ID, nil
+}
+
+func (s *walletStore) CountUnhandledTransfers(ctx context.Context) (int64, error) {
+	var count int64
+	if err := s.db.View().Where("status < ?", core.TransferStatusHandled).Count(&count).Error; err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

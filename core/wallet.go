@@ -81,6 +81,10 @@ type (
 		CreateRawTransaction(ctx context.Context, tx *RawTransaction) error
 		ListPendingRawTransactions(ctx context.Context, limit int) ([]*RawTransaction, error)
 		ExpireRawTransaction(ctx context.Context, tx *RawTransaction) error
+		// CountOutputs return a count of outputs
+		CountOutputs(ctx context.Context) (int64, error)
+		// CountUnhandledTransfers return a count of pending transfers
+		CountUnhandledTransfers(ctx context.Context) (int64, error)
 	}
 
 	WalletService interface {
