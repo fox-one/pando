@@ -6,39 +6,38 @@ package mock
 
 import (
 	context "context"
-	http "net/http"
-	reflect "reflect"
-	time "time"
-
 	core "github.com/fox-one/pando/core"
 	number "github.com/fox-one/pando/pkg/number"
 	gomock "github.com/golang/mock/gomock"
+	http "net/http"
+	reflect "reflect"
+	time "time"
 )
 
-// MockAssetStore is a mock of AssetStore interface.
+// MockAssetStore is a mock of AssetStore interface
 type MockAssetStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockAssetStoreMockRecorder
 }
 
-// MockAssetStoreMockRecorder is the mock recorder for MockAssetStore.
+// MockAssetStoreMockRecorder is the mock recorder for MockAssetStore
 type MockAssetStoreMockRecorder struct {
 	mock *MockAssetStore
 }
 
-// NewMockAssetStore creates a new mock instance.
+// NewMockAssetStore creates a new mock instance
 func NewMockAssetStore(ctrl *gomock.Controller) *MockAssetStore {
 	mock := &MockAssetStore{ctrl: ctrl}
 	mock.recorder = &MockAssetStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockAssetStore) EXPECT() *MockAssetStoreMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockAssetStore) Find(arg0 context.Context, arg1 string) (*core.Asset, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -47,13 +46,13 @@ func (m *MockAssetStore) Find(arg0 context.Context, arg1 string) (*core.Asset, e
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockAssetStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockAssetStore)(nil).Find), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockAssetStore) List(arg0 context.Context) ([]*core.Asset, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0)
@@ -62,13 +61,13 @@ func (m *MockAssetStore) List(arg0 context.Context) ([]*core.Asset, error) {
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockAssetStoreMockRecorder) List(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAssetStore)(nil).List), arg0)
 }
 
-// Save mocks base method.
+// Save mocks base method
 func (m *MockAssetStore) Save(arg0 context.Context, arg1 *core.Asset) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
@@ -76,36 +75,36 @@ func (m *MockAssetStore) Save(arg0 context.Context, arg1 *core.Asset) error {
 	return ret0
 }
 
-// Save indicates an expected call of Save.
+// Save indicates an expected call of Save
 func (mr *MockAssetStoreMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockAssetStore)(nil).Save), arg0, arg1)
 }
 
-// MockAssetService is a mock of AssetService interface.
+// MockAssetService is a mock of AssetService interface
 type MockAssetService struct {
 	ctrl     *gomock.Controller
 	recorder *MockAssetServiceMockRecorder
 }
 
-// MockAssetServiceMockRecorder is the mock recorder for MockAssetService.
+// MockAssetServiceMockRecorder is the mock recorder for MockAssetService
 type MockAssetServiceMockRecorder struct {
 	mock *MockAssetService
 }
 
-// NewMockAssetService creates a new mock instance.
+// NewMockAssetService creates a new mock instance
 func NewMockAssetService(ctrl *gomock.Controller) *MockAssetService {
 	mock := &MockAssetService{ctrl: ctrl}
 	mock.recorder = &MockAssetServiceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockAssetService) EXPECT() *MockAssetServiceMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockAssetService) Find(arg0 context.Context, arg1 string) (*core.Asset, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -114,13 +113,13 @@ func (m *MockAssetService) Find(arg0 context.Context, arg1 string) (*core.Asset,
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockAssetServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockAssetService)(nil).Find), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockAssetService) List(arg0 context.Context) ([]*core.Asset, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0)
@@ -129,36 +128,36 @@ func (m *MockAssetService) List(arg0 context.Context) ([]*core.Asset, error) {
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockAssetServiceMockRecorder) List(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAssetService)(nil).List), arg0)
 }
 
-// MockCollateralStore is a mock of CollateralStore interface.
+// MockCollateralStore is a mock of CollateralStore interface
 type MockCollateralStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockCollateralStoreMockRecorder
 }
 
-// MockCollateralStoreMockRecorder is the mock recorder for MockCollateralStore.
+// MockCollateralStoreMockRecorder is the mock recorder for MockCollateralStore
 type MockCollateralStoreMockRecorder struct {
 	mock *MockCollateralStore
 }
 
-// NewMockCollateralStore creates a new mock instance.
+// NewMockCollateralStore creates a new mock instance
 func NewMockCollateralStore(ctrl *gomock.Controller) *MockCollateralStore {
 	mock := &MockCollateralStore{ctrl: ctrl}
 	mock.recorder = &MockCollateralStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockCollateralStore) EXPECT() *MockCollateralStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockCollateralStore) Create(arg0 context.Context, arg1 *core.Collateral) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -166,13 +165,13 @@ func (m *MockCollateralStore) Create(arg0 context.Context, arg1 *core.Collateral
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockCollateralStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCollateralStore)(nil).Create), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockCollateralStore) Find(arg0 context.Context, arg1 string) (*core.Collateral, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -181,13 +180,13 @@ func (m *MockCollateralStore) Find(arg0 context.Context, arg1 string) (*core.Col
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockCollateralStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockCollateralStore)(nil).Find), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockCollateralStore) List(arg0 context.Context) ([]*core.Collateral, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0)
@@ -196,13 +195,13 @@ func (m *MockCollateralStore) List(arg0 context.Context) ([]*core.Collateral, er
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockCollateralStoreMockRecorder) List(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockCollateralStore)(nil).List), arg0)
 }
 
-// Update mocks base method.
+// Update mocks base method
 func (m *MockCollateralStore) Update(arg0 context.Context, arg1 *core.Collateral, arg2 int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
@@ -210,36 +209,36 @@ func (m *MockCollateralStore) Update(arg0 context.Context, arg1 *core.Collateral
 	return ret0
 }
 
-// Update indicates an expected call of Update.
+// Update indicates an expected call of Update
 func (mr *MockCollateralStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCollateralStore)(nil).Update), arg0, arg1, arg2)
 }
 
-// MockFlipStore is a mock of FlipStore interface.
+// MockFlipStore is a mock of FlipStore interface
 type MockFlipStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockFlipStoreMockRecorder
 }
 
-// MockFlipStoreMockRecorder is the mock recorder for MockFlipStore.
+// MockFlipStoreMockRecorder is the mock recorder for MockFlipStore
 type MockFlipStoreMockRecorder struct {
 	mock *MockFlipStore
 }
 
-// NewMockFlipStore creates a new mock instance.
+// NewMockFlipStore creates a new mock instance
 func NewMockFlipStore(ctrl *gomock.Controller) *MockFlipStore {
 	mock := &MockFlipStore{ctrl: ctrl}
 	mock.recorder = &MockFlipStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockFlipStore) EXPECT() *MockFlipStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockFlipStore) Create(arg0 context.Context, arg1 *core.Flip) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -247,13 +246,13 @@ func (m *MockFlipStore) Create(arg0 context.Context, arg1 *core.Flip) error {
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockFlipStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockFlipStore)(nil).Create), arg0, arg1)
 }
 
-// CreateEvent mocks base method.
+// CreateEvent mocks base method
 func (m *MockFlipStore) CreateEvent(arg0 context.Context, arg1 *core.FlipEvent) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateEvent", arg0, arg1)
@@ -261,13 +260,13 @@ func (m *MockFlipStore) CreateEvent(arg0 context.Context, arg1 *core.FlipEvent) 
 	return ret0
 }
 
-// CreateEvent indicates an expected call of CreateEvent.
+// CreateEvent indicates an expected call of CreateEvent
 func (mr *MockFlipStoreMockRecorder) CreateEvent(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEvent", reflect.TypeOf((*MockFlipStore)(nil).CreateEvent), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockFlipStore) Find(arg0 context.Context, arg1 string) (*core.Flip, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -276,13 +275,13 @@ func (m *MockFlipStore) Find(arg0 context.Context, arg1 string) (*core.Flip, err
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockFlipStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockFlipStore)(nil).Find), arg0, arg1)
 }
 
-// FindEvent mocks base method.
+// FindEvent mocks base method
 func (m *MockFlipStore) FindEvent(arg0 context.Context, arg1 string, arg2 int64) (*core.FlipEvent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindEvent", arg0, arg1, arg2)
@@ -291,13 +290,13 @@ func (m *MockFlipStore) FindEvent(arg0 context.Context, arg1 string, arg2 int64)
 	return ret0, ret1
 }
 
-// FindEvent indicates an expected call of FindEvent.
+// FindEvent indicates an expected call of FindEvent
 func (mr *MockFlipStoreMockRecorder) FindEvent(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindEvent", reflect.TypeOf((*MockFlipStore)(nil).FindEvent), arg0, arg1, arg2)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockFlipStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Flip, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1, arg2)
@@ -306,13 +305,13 @@ func (m *MockFlipStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*cor
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockFlipStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockFlipStore)(nil).List), arg0, arg1, arg2)
 }
 
-// ListEvents mocks base method.
+// ListEvents mocks base method
 func (m *MockFlipStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.FlipEvent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListEvents", arg0, arg1)
@@ -321,13 +320,13 @@ func (m *MockFlipStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.F
 	return ret0, ret1
 }
 
-// ListEvents indicates an expected call of ListEvents.
+// ListEvents indicates an expected call of ListEvents
 func (mr *MockFlipStoreMockRecorder) ListEvents(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEvents", reflect.TypeOf((*MockFlipStore)(nil).ListEvents), arg0, arg1)
 }
 
-// Update mocks base method.
+// Update mocks base method
 func (m *MockFlipStore) Update(arg0 context.Context, arg1 *core.Flip, arg2 int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
@@ -335,36 +334,36 @@ func (m *MockFlipStore) Update(arg0 context.Context, arg1 *core.Flip, arg2 int64
 	return ret0
 }
 
-// Update indicates an expected call of Update.
+// Update indicates an expected call of Update
 func (mr *MockFlipStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockFlipStore)(nil).Update), arg0, arg1, arg2)
 }
 
-// MockMessageStore is a mock of MessageStore interface.
+// MockMessageStore is a mock of MessageStore interface
 type MockMessageStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockMessageStoreMockRecorder
 }
 
-// MockMessageStoreMockRecorder is the mock recorder for MockMessageStore.
+// MockMessageStoreMockRecorder is the mock recorder for MockMessageStore
 type MockMessageStoreMockRecorder struct {
 	mock *MockMessageStore
 }
 
-// NewMockMessageStore creates a new mock instance.
+// NewMockMessageStore creates a new mock instance
 func NewMockMessageStore(ctrl *gomock.Controller) *MockMessageStore {
 	mock := &MockMessageStore{ctrl: ctrl}
 	mock.recorder = &MockMessageStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockMessageStore) EXPECT() *MockMessageStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockMessageStore) Create(arg0 context.Context, arg1 []*core.Message) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -372,13 +371,13 @@ func (m *MockMessageStore) Create(arg0 context.Context, arg1 []*core.Message) er
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockMessageStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockMessageStore)(nil).Create), arg0, arg1)
 }
 
-// Delete mocks base method.
+// Delete mocks base method
 func (m *MockMessageStore) Delete(arg0 context.Context, arg1 []*core.Message) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
@@ -386,13 +385,13 @@ func (m *MockMessageStore) Delete(arg0 context.Context, arg1 []*core.Message) er
 	return ret0
 }
 
-// Delete indicates an expected call of Delete.
+// Delete indicates an expected call of Delete
 func (mr *MockMessageStoreMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMessageStore)(nil).Delete), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockMessageStore) List(arg0 context.Context, arg1 int) ([]*core.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1)
@@ -401,36 +400,36 @@ func (m *MockMessageStore) List(arg0 context.Context, arg1 int) ([]*core.Message
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockMessageStoreMockRecorder) List(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockMessageStore)(nil).List), arg0, arg1)
 }
 
-// MockMessageService is a mock of MessageService interface.
+// MockMessageService is a mock of MessageService interface
 type MockMessageService struct {
 	ctrl     *gomock.Controller
 	recorder *MockMessageServiceMockRecorder
 }
 
-// MockMessageServiceMockRecorder is the mock recorder for MockMessageService.
+// MockMessageServiceMockRecorder is the mock recorder for MockMessageService
 type MockMessageServiceMockRecorder struct {
 	mock *MockMessageService
 }
 
-// NewMockMessageService creates a new mock instance.
+// NewMockMessageService creates a new mock instance
 func NewMockMessageService(ctrl *gomock.Controller) *MockMessageService {
 	mock := &MockMessageService{ctrl: ctrl}
 	mock.recorder = &MockMessageServiceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockMessageService) EXPECT() *MockMessageServiceMockRecorder {
 	return m.recorder
 }
 
-// Meet mocks base method.
+// Meet mocks base method
 func (m *MockMessageService) Meet(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Meet", arg0, arg1)
@@ -438,13 +437,13 @@ func (m *MockMessageService) Meet(arg0 context.Context, arg1 string) error {
 	return ret0
 }
 
-// Meet indicates an expected call of Meet.
+// Meet indicates an expected call of Meet
 func (mr *MockMessageServiceMockRecorder) Meet(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Meet", reflect.TypeOf((*MockMessageService)(nil).Meet), arg0, arg1)
 }
 
-// Send mocks base method.
+// Send mocks base method
 func (m *MockMessageService) Send(arg0 context.Context, arg1 []*core.Message) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Send", arg0, arg1)
@@ -452,36 +451,36 @@ func (m *MockMessageService) Send(arg0 context.Context, arg1 []*core.Message) er
 	return ret0
 }
 
-// Send indicates an expected call of Send.
+// Send indicates an expected call of Send
 func (mr *MockMessageServiceMockRecorder) Send(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockMessageService)(nil).Send), arg0, arg1)
 }
 
-// MockNotifier is a mock of Notifier interface.
+// MockNotifier is a mock of Notifier interface
 type MockNotifier struct {
 	ctrl     *gomock.Controller
 	recorder *MockNotifierMockRecorder
 }
 
-// MockNotifierMockRecorder is the mock recorder for MockNotifier.
+// MockNotifierMockRecorder is the mock recorder for MockNotifier
 type MockNotifierMockRecorder struct {
 	mock *MockNotifier
 }
 
-// NewMockNotifier creates a new mock instance.
+// NewMockNotifier creates a new mock instance
 func NewMockNotifier(ctrl *gomock.Controller) *MockNotifier {
 	mock := &MockNotifier{ctrl: ctrl}
 	mock.recorder = &MockNotifierMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockNotifier) EXPECT() *MockNotifierMockRecorder {
 	return m.recorder
 }
 
-// Auth mocks base method.
+// Auth mocks base method
 func (m *MockNotifier) Auth(arg0 context.Context, arg1 *core.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Auth", arg0, arg1)
@@ -489,13 +488,13 @@ func (m *MockNotifier) Auth(arg0 context.Context, arg1 *core.User) error {
 	return ret0
 }
 
-// Auth indicates an expected call of Auth.
+// Auth indicates an expected call of Auth
 func (mr *MockNotifierMockRecorder) Auth(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockNotifier)(nil).Auth), arg0, arg1)
 }
 
-// Snapshot mocks base method.
+// Snapshot mocks base method
 func (m *MockNotifier) Snapshot(arg0 context.Context, arg1 *core.Transfer, arg2 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Snapshot", arg0, arg1, arg2)
@@ -503,13 +502,13 @@ func (m *MockNotifier) Snapshot(arg0 context.Context, arg1 *core.Transfer, arg2 
 	return ret0
 }
 
-// Snapshot indicates an expected call of Snapshot.
+// Snapshot indicates an expected call of Snapshot
 func (mr *MockNotifierMockRecorder) Snapshot(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Snapshot", reflect.TypeOf((*MockNotifier)(nil).Snapshot), arg0, arg1, arg2)
 }
 
-// Transaction mocks base method.
+// Transaction mocks base method
 func (m *MockNotifier) Transaction(arg0 context.Context, arg1 *core.Transaction) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Transaction", arg0, arg1)
@@ -517,13 +516,13 @@ func (m *MockNotifier) Transaction(arg0 context.Context, arg1 *core.Transaction)
 	return ret0
 }
 
-// Transaction indicates an expected call of Transaction.
+// Transaction indicates an expected call of Transaction
 func (mr *MockNotifierMockRecorder) Transaction(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Transaction", reflect.TypeOf((*MockNotifier)(nil).Transaction), arg0, arg1)
 }
 
-// VaultUnsafe mocks base method.
+// VaultUnsafe mocks base method
 func (m *MockNotifier) VaultUnsafe(arg0 context.Context, arg1 *core.Collateral, arg2 *core.Vault) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VaultUnsafe", arg0, arg1, arg2)
@@ -531,36 +530,36 @@ func (m *MockNotifier) VaultUnsafe(arg0 context.Context, arg1 *core.Collateral, 
 	return ret0
 }
 
-// VaultUnsafe indicates an expected call of VaultUnsafe.
+// VaultUnsafe indicates an expected call of VaultUnsafe
 func (mr *MockNotifierMockRecorder) VaultUnsafe(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VaultUnsafe", reflect.TypeOf((*MockNotifier)(nil).VaultUnsafe), arg0, arg1, arg2)
 }
 
-// MockOracleStore is a mock of OracleStore interface.
+// MockOracleStore is a mock of OracleStore interface
 type MockOracleStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockOracleStoreMockRecorder
 }
 
-// MockOracleStoreMockRecorder is the mock recorder for MockOracleStore.
+// MockOracleStoreMockRecorder is the mock recorder for MockOracleStore
 type MockOracleStoreMockRecorder struct {
 	mock *MockOracleStore
 }
 
-// NewMockOracleStore creates a new mock instance.
+// NewMockOracleStore creates a new mock instance
 func NewMockOracleStore(ctrl *gomock.Controller) *MockOracleStore {
 	mock := &MockOracleStore{ctrl: ctrl}
 	mock.recorder = &MockOracleStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockOracleStore) EXPECT() *MockOracleStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockOracleStore) Create(arg0 context.Context, arg1 *core.Oracle) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -568,13 +567,13 @@ func (m *MockOracleStore) Create(arg0 context.Context, arg1 *core.Oracle) error 
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockOracleStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOracleStore)(nil).Create), arg0, arg1)
 }
 
-// Deny mocks base method.
+// Deny mocks base method
 func (m *MockOracleStore) Deny(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Deny", arg0, arg1)
@@ -582,13 +581,13 @@ func (m *MockOracleStore) Deny(arg0 context.Context, arg1 string) error {
 	return ret0
 }
 
-// Deny indicates an expected call of Deny.
+// Deny indicates an expected call of Deny
 func (mr *MockOracleStoreMockRecorder) Deny(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deny", reflect.TypeOf((*MockOracleStore)(nil).Deny), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockOracleStore) Find(arg0 context.Context, arg1 string) (*core.Oracle, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -597,13 +596,13 @@ func (m *MockOracleStore) Find(arg0 context.Context, arg1 string) (*core.Oracle,
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockOracleStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockOracleStore)(nil).Find), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockOracleStore) List(arg0 context.Context) ([]*core.Oracle, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0)
@@ -612,13 +611,13 @@ func (m *MockOracleStore) List(arg0 context.Context) ([]*core.Oracle, error) {
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockOracleStoreMockRecorder) List(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOracleStore)(nil).List), arg0)
 }
 
-// ListCurrent mocks base method.
+// ListCurrent mocks base method
 func (m *MockOracleStore) ListCurrent(arg0 context.Context) (number.Values, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListCurrent", arg0)
@@ -627,13 +626,13 @@ func (m *MockOracleStore) ListCurrent(arg0 context.Context) (number.Values, erro
 	return ret0, ret1
 }
 
-// ListCurrent indicates an expected call of ListCurrent.
+// ListCurrent indicates an expected call of ListCurrent
 func (mr *MockOracleStoreMockRecorder) ListCurrent(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCurrent", reflect.TypeOf((*MockOracleStore)(nil).ListCurrent), arg0)
 }
 
-// ListFeeds mocks base method.
+// ListFeeds mocks base method
 func (m *MockOracleStore) ListFeeds(arg0 context.Context) ([]*core.OracleFeed, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListFeeds", arg0)
@@ -642,13 +641,13 @@ func (m *MockOracleStore) ListFeeds(arg0 context.Context) ([]*core.OracleFeed, e
 	return ret0, ret1
 }
 
-// ListFeeds indicates an expected call of ListFeeds.
+// ListFeeds indicates an expected call of ListFeeds
 func (mr *MockOracleStoreMockRecorder) ListFeeds(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*MockOracleStore)(nil).ListFeeds), arg0)
 }
 
-// Rely mocks base method.
+// Rely mocks base method
 func (m *MockOracleStore) Rely(arg0 context.Context, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Rely", arg0, arg1, arg2)
@@ -656,13 +655,13 @@ func (m *MockOracleStore) Rely(arg0 context.Context, arg1, arg2 string) error {
 	return ret0
 }
 
-// Rely indicates an expected call of Rely.
+// Rely indicates an expected call of Rely
 func (mr *MockOracleStoreMockRecorder) Rely(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rely", reflect.TypeOf((*MockOracleStore)(nil).Rely), arg0, arg1, arg2)
 }
 
-// Update mocks base method.
+// Update mocks base method
 func (m *MockOracleStore) Update(arg0 context.Context, arg1 *core.Oracle, arg2 int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
@@ -670,36 +669,36 @@ func (m *MockOracleStore) Update(arg0 context.Context, arg1 *core.Oracle, arg2 i
 	return ret0
 }
 
-// Update indicates an expected call of Update.
+// Update indicates an expected call of Update
 func (mr *MockOracleStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockOracleStore)(nil).Update), arg0, arg1, arg2)
 }
 
-// MockOracleService is a mock of OracleService interface.
+// MockOracleService is a mock of OracleService interface
 type MockOracleService struct {
 	ctrl     *gomock.Controller
 	recorder *MockOracleServiceMockRecorder
 }
 
-// MockOracleServiceMockRecorder is the mock recorder for MockOracleService.
+// MockOracleServiceMockRecorder is the mock recorder for MockOracleService
 type MockOracleServiceMockRecorder struct {
 	mock *MockOracleService
 }
 
-// NewMockOracleService creates a new mock instance.
+// NewMockOracleService creates a new mock instance
 func NewMockOracleService(ctrl *gomock.Controller) *MockOracleService {
 	mock := &MockOracleService{ctrl: ctrl}
 	mock.recorder = &MockOracleServiceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockOracleService) EXPECT() *MockOracleServiceMockRecorder {
 	return m.recorder
 }
 
-// Parse mocks base method.
+// Parse mocks base method
 func (m *MockOracleService) Parse(arg0 context.Context, arg1 []byte) (*core.Oracle, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Parse", arg0, arg1)
@@ -708,36 +707,36 @@ func (m *MockOracleService) Parse(arg0 context.Context, arg1 []byte) (*core.Orac
 	return ret0, ret1
 }
 
-// Parse indicates an expected call of Parse.
+// Parse indicates an expected call of Parse
 func (mr *MockOracleServiceMockRecorder) Parse(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Parse", reflect.TypeOf((*MockOracleService)(nil).Parse), arg0, arg1)
 }
 
-// MockProposalStore is a mock of ProposalStore interface.
+// MockProposalStore is a mock of ProposalStore interface
 type MockProposalStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockProposalStoreMockRecorder
 }
 
-// MockProposalStoreMockRecorder is the mock recorder for MockProposalStore.
+// MockProposalStoreMockRecorder is the mock recorder for MockProposalStore
 type MockProposalStoreMockRecorder struct {
 	mock *MockProposalStore
 }
 
-// NewMockProposalStore creates a new mock instance.
+// NewMockProposalStore creates a new mock instance
 func NewMockProposalStore(ctrl *gomock.Controller) *MockProposalStore {
 	mock := &MockProposalStore{ctrl: ctrl}
 	mock.recorder = &MockProposalStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockProposalStore) EXPECT() *MockProposalStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockProposalStore) Create(arg0 context.Context, arg1 *core.Proposal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -745,13 +744,13 @@ func (m *MockProposalStore) Create(arg0 context.Context, arg1 *core.Proposal) er
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockProposalStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProposalStore)(nil).Create), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockProposalStore) Find(arg0 context.Context, arg1 string) (*core.Proposal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -760,13 +759,13 @@ func (m *MockProposalStore) Find(arg0 context.Context, arg1 string) (*core.Propo
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockProposalStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockProposalStore)(nil).Find), arg0, arg1)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockProposalStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Proposal, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1, arg2)
@@ -775,13 +774,13 @@ func (m *MockProposalStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockProposalStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProposalStore)(nil).List), arg0, arg1, arg2)
 }
 
-// Update mocks base method.
+// Update mocks base method
 func (m *MockProposalStore) Update(arg0 context.Context, arg1 *core.Proposal, arg2 int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
@@ -789,36 +788,36 @@ func (m *MockProposalStore) Update(arg0 context.Context, arg1 *core.Proposal, ar
 	return ret0
 }
 
-// Update indicates an expected call of Update.
+// Update indicates an expected call of Update
 func (mr *MockProposalStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProposalStore)(nil).Update), arg0, arg1, arg2)
 }
 
-// MockParliament is a mock of Parliament interface.
+// MockParliament is a mock of Parliament interface
 type MockParliament struct {
 	ctrl     *gomock.Controller
 	recorder *MockParliamentMockRecorder
 }
 
-// MockParliamentMockRecorder is the mock recorder for MockParliament.
+// MockParliamentMockRecorder is the mock recorder for MockParliament
 type MockParliamentMockRecorder struct {
 	mock *MockParliament
 }
 
-// NewMockParliament creates a new mock instance.
+// NewMockParliament creates a new mock instance
 func NewMockParliament(ctrl *gomock.Controller) *MockParliament {
 	mock := &MockParliament{ctrl: ctrl}
 	mock.recorder = &MockParliamentMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockParliament) EXPECT() *MockParliamentMockRecorder {
 	return m.recorder
 }
 
-// FlipBid mocks base method.
+// FlipBid mocks base method
 func (m *MockParliament) FlipBid(arg0 context.Context, arg1 *core.Flip, arg2 *core.FlipEvent) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FlipBid", arg0, arg1, arg2)
@@ -826,13 +825,13 @@ func (m *MockParliament) FlipBid(arg0 context.Context, arg1 *core.Flip, arg2 *co
 	return ret0
 }
 
-// FlipBid indicates an expected call of FlipBid.
+// FlipBid indicates an expected call of FlipBid
 func (mr *MockParliamentMockRecorder) FlipBid(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FlipBid", reflect.TypeOf((*MockParliament)(nil).FlipBid), arg0, arg1, arg2)
 }
 
-// FlipCreated mocks base method.
+// FlipCreated mocks base method
 func (m *MockParliament) FlipCreated(arg0 context.Context, arg1 *core.Flip) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FlipCreated", arg0, arg1)
@@ -840,13 +839,13 @@ func (m *MockParliament) FlipCreated(arg0 context.Context, arg1 *core.Flip) erro
 	return ret0
 }
 
-// FlipCreated indicates an expected call of FlipCreated.
+// FlipCreated indicates an expected call of FlipCreated
 func (mr *MockParliamentMockRecorder) FlipCreated(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FlipCreated", reflect.TypeOf((*MockParliament)(nil).FlipCreated), arg0, arg1)
 }
 
-// FlipDeal mocks base method.
+// FlipDeal mocks base method
 func (m *MockParliament) FlipDeal(arg0 context.Context, arg1 *core.Flip) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FlipDeal", arg0, arg1)
@@ -854,13 +853,13 @@ func (m *MockParliament) FlipDeal(arg0 context.Context, arg1 *core.Flip) error {
 	return ret0
 }
 
-// FlipDeal indicates an expected call of FlipDeal.
+// FlipDeal indicates an expected call of FlipDeal
 func (mr *MockParliamentMockRecorder) FlipDeal(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FlipDeal", reflect.TypeOf((*MockParliament)(nil).FlipDeal), arg0, arg1)
 }
 
-// ProposalApproved mocks base method.
+// ProposalApproved mocks base method
 func (m *MockParliament) ProposalApproved(arg0 context.Context, arg1 *core.Proposal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ProposalApproved", arg0, arg1)
@@ -868,13 +867,13 @@ func (m *MockParliament) ProposalApproved(arg0 context.Context, arg1 *core.Propo
 	return ret0
 }
 
-// ProposalApproved indicates an expected call of ProposalApproved.
+// ProposalApproved indicates an expected call of ProposalApproved
 func (mr *MockParliamentMockRecorder) ProposalApproved(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProposalApproved", reflect.TypeOf((*MockParliament)(nil).ProposalApproved), arg0, arg1)
 }
 
-// ProposalCreated mocks base method.
+// ProposalCreated mocks base method
 func (m *MockParliament) ProposalCreated(arg0 context.Context, arg1 *core.Proposal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ProposalCreated", arg0, arg1)
@@ -882,13 +881,13 @@ func (m *MockParliament) ProposalCreated(arg0 context.Context, arg1 *core.Propos
 	return ret0
 }
 
-// ProposalCreated indicates an expected call of ProposalCreated.
+// ProposalCreated indicates an expected call of ProposalCreated
 func (mr *MockParliamentMockRecorder) ProposalCreated(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProposalCreated", reflect.TypeOf((*MockParliament)(nil).ProposalCreated), arg0, arg1)
 }
 
-// ProposalPassed mocks base method.
+// ProposalPassed mocks base method
 func (m *MockParliament) ProposalPassed(arg0 context.Context, arg1 *core.Proposal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ProposalPassed", arg0, arg1)
@@ -896,36 +895,36 @@ func (m *MockParliament) ProposalPassed(arg0 context.Context, arg1 *core.Proposa
 	return ret0
 }
 
-// ProposalPassed indicates an expected call of ProposalPassed.
+// ProposalPassed indicates an expected call of ProposalPassed
 func (mr *MockParliamentMockRecorder) ProposalPassed(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProposalPassed", reflect.TypeOf((*MockParliament)(nil).ProposalPassed), arg0, arg1)
 }
 
-// MockSession is a mock of Session interface.
+// MockSession is a mock of Session interface
 type MockSession struct {
 	ctrl     *gomock.Controller
 	recorder *MockSessionMockRecorder
 }
 
-// MockSessionMockRecorder is the mock recorder for MockSession.
+// MockSessionMockRecorder is the mock recorder for MockSession
 type MockSessionMockRecorder struct {
 	mock *MockSession
 }
 
-// NewMockSession creates a new mock instance.
+// NewMockSession creates a new mock instance
 func NewMockSession(ctrl *gomock.Controller) *MockSession {
 	mock := &MockSession{ctrl: ctrl}
 	mock.recorder = &MockSessionMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockSession) EXPECT() *MockSessionMockRecorder {
 	return m.recorder
 }
 
-// Login mocks base method.
+// Login mocks base method
 func (m *MockSession) Login(arg0 *http.Request) (*core.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login", arg0)
@@ -934,36 +933,36 @@ func (m *MockSession) Login(arg0 *http.Request) (*core.User, error) {
 	return ret0, ret1
 }
 
-// Login indicates an expected call of Login.
+// Login indicates an expected call of Login
 func (mr *MockSessionMockRecorder) Login(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockSession)(nil).Login), arg0)
 }
 
-// MockTransactionStore is a mock of TransactionStore interface.
+// MockTransactionStore is a mock of TransactionStore interface
 type MockTransactionStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockTransactionStoreMockRecorder
 }
 
-// MockTransactionStoreMockRecorder is the mock recorder for MockTransactionStore.
+// MockTransactionStoreMockRecorder is the mock recorder for MockTransactionStore
 type MockTransactionStoreMockRecorder struct {
 	mock *MockTransactionStore
 }
 
-// NewMockTransactionStore creates a new mock instance.
+// NewMockTransactionStore creates a new mock instance
 func NewMockTransactionStore(ctrl *gomock.Controller) *MockTransactionStore {
 	mock := &MockTransactionStore{ctrl: ctrl}
 	mock.recorder = &MockTransactionStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockTransactionStore) EXPECT() *MockTransactionStoreMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockTransactionStore) Create(arg0 context.Context, arg1 *core.Transaction) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -971,13 +970,13 @@ func (m *MockTransactionStore) Create(arg0 context.Context, arg1 *core.Transacti
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockTransactionStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTransactionStore)(nil).Create), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockTransactionStore) Find(arg0 context.Context, arg1 string) (*core.Transaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -986,13 +985,13 @@ func (m *MockTransactionStore) Find(arg0 context.Context, arg1 string) (*core.Tr
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockTransactionStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTransactionStore)(nil).Find), arg0, arg1)
 }
 
-// FindFollow mocks base method.
+// FindFollow mocks base method
 func (m *MockTransactionStore) FindFollow(arg0 context.Context, arg1, arg2 string) (*core.Transaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindFollow", arg0, arg1, arg2)
@@ -1001,13 +1000,13 @@ func (m *MockTransactionStore) FindFollow(arg0 context.Context, arg1, arg2 strin
 	return ret0, ret1
 }
 
-// FindFollow indicates an expected call of FindFollow.
+// FindFollow indicates an expected call of FindFollow
 func (mr *MockTransactionStoreMockRecorder) FindFollow(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindFollow", reflect.TypeOf((*MockTransactionStore)(nil).FindFollow), arg0, arg1, arg2)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockTransactionStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Transaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1, arg2)
@@ -1016,36 +1015,36 @@ func (m *MockTransactionStore) List(arg0 context.Context, arg1 int64, arg2 int) 
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockTransactionStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTransactionStore)(nil).List), arg0, arg1, arg2)
 }
 
-// MockUserStore is a mock of UserStore interface.
+// MockUserStore is a mock of UserStore interface
 type MockUserStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockUserStoreMockRecorder
 }
 
-// MockUserStoreMockRecorder is the mock recorder for MockUserStore.
+// MockUserStoreMockRecorder is the mock recorder for MockUserStore
 type MockUserStoreMockRecorder struct {
 	mock *MockUserStore
 }
 
-// NewMockUserStore creates a new mock instance.
+// NewMockUserStore creates a new mock instance
 func NewMockUserStore(ctrl *gomock.Controller) *MockUserStore {
 	mock := &MockUserStore{ctrl: ctrl}
 	mock.recorder = &MockUserStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockUserStore) EXPECT() *MockUserStoreMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockUserStore) Find(arg0 context.Context, arg1 string) (*core.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -1054,13 +1053,13 @@ func (m *MockUserStore) Find(arg0 context.Context, arg1 string) (*core.User, err
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockUserStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockUserStore)(nil).Find), arg0, arg1)
 }
 
-// Save mocks base method.
+// Save mocks base method
 func (m *MockUserStore) Save(arg0 context.Context, arg1 *core.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
@@ -1068,36 +1067,36 @@ func (m *MockUserStore) Save(arg0 context.Context, arg1 *core.User) error {
 	return ret0
 }
 
-// Save indicates an expected call of Save.
+// Save indicates an expected call of Save
 func (mr *MockUserStoreMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockUserStore)(nil).Save), arg0, arg1)
 }
 
-// MockUserService is a mock of UserService interface.
+// MockUserService is a mock of UserService interface
 type MockUserService struct {
 	ctrl     *gomock.Controller
 	recorder *MockUserServiceMockRecorder
 }
 
-// MockUserServiceMockRecorder is the mock recorder for MockUserService.
+// MockUserServiceMockRecorder is the mock recorder for MockUserService
 type MockUserServiceMockRecorder struct {
 	mock *MockUserService
 }
 
-// NewMockUserService creates a new mock instance.
+// NewMockUserService creates a new mock instance
 func NewMockUserService(ctrl *gomock.Controller) *MockUserService {
 	mock := &MockUserService{ctrl: ctrl}
 	mock.recorder = &MockUserServiceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
-// Auth mocks base method.
+// Auth mocks base method
 func (m *MockUserService) Auth(arg0 context.Context, arg1 string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Auth", arg0, arg1)
@@ -1106,13 +1105,13 @@ func (m *MockUserService) Auth(arg0 context.Context, arg1 string) (string, error
 	return ret0, ret1
 }
 
-// Auth indicates an expected call of Auth.
+// Auth indicates an expected call of Auth
 func (mr *MockUserServiceMockRecorder) Auth(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockUserService)(nil).Auth), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockUserService) Find(arg0 context.Context, arg1 string) (*core.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -1121,13 +1120,13 @@ func (m *MockUserService) Find(arg0 context.Context, arg1 string) (*core.User, e
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockUserServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockUserService)(nil).Find), arg0, arg1)
 }
 
-// Login mocks base method.
+// Login mocks base method
 func (m *MockUserService) Login(arg0 context.Context, arg1 string) (*core.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login", arg0, arg1)
@@ -1136,36 +1135,36 @@ func (m *MockUserService) Login(arg0 context.Context, arg1 string) (*core.User, 
 	return ret0, ret1
 }
 
-// Login indicates an expected call of Login.
+// Login indicates an expected call of Login
 func (mr *MockUserServiceMockRecorder) Login(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserService)(nil).Login), arg0, arg1)
 }
 
-// MockVaultStore is a mock of VaultStore interface.
+// MockVaultStore is a mock of VaultStore interface
 type MockVaultStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockVaultStoreMockRecorder
 }
 
-// MockVaultStoreMockRecorder is the mock recorder for MockVaultStore.
+// MockVaultStoreMockRecorder is the mock recorder for MockVaultStore
 type MockVaultStoreMockRecorder struct {
 	mock *MockVaultStore
 }
 
-// NewMockVaultStore creates a new mock instance.
+// NewMockVaultStore creates a new mock instance
 func NewMockVaultStore(ctrl *gomock.Controller) *MockVaultStore {
 	mock := &MockVaultStore{ctrl: ctrl}
 	mock.recorder = &MockVaultStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockVaultStore) EXPECT() *MockVaultStoreMockRecorder {
 	return m.recorder
 }
 
-// CountCollateral mocks base method.
+// CountCollateral mocks base method
 func (m *MockVaultStore) CountCollateral(arg0 context.Context) (map[string]int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CountCollateral", arg0)
@@ -1174,13 +1173,13 @@ func (m *MockVaultStore) CountCollateral(arg0 context.Context) (map[string]int64
 	return ret0, ret1
 }
 
-// CountCollateral indicates an expected call of CountCollateral.
+// CountCollateral indicates an expected call of CountCollateral
 func (mr *MockVaultStoreMockRecorder) CountCollateral(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountCollateral", reflect.TypeOf((*MockVaultStore)(nil).CountCollateral), arg0)
 }
 
-// Create mocks base method.
+// Create mocks base method
 func (m *MockVaultStore) Create(arg0 context.Context, arg1 *core.Vault) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
@@ -1188,13 +1187,13 @@ func (m *MockVaultStore) Create(arg0 context.Context, arg1 *core.Vault) error {
 	return ret0
 }
 
-// Create indicates an expected call of Create.
+// Create indicates an expected call of Create
 func (mr *MockVaultStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockVaultStore)(nil).Create), arg0, arg1)
 }
 
-// CreateEvent mocks base method.
+// CreateEvent mocks base method
 func (m *MockVaultStore) CreateEvent(arg0 context.Context, arg1 *core.VaultEvent) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateEvent", arg0, arg1)
@@ -1202,13 +1201,13 @@ func (m *MockVaultStore) CreateEvent(arg0 context.Context, arg1 *core.VaultEvent
 	return ret0
 }
 
-// CreateEvent indicates an expected call of CreateEvent.
+// CreateEvent indicates an expected call of CreateEvent
 func (mr *MockVaultStoreMockRecorder) CreateEvent(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEvent", reflect.TypeOf((*MockVaultStore)(nil).CreateEvent), arg0, arg1)
 }
 
-// Find mocks base method.
+// Find mocks base method
 func (m *MockVaultStore) Find(arg0 context.Context, arg1 string) (*core.Vault, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0, arg1)
@@ -1217,13 +1216,13 @@ func (m *MockVaultStore) Find(arg0 context.Context, arg1 string) (*core.Vault, e
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
+// Find indicates an expected call of Find
 func (mr *MockVaultStoreMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockVaultStore)(nil).Find), arg0, arg1)
 }
 
-// FindEvent mocks base method.
+// FindEvent mocks base method
 func (m *MockVaultStore) FindEvent(arg0 context.Context, arg1 string, arg2 int64) (*core.VaultEvent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindEvent", arg0, arg1, arg2)
@@ -1232,13 +1231,13 @@ func (m *MockVaultStore) FindEvent(arg0 context.Context, arg1 string, arg2 int64
 	return ret0, ret1
 }
 
-// FindEvent indicates an expected call of FindEvent.
+// FindEvent indicates an expected call of FindEvent
 func (mr *MockVaultStoreMockRecorder) FindEvent(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindEvent", reflect.TypeOf((*MockVaultStore)(nil).FindEvent), arg0, arg1, arg2)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockVaultStore) List(arg0 context.Context, arg1 core.ListVaultRequest) ([]*core.Vault, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1)
@@ -1247,13 +1246,13 @@ func (m *MockVaultStore) List(arg0 context.Context, arg1 core.ListVaultRequest) 
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockVaultStoreMockRecorder) List(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockVaultStore)(nil).List), arg0, arg1)
 }
 
-// ListEvents mocks base method.
+// ListEvents mocks base method
 func (m *MockVaultStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.VaultEvent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListEvents", arg0, arg1)
@@ -1262,13 +1261,13 @@ func (m *MockVaultStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.
 	return ret0, ret1
 }
 
-// ListEvents indicates an expected call of ListEvents.
+// ListEvents indicates an expected call of ListEvents
 func (mr *MockVaultStoreMockRecorder) ListEvents(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEvents", reflect.TypeOf((*MockVaultStore)(nil).ListEvents), arg0, arg1)
 }
 
-// Update mocks base method.
+// Update mocks base method
 func (m *MockVaultStore) Update(arg0 context.Context, arg1 *core.Vault, arg2 int64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
@@ -1276,36 +1275,36 @@ func (m *MockVaultStore) Update(arg0 context.Context, arg1 *core.Vault, arg2 int
 	return ret0
 }
 
-// Update indicates an expected call of Update.
+// Update indicates an expected call of Update
 func (mr *MockVaultStoreMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockVaultStore)(nil).Update), arg0, arg1, arg2)
 }
 
-// MockWalletStore is a mock of WalletStore interface.
+// MockWalletStore is a mock of WalletStore interface
 type MockWalletStore struct {
 	ctrl     *gomock.Controller
 	recorder *MockWalletStoreMockRecorder
 }
 
-// MockWalletStoreMockRecorder is the mock recorder for MockWalletStore.
+// MockWalletStoreMockRecorder is the mock recorder for MockWalletStore
 type MockWalletStoreMockRecorder struct {
 	mock *MockWalletStore
 }
 
-// NewMockWalletStore creates a new mock instance.
+// NewMockWalletStore creates a new mock instance
 func NewMockWalletStore(ctrl *gomock.Controller) *MockWalletStore {
 	mock := &MockWalletStore{ctrl: ctrl}
 	mock.recorder = &MockWalletStoreMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockWalletStore) EXPECT() *MockWalletStoreMockRecorder {
 	return m.recorder
 }
 
-// Assign mocks base method.
+// Assign mocks base method
 func (m *MockWalletStore) Assign(arg0 context.Context, arg1 []*core.Output, arg2 *core.Transfer) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Assign", arg0, arg1, arg2)
@@ -1313,13 +1312,43 @@ func (m *MockWalletStore) Assign(arg0 context.Context, arg1 []*core.Output, arg2
 	return ret0
 }
 
-// Assign indicates an expected call of Assign.
+// Assign indicates an expected call of Assign
 func (mr *MockWalletStoreMockRecorder) Assign(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Assign", reflect.TypeOf((*MockWalletStore)(nil).Assign), arg0, arg1, arg2)
 }
 
-// CreateRawTransaction mocks base method.
+// CountOutputs mocks base method
+func (m *MockWalletStore) CountOutputs(arg0 context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountOutputs", arg0)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountOutputs indicates an expected call of CountOutputs
+func (mr *MockWalletStoreMockRecorder) CountOutputs(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountOutputs", reflect.TypeOf((*MockWalletStore)(nil).CountOutputs), arg0)
+}
+
+// CountUnhandledTransfers mocks base method
+func (m *MockWalletStore) CountUnhandledTransfers(arg0 context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUnhandledTransfers", arg0)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUnhandledTransfers indicates an expected call of CountUnhandledTransfers
+func (mr *MockWalletStoreMockRecorder) CountUnhandledTransfers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUnhandledTransfers", reflect.TypeOf((*MockWalletStore)(nil).CountUnhandledTransfers), arg0)
+}
+
+// CreateRawTransaction mocks base method
 func (m *MockWalletStore) CreateRawTransaction(arg0 context.Context, arg1 *core.RawTransaction) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRawTransaction", arg0, arg1)
@@ -1327,13 +1356,13 @@ func (m *MockWalletStore) CreateRawTransaction(arg0 context.Context, arg1 *core.
 	return ret0
 }
 
-// CreateRawTransaction indicates an expected call of CreateRawTransaction.
+// CreateRawTransaction indicates an expected call of CreateRawTransaction
 func (mr *MockWalletStoreMockRecorder) CreateRawTransaction(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRawTransaction", reflect.TypeOf((*MockWalletStore)(nil).CreateRawTransaction), arg0, arg1)
 }
 
-// CreateTransfers mocks base method.
+// CreateTransfers mocks base method
 func (m *MockWalletStore) CreateTransfers(arg0 context.Context, arg1 []*core.Transfer) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTransfers", arg0, arg1)
@@ -1341,13 +1370,13 @@ func (m *MockWalletStore) CreateTransfers(arg0 context.Context, arg1 []*core.Tra
 	return ret0
 }
 
-// CreateTransfers indicates an expected call of CreateTransfers.
+// CreateTransfers indicates an expected call of CreateTransfers
 func (mr *MockWalletStoreMockRecorder) CreateTransfers(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransfers", reflect.TypeOf((*MockWalletStore)(nil).CreateTransfers), arg0, arg1)
 }
 
-// ExpireRawTransaction mocks base method.
+// ExpireRawTransaction mocks base method
 func (m *MockWalletStore) ExpireRawTransaction(arg0 context.Context, arg1 *core.RawTransaction) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ExpireRawTransaction", arg0, arg1)
@@ -1355,13 +1384,13 @@ func (m *MockWalletStore) ExpireRawTransaction(arg0 context.Context, arg1 *core.
 	return ret0
 }
 
-// ExpireRawTransaction indicates an expected call of ExpireRawTransaction.
+// ExpireRawTransaction indicates an expected call of ExpireRawTransaction
 func (mr *MockWalletStoreMockRecorder) ExpireRawTransaction(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpireRawTransaction", reflect.TypeOf((*MockWalletStore)(nil).ExpireRawTransaction), arg0, arg1)
 }
 
-// FindSpentBy mocks base method.
+// FindSpentBy mocks base method
 func (m *MockWalletStore) FindSpentBy(arg0 context.Context, arg1, arg2 string) (*core.Output, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindSpentBy", arg0, arg1, arg2)
@@ -1370,13 +1399,13 @@ func (m *MockWalletStore) FindSpentBy(arg0 context.Context, arg1, arg2 string) (
 	return ret0, ret1
 }
 
-// FindSpentBy indicates an expected call of FindSpentBy.
+// FindSpentBy indicates an expected call of FindSpentBy
 func (mr *MockWalletStoreMockRecorder) FindSpentBy(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindSpentBy", reflect.TypeOf((*MockWalletStore)(nil).FindSpentBy), arg0, arg1, arg2)
 }
 
-// List mocks base method.
+// List mocks base method
 func (m *MockWalletStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", arg0, arg1, arg2)
@@ -1385,13 +1414,13 @@ func (m *MockWalletStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]*c
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
+// List indicates an expected call of List
 func (mr *MockWalletStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockWalletStore)(nil).List), arg0, arg1, arg2)
 }
 
-// ListPendingRawTransactions mocks base method.
+// ListPendingRawTransactions mocks base method
 func (m *MockWalletStore) ListPendingRawTransactions(arg0 context.Context, arg1 int) ([]*core.RawTransaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPendingRawTransactions", arg0, arg1)
@@ -1400,13 +1429,13 @@ func (m *MockWalletStore) ListPendingRawTransactions(arg0 context.Context, arg1 
 	return ret0, ret1
 }
 
-// ListPendingRawTransactions indicates an expected call of ListPendingRawTransactions.
+// ListPendingRawTransactions indicates an expected call of ListPendingRawTransactions
 func (mr *MockWalletStoreMockRecorder) ListPendingRawTransactions(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPendingRawTransactions", reflect.TypeOf((*MockWalletStore)(nil).ListPendingRawTransactions), arg0, arg1)
 }
 
-// ListSpentBy mocks base method.
+// ListSpentBy mocks base method
 func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSpentBy", arg0, arg1, arg2)
@@ -1415,13 +1444,13 @@ func (m *MockWalletStore) ListSpentBy(arg0 context.Context, arg1, arg2 string) (
 	return ret0, ret1
 }
 
-// ListSpentBy indicates an expected call of ListSpentBy.
+// ListSpentBy indicates an expected call of ListSpentBy
 func (mr *MockWalletStoreMockRecorder) ListSpentBy(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSpentBy", reflect.TypeOf((*MockWalletStore)(nil).ListSpentBy), arg0, arg1, arg2)
 }
 
-// ListTransfers mocks base method.
+// ListTransfers mocks base method
 func (m *MockWalletStore) ListTransfers(arg0 context.Context, arg1 core.TransferStatus, arg2 int) ([]*core.Transfer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTransfers", arg0, arg1, arg2)
@@ -1430,13 +1459,13 @@ func (m *MockWalletStore) ListTransfers(arg0 context.Context, arg1 core.Transfer
 	return ret0, ret1
 }
 
-// ListTransfers indicates an expected call of ListTransfers.
+// ListTransfers indicates an expected call of ListTransfers
 func (mr *MockWalletStoreMockRecorder) ListTransfers(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTransfers", reflect.TypeOf((*MockWalletStore)(nil).ListTransfers), arg0, arg1, arg2)
 }
 
-// ListUnspent mocks base method.
+// ListUnspent mocks base method
 func (m *MockWalletStore) ListUnspent(arg0 context.Context, arg1 string, arg2 int) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUnspent", arg0, arg1, arg2)
@@ -1445,13 +1474,13 @@ func (m *MockWalletStore) ListUnspent(arg0 context.Context, arg1 string, arg2 in
 	return ret0, ret1
 }
 
-// ListUnspent indicates an expected call of ListUnspent.
+// ListUnspent indicates an expected call of ListUnspent
 func (mr *MockWalletStoreMockRecorder) ListUnspent(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUnspent", reflect.TypeOf((*MockWalletStore)(nil).ListUnspent), arg0, arg1, arg2)
 }
 
-// Save mocks base method.
+// Save mocks base method
 func (m *MockWalletStore) Save(arg0 context.Context, arg1 []*core.Output, arg2 bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1, arg2)
@@ -1459,13 +1488,13 @@ func (m *MockWalletStore) Save(arg0 context.Context, arg1 []*core.Output, arg2 b
 	return ret0
 }
 
-// Save indicates an expected call of Save.
+// Save indicates an expected call of Save
 func (mr *MockWalletStoreMockRecorder) Save(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockWalletStore)(nil).Save), arg0, arg1, arg2)
 }
 
-// UpdateTransfer mocks base method.
+// UpdateTransfer mocks base method
 func (m *MockWalletStore) UpdateTransfer(arg0 context.Context, arg1 *core.Transfer, arg2 core.TransferStatus) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateTransfer", arg0, arg1, arg2)
@@ -1473,36 +1502,36 @@ func (m *MockWalletStore) UpdateTransfer(arg0 context.Context, arg1 *core.Transf
 	return ret0
 }
 
-// UpdateTransfer indicates an expected call of UpdateTransfer.
+// UpdateTransfer indicates an expected call of UpdateTransfer
 func (mr *MockWalletStoreMockRecorder) UpdateTransfer(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTransfer", reflect.TypeOf((*MockWalletStore)(nil).UpdateTransfer), arg0, arg1, arg2)
 }
 
-// MockWalletService is a mock of WalletService interface.
+// MockWalletService is a mock of WalletService interface
 type MockWalletService struct {
 	ctrl     *gomock.Controller
 	recorder *MockWalletServiceMockRecorder
 }
 
-// MockWalletServiceMockRecorder is the mock recorder for MockWalletService.
+// MockWalletServiceMockRecorder is the mock recorder for MockWalletService
 type MockWalletServiceMockRecorder struct {
 	mock *MockWalletService
 }
 
-// NewMockWalletService creates a new mock instance.
+// NewMockWalletService creates a new mock instance
 func NewMockWalletService(ctrl *gomock.Controller) *MockWalletService {
 	mock := &MockWalletService{ctrl: ctrl}
 	mock.recorder = &MockWalletServiceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockWalletService) EXPECT() *MockWalletServiceMockRecorder {
 	return m.recorder
 }
 
-// HandleTransfer mocks base method.
+// HandleTransfer mocks base method
 func (m *MockWalletService) HandleTransfer(arg0 context.Context, arg1 *core.Transfer) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "HandleTransfer", arg0, arg1)
@@ -1510,13 +1539,13 @@ func (m *MockWalletService) HandleTransfer(arg0 context.Context, arg1 *core.Tran
 	return ret0
 }
 
-// HandleTransfer indicates an expected call of HandleTransfer.
+// HandleTransfer indicates an expected call of HandleTransfer
 func (mr *MockWalletServiceMockRecorder) HandleTransfer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HandleTransfer", reflect.TypeOf((*MockWalletService)(nil).HandleTransfer), arg0, arg1)
 }
 
-// Pull mocks base method.
+// Pull mocks base method
 func (m *MockWalletService) Pull(arg0 context.Context, arg1 time.Time, arg2 int) ([]*core.Output, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Pull", arg0, arg1, arg2)
@@ -1525,13 +1554,13 @@ func (m *MockWalletService) Pull(arg0 context.Context, arg1 time.Time, arg2 int)
 	return ret0, ret1
 }
 
-// Pull indicates an expected call of Pull.
+// Pull indicates an expected call of Pull
 func (mr *MockWalletServiceMockRecorder) Pull(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Pull", reflect.TypeOf((*MockWalletService)(nil).Pull), arg0, arg1, arg2)
 }
 
-// ReqTransfer mocks base method.
+// ReqTransfer mocks base method
 func (m *MockWalletService) ReqTransfer(arg0 context.Context, arg1 *core.Transfer) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReqTransfer", arg0, arg1)
@@ -1540,13 +1569,13 @@ func (m *MockWalletService) ReqTransfer(arg0 context.Context, arg1 *core.Transfe
 	return ret0, ret1
 }
 
-// ReqTransfer indicates an expected call of ReqTransfer.
+// ReqTransfer indicates an expected call of ReqTransfer
 func (mr *MockWalletServiceMockRecorder) ReqTransfer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReqTransfer", reflect.TypeOf((*MockWalletService)(nil).ReqTransfer), arg0, arg1)
 }
 
-// Spend mocks base method.
+// Spend mocks base method
 func (m *MockWalletService) Spend(arg0 context.Context, arg1 []*core.Output, arg2 *core.Transfer) (*core.RawTransaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Spend", arg0, arg1, arg2)
@@ -1555,7 +1584,7 @@ func (m *MockWalletService) Spend(arg0 context.Context, arg1 []*core.Output, arg
 	return ret0, ret1
 }
 
-// Spend indicates an expected call of Spend.
+// Spend indicates an expected call of Spend
 func (mr *MockWalletServiceMockRecorder) Spend(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Spend", reflect.TypeOf((*MockWalletService)(nil).Spend), arg0, arg1, arg2)

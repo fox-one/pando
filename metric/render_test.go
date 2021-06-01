@@ -1,6 +1,7 @@
 package metric
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 )
@@ -31,6 +32,7 @@ func TestRender(t *testing.T) {
 		},
 	}
 
-	out := Render(groups)
-	fmt.Println(out)
+	var b bytes.Buffer
+	Render(&b, groups)
+	fmt.Println(b.String())
 }
