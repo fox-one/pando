@@ -21,3 +21,29 @@ vat_payback: Payback {{.Debt}} {{.Dai}}
 
 vat_unsafe_warn: |
   🚨 Vault {{.Name}} #{{.ID}} is At risk of being liquidated.
+
+# Cat
+Cat/bad-data: "bad data"
+Cat/not-authorized: "not authorized"
+Cat/not-live: "collateral not live"
+
+# Vat
+Vat/bad-data: "bad data"
+Vat/not-live: "collateral not live"
+Vat/not-authorized: "not authorized"
+Vat/ceiling-exceeded: "debt ceiling exceeded"
+Vat/not-safe: "vault not safe"
+Vat/dust: "remain debt too little"
+
+# Flip
+Flip/bad-data: "bad data"
+Flip/not-live: "collateral not live"
+Flip/not-authorized: "not authorized"
+Flip/not-finished: "auction not end"
+Flip/finished-tic: "auction ended"
+Flip/finished-end: "auction ended"
+Flip/bid-not-match: "bid not match"
+Flip/lot-not-lower: "lot not lower"
+Flip/insufficient-decrease: "insufficient decrease for lot"
+Flip/bid-not-higher: "bid not higher"
+Flip/insufficient-increase: "insufficient-increase for bid"

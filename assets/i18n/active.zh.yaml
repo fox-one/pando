@@ -21,3 +21,29 @@ vat_payback: 还款 {{.Debt}} {{.Dai}}
 
 vat_unsafe_warn: |
   🚨 金库 {{.Name}} #{{.ID}} 抵押不足，有被清算的风险。
+
+# Cat
+Cat/bad-data: "参数不合法"
+Cat/not-authorized: "没有权限操作"
+Cat/not-live: "抵押品未开启"
+
+# Vat
+Vat/bad-data: "参数不合法"
+Vat/not-live: "抵押品未开启"
+Vat/not-authorized: "没有权限操作"
+Vat/ceiling-exceeded: "总债务超出上限"
+Vat/not-safe: "抵押率不足"
+Vat/dust: "剩余债务低于限值"
+
+# Flip
+Flip/bad-data: "参数不合法"
+Flip/not-live: "抵押品未开启"
+Flip/not-authorized: "没有权限操作"
+Flip/not-finished: "拍卖没有结束"
+Flip/finished-tic: "拍卖出价已结束"
+Flip/finished-end: "拍卖已结束"
+Flip/bid-not-match: "出价不匹配"
+Flip/lot-not-lower: "竞价失败"
+Flip/insufficient-decrease: "加价幅度不够"
+Flip/bid-not-higher: "竞价失败"
+Flip/insufficient-increase: "加价幅度不够"
