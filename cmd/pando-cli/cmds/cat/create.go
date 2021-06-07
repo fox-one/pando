@@ -11,8 +11,9 @@ import (
 
 func NewCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "create <gem> <dai> <name>",
-		Args: cobra.ExactArgs(3),
+		Use:   "create <gem> <dai> <name>",
+		Short: "make a proposal to create new collateral, admin required",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			memo, err := actions.Build(
 				cmd,

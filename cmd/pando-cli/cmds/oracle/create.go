@@ -20,8 +20,9 @@ func NewCreateCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:  "create",
-		Args: cobra.ExactValidArgs(1),
+		Use:   "create",
+		Short: "make a proposal to create a new oracel asset",
+		Args:  cobra.ExactValidArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 

@@ -15,7 +15,8 @@ func NewShowCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use: "show",
+		Use:   "show",
+		Short: "show local configures",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if json {
 				d := jsoniter.NewEncoder(cmd.OutOrStdout())

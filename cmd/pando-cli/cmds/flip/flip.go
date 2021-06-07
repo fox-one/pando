@@ -6,7 +6,8 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "flip",
+		Use:   "flip",
+		Short: "execute flip actions",
 	}
 
 	cmd.AddCommand(NewKickCmd())

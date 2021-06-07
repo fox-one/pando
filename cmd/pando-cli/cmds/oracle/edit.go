@@ -12,8 +12,9 @@ import (
 
 func NewEditCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "edit <asset id> <key> <value>",
-		Args: cobra.MinimumNArgs(3),
+		Use:   "edit <asset id> <key> <value>",
+		Short: "make a proposal to edit an oracle asset",
+		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 			if id == "all" {

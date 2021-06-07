@@ -6,7 +6,8 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "config <command>",
+		Use:   "config <command>",
+		Short: "manage local configures",
 	}
 
 	cmd.AddCommand(NewShowCmd())

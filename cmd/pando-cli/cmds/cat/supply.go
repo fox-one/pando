@@ -13,8 +13,9 @@ import (
 
 func NewSupplyCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "supply <collateral id> <amount>",
-		Args: cobra.ExactArgs(2),
+		Use:   "supply <collateral id> <amount>",
+		Short: "execute Supply action on a collateral",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 			amount := number.Decimal(args[1])

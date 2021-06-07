@@ -15,8 +15,9 @@ func NewPokeCmd() *cobra.Command {
 	var ts int64
 
 	cmd := &cobra.Command{
-		Use:  "poke <asset_id> <price>",
-		Args: cobra.ExactArgs(2),
+		Use:   "poke <asset_id> <price>",
+		Short: "make a proposal to execute poke action on an oracle asset",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, price := args[0], args[1]
 

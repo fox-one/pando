@@ -11,8 +11,9 @@ import (
 
 func NewWithdrawCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "withdraw",
-		Args: cobra.ExactArgs(2),
+		Use:   "withdraw",
+		Short: "execute Withdraw action on a vault",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 

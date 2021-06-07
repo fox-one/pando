@@ -13,7 +13,8 @@ func NewListCmd() *cobra.Command {
 	var limit = 20
 
 	cmd := &cobra.Command{
-		Use: "list",
+		Use:   "list",
+		Short: "list auctions",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			r, err := call.R(cmd.Context()).Get("/api/flips")
 			if err != nil {

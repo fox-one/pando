@@ -14,8 +14,9 @@ import (
 
 func NewEditCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "edit <collateral id> <key> <value>",
-		Args: cobra.MinimumNArgs(3),
+		Use:   "edit <collateral id> <key> <value>",
+		Short: "make a proposal to edit a collateral, admin required",
+		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 			if strings.EqualFold(id, "all") {

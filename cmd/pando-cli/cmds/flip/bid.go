@@ -17,8 +17,9 @@ func NewBidCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:  "bid <flip id> <bid>",
-		Args: cobra.ExactArgs(2),
+		Use:   "bid <flip id> <bid>",
+		Short: "execute Bid action for an auction",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			flipID := args[0]
 			flip, err := call.RPC().FindFlip(cmd.Context(), &api.Req_FindFlip{Id: flipID})

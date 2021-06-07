@@ -13,8 +13,9 @@ import (
 
 func NewPaybackCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "payback",
-		Args: cobra.ExactArgs(2),
+		Use:   "payback",
+		Short: "execute Payback action on a vault",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 

@@ -14,6 +14,7 @@ func NewTokenCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use: "token",
+		Short: "show current authorization token",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			v := cfg.GetAuthToken()
 			if header {

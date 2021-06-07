@@ -6,7 +6,8 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "oracle",
+		Use:   "oracle",
+		Short: "manage price oracles",
 	}
 
 	cmd.AddCommand(NewCreateCmd())

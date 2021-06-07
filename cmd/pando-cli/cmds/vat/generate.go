@@ -11,8 +11,9 @@ import (
 
 func NewGenerateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "generate <collateral id> <debt>",
-		Args: cobra.ExactArgs(2),
+		Use:   "generate <collateral id> <debt>",
+		Short: "execute Generate action on a vault",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			vatID := args[0]

@@ -13,6 +13,7 @@ import (
 func NewLoginCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "login",
+		Short: "Authenticate with mixin messenger",
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -11,7 +11,8 @@ import (
 
 func NewListCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "list",
+		Use:   "list",
+		Short: "list vaults",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			r, err := call.R(cmd.Context()).Get("/api/vats")
 			if err != nil {

@@ -11,8 +11,9 @@ import (
 
 func NewDealCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "deal <flip id>",
-		Args: cobra.ExactArgs(1),
+		Use:   "deal <flip id>",
+		Short: "run Deal action on an auction",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			flipID := args[0]
 			memo, err := actions.Build(cmd, core.ActionFlipDeal, types.UUID(flipID))

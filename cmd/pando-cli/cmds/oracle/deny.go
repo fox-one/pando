@@ -11,8 +11,9 @@ import (
 
 func NewDenyCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "deny",
-		Args: cobra.ExactArgs(1),
+		Use:   "deny",
+		Short: "make a proposal to remove an oracle feed",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 

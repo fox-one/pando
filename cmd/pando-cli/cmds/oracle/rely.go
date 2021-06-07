@@ -13,8 +13,9 @@ import (
 
 func NewRelyCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "rely",
-		Args: cobra.ExactArgs(2),
+		Use:   "rely",
+		Short: "make a proposal to add a new oracle feed",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, publicKey := args[0], args[1]
 

@@ -13,8 +13,9 @@ import (
 
 func NewDepositCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "deposit <vault id> <deposit>",
-		Args: cobra.ExactArgs(2),
+		Use:   "deposit <vault id> <deposit>",
+		Short: "execute Deposit action on a vault",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			vatID := args[0]

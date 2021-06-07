@@ -6,7 +6,8 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "cat",
+		Use:   "cat",
+		Short: "Create, supply, list, edit and fold collateral",
 	}
 
 	cmd.AddCommand(NewCreateCmd())

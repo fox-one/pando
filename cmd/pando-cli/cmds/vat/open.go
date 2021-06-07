@@ -13,8 +13,9 @@ import (
 
 func NewOpenCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "open <collateral id> <deposit> <generate>",
-		Args: cobra.ExactArgs(3),
+		Use:   "open <collateral id> <deposit> <generate>",
+		Short: "open a new vault",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 

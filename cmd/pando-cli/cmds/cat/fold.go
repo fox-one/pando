@@ -14,8 +14,9 @@ import (
 
 func NewFoldCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "fold <collateral id>",
-		Args: cobra.ExactArgs(1),
+		Use:   "fold <collateral id>",
+		Short: "execute Fold action on a collateral",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 			if strings.EqualFold(id, "all") {

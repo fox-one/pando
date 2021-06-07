@@ -11,8 +11,9 @@ import (
 
 func NewKickCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "kick <vault id> <bid>",
-		Args: cobra.ExactArgs(1),
+		Use:   "kick <vault id> <bid>",
+		Short: "execute Kick action on an unsafe vault",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			vatID := args[0]
 

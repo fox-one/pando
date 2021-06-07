@@ -12,7 +12,8 @@ import (
 
 func NewListCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "list",
+		Use:   "list",
+		Short: "list collaterals",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			r, err := call.R(cmd.Context()).Get("/api/cats")
 			if err != nil {
