@@ -10,6 +10,44 @@ make build-server
 make pando/server
 ```
 
+## config.yaml
+
+```yaml
+db:
+  dialect: mysql
+  host: db
+  port: 3306
+  user: root
+  password: pando
+  database: pando_1
+
+# node_1
+dapp:
+  client_id:
+  client_secret:
+  session_id:
+  pin_token:
+  private_key:
+
+group:
+  public_key: WPvGlI32LKWeP+kpKZ/VZIEX5/cDAcXGlGmfolp6paE=
+  members:
+    - 670e1faa-2975-48d9-a81f-cd0905ae847e
+    - 229fc7ac-9d09-4a6a-af5a-78f7439dce76
+    - 8017d200-7870-4b82-b53f-74bae1d2dad7
+    - 170e40f0-627f-4af2-acf5-0f25c009e523
+    - dfa655ef-55db-4e18-bdd7-29a7c576a223
+  threshold: 3
+```
+
+## Deploy
+
+### Run Binary
+
+```bash
+./pando-server --config config.yaml
+```
+
 ## API
 
 ### Swagger
