@@ -101,8 +101,8 @@ func (s *walletService) Spend(ctx context.Context, outputs []*core.Output, trans
 				return nil, err
 			}
 
-			if len(tx.Signatures) == 0 {
-				return nil, fmt.Errorf("generate raw transaction failed, invalid signatures")
+			if tx.AggregatedSignature == nil && len(tx.Signatures) == 0 {
+				return nil, fmt.Errorf("generate raw transaction failed, empty signatures")
 			}
 
 			return &core.RawTransaction{

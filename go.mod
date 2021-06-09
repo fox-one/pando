@@ -10,7 +10,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v1.1.0
-	github.com/fox-one/mixin-sdk-go v1.4.0
+	github.com/fox-one/mixin-sdk-go v1.4.2
 	github.com/fox-one/msgpack v1.0.0
 	github.com/fox-one/pkg v1.5.5
 	github.com/go-chi/chi v4.1.2+incompatible
@@ -36,7 +36,6 @@ require (
 	github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0
-	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
@@ -46,7 +45,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea // indirect
+	golang.org/x/sys v0.0.0-20210608053332-aa57babbf139 // indirect
 	golang.org/x/text v0.3.6
 	google.golang.org/protobuf v1.26.0
 )
