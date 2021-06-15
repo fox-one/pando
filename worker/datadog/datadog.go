@@ -75,6 +75,8 @@ func (w *Datadog) run(ctx context.Context) error {
 
 	var groups []metric.Group
 
+	var report bool
+
 	// wallets
 	{
 		lastOutputID, err := w.wallets.CountOutputs(ctx)
@@ -102,6 +104,8 @@ func (w *Datadog) run(ctx context.Context) error {
 				},
 			},
 		})
+
+		report = unhandled > 0 || report
 	}
 
 	// properties
@@ -118,6 +122,11 @@ func (w *Datadog) run(ctx context.Context) error {
 				Name:  k,
 				Value: v.String(),
 			})
+
+			if k == "sync_checkpoint" {
+				t := v.Time()
+				report = (!t.IsZero() && time.Since(t) > 5*time.Minute) || report
+			}
 		}
 
 		groups = append(groups, group)
@@ -125,12 +134,15 @@ func (w *Datadog) run(ctx context.Context) error {
 
 	// system
 	{
+		uptime := time.Since(w.launchAt)
+		report = uptime < time.Minute || report
+
 		groups = append(groups, metric.Group{
 			Name: "system",
 			Entries: []metric.Entry{
 				{
 					Name:  "uptime",
-					Value: time.Since(w.launchAt).String(),
+					Value: uptime.String(),
 				},
 			},
 		})
@@ -138,6 +150,10 @@ func (w *Datadog) run(ctx context.Context) error {
 
 	var b bytes.Buffer
 	metric.Render(&b, groups)
+
+	if !report {
+		return nil
+	}
 
 	msg := core.BuildMessage(&mixin.MessageRequest{
 		ConversationID: w.conversationID,
