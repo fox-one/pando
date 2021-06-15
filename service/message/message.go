@@ -16,7 +16,15 @@ type messageService struct {
 	c *mixin.Client
 }
 
-func (s *messageService) Send(ctx context.Context, messages []*core.Message) error {
+func parseSendMessageErr(err error) error {
+	if err != nil && mixin.IsErrorCodes(err, 10002) {
+		return nil
+	}
+
+	return err
+}
+
+func (s *messageService) Send(ctx context.Context, messages []*core.Message, batch bool) error {
 	raws := make([]json.RawMessage, 0, len(messages))
 	for _, msg := range messages {
 		if msg.UserID == s.c.ClientID {
@@ -26,14 +34,17 @@ func (s *messageService) Send(ctx context.Context, messages []*core.Message) err
 		raws = append(raws, json.RawMessage(msg.Raw))
 	}
 
-	err := s.c.SendRawMessages(ctx, raws)
-
-	// contain messages to unavailable users, ignore
-	if mixin.IsErrorCodes(err, 10002) {
-		return nil
+	if batch {
+		return parseSendMessageErr(s.c.SendRawMessages(ctx, raws))
 	}
 
-	return err
+	for _, raw := range raws {
+		if err := parseSendMessageErr(s.c.SendRawMessage(ctx, raw)); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *messageService) Meet(ctx context.Context, userID string) error {

@@ -162,7 +162,7 @@ func (w *Datadog) run(ctx context.Context) error {
 		Data:           base64.StdEncoding.EncodeToString(b.Bytes()),
 	})
 
-	if err := w.messagez.Send(ctx, []*core.Message{msg}); err != nil {
+	if err := w.messagez.Send(ctx, []*core.Message{msg}, false); err != nil {
 		log.WithError(err).Errorln("messagez.Send")
 		return err
 	}

@@ -86,7 +86,7 @@ func (w *Messenger) run(ctx context.Context) error {
 	}
 
 	messages = messages[:idx]
-	if err := w.messagez.Send(ctx, messages); err != nil {
+	if err := w.messagez.Send(ctx, messages, true); err != nil {
 		log.WithError(err).Error("messagez.Send")
 		return err
 	}

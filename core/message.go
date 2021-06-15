@@ -28,7 +28,7 @@ type (
 
 	// MessageService provide access to handle message with mixin messenger service
 	MessageService interface {
-		Send(ctx context.Context, messages []*Message) error
+		Send(ctx context.Context, messages []*Message, batch bool) error
 		Meet(ctx context.Context, userID string) error
 	}
 )
