@@ -26,7 +26,6 @@ import (
 	"github.com/fox-one/pando/store/wallet"
 	"github.com/fox-one/pando/worker/assigner"
 	"github.com/fox-one/pando/worker/cashier"
-	"github.com/fox-one/pando/worker/datadog"
 	"github.com/fox-one/pando/worker/events"
 	"github.com/fox-one/pando/worker/keeper"
 	"github.com/fox-one/pando/worker/messenger"
@@ -83,9 +82,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	eventsEvents := events.New(transactionStore, notifier, store)
 	keeperKeeper := keeper.New(collateralStore, oracleStore, vaultStore, flipStore, walletService, notifier, system)
 	assignerAssigner := assigner.New(walletStore, system)
-	datadogConfig := provideDataDogConfig(cfg)
-	datadogDatadog := datadog.New(walletStore, store, messageService, datadogConfig)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents, keeperKeeper, assignerAssigner, datadogDatadog)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, sync, spentSync, sender, syncerSyncer, eventsEvents, keeperKeeper, assignerAssigner)
 	server := node.New(system, store, oracleStore, assetService)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)

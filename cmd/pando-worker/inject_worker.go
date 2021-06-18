@@ -59,9 +59,8 @@ func provideWorkers(
 	h *events.Events,
 	i *keeper.Keeper,
 	j *assigner.Assigner,
-	k *datadog.Datadog,
 ) []worker.Worker {
-	workers := []worker.Worker{a, b, c, d, e, f, g, h, j, k}
+	workers := []worker.Worker{a, b, c, d, e, f, g, h, j}
 
 	if _flag.keeper {
 		workers = append(workers, i)
