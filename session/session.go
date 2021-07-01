@@ -72,9 +72,9 @@ func (s *session) Login(r *http.Request) (*core.User, error) {
 		}
 
 		// handle language
-		lang := request.ExtractPreferLanguage(r)
-		if u, err := s.users.Find(ctx, user.MixinID); err == nil && user.Lang != lang {
-			u.Lang = lang
+		user.Lang = request.ExtractPreferLanguage(r)
+		if u, err := s.users.Find(ctx, user.MixinID); err == nil && u.Lang != user.Lang {
+			u.Lang = user.Lang
 
 			if err := s.users.Save(ctx, u); err != nil {
 				return nil, err
