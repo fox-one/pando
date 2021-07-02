@@ -5,6 +5,8 @@
 All participants of Pando complete the interaction by transferring tokens to the multisig wallet. 
 Node worker **Syncer** syncs the payments as mixin multisig outputs; another worker **Payee** processes all outputs in order.
 
+![Pando Design](Resources/pando%20design.png)
+
 ### Mixin Multisig Output
 
 **Output:**
