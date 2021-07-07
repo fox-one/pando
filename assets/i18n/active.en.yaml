@@ -42,7 +42,7 @@ vat_kicked: |
   🚨 Vault {{.Name}} #{{.ID}} is liquidated
 
   - Liquidated collateral {{.Ink}} {{.Gem}}
-  - Liquidated debt {{.Debt}} {{.Dai}}
+  - Liquidated debt (include penalty) {{.Debt}} {{.Dai}}
 
 # Cat
 Cat/bad-data: "bad data"
