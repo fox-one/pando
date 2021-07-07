@@ -58,8 +58,8 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, user *
 	args := map[string]interface{}{
 		"Name": cat.Name,
 		"ID":   vat.ID,
-		"Dink": number.Humanize(event.Dink),
-		"Debt": number.Humanize(event.Debt),
+		"Dink": number.Humanize(event.Dink.Abs()),
+		"Debt": number.Humanize(event.Debt.Abs()),
 		"Gem":  gem.Symbol,
 		"Dai":  dai.Symbol,
 	}
