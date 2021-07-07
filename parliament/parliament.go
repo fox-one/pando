@@ -32,6 +32,10 @@ func New(
 ) core.Parliament {
 	links := &template.Template{}
 	for name, tpl := range cfg.Links {
+		if tpl == "" {
+			continue
+		}
+
 		links = template.Must(
 			links.New(name).Parse(tpl),
 		)

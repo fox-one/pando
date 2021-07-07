@@ -20,6 +20,7 @@ type (
 		Group   Group     `json:"group"`
 		Gas     Gas       `json:"gas"`
 		Flip    Flip      `json:"flip"`
+		Vault   Vault     `json:"vault"`
 		I18n    I18n      `json:"i18n"`
 		DataDog DataDog   `json:"data_dog"`
 	}
@@ -49,6 +50,10 @@ type (
 	}
 
 	Flip struct {
+		DetailPage string `json:"detail_page,omitempty"`
+	}
+
+	Vault struct {
 		DetailPage string `json:"detail_page,omitempty"`
 	}
 

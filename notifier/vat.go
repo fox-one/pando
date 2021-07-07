@@ -78,5 +78,11 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, user *
 		data.AddLine(n.localize("vat_payback", user.Lang, args))
 	}
 
+	if detail, err := n.executeLink("vault_detail", map[string]string{
+		"vault_id": vatID,
+	}); err == nil {
+		data.AddButton(n.localize("vault_button", user.Lang), detail)
+	}
+
 	return nil
 }

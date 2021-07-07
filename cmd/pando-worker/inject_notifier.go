@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/fox-one/pando/cmd/pando-worker/config"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/notifier"
 	"github.com/fox-one/pkg/text/localizer"
@@ -8,8 +9,18 @@ import (
 )
 
 var notifierSet = wire.NewSet(
+	provideNotifyConfig,
 	provideNotifier,
 )
+
+func provideNotifyConfig(cfg *config.Config) notifier.Config {
+	return notifier.Config{
+		Links: map[string]string{
+			"flip_detail":  cfg.Flip.DetailPage,
+			"vault_detail": cfg.Vault.DetailPage,
+		},
+	}
+}
 
 func provideNotifier(
 	system *core.System,
@@ -20,6 +31,7 @@ func provideNotifier(
 	users core.UserStore,
 	flips core.FlipStore,
 	localizer *localizer.Localizer,
+	cfg notifier.Config,
 ) core.Notifier {
 	if _flag.notify {
 		return notifier.New(
@@ -31,6 +43,7 @@ func provideNotifier(
 			users,
 			flips,
 			localizer,
+			cfg,
 		)
 	}
 

@@ -6,5 +6,6 @@ import (
 )
 
 var notifierSet = wire.NewSet(
+	wire.Value(notifier.Config{}),
 	notifier.New,
 )

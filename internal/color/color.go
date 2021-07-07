@@ -1,4 +1,4 @@
-package parliament
+package color
 
 import "math/rand"
 
@@ -12,6 +12,6 @@ var hexColors = []string{
 	"#FD5392",
 }
 
-func randomHexColor() string {
+func Random() string {
 	return hexColors[rand.Intn(len(hexColors))]
 }

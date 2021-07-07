@@ -1,10 +1,12 @@
 package notifier
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"strings"
 	"time"
 
@@ -17,6 +19,10 @@ import (
 	"github.com/fox-one/pkg/text/localizer"
 )
 
+type Config struct {
+	Links map[string]string
+}
+
 func New(
 	system *core.System,
 	assetz core.AssetService,
@@ -26,7 +32,19 @@ func New(
 	users core.UserStore,
 	flips core.FlipStore,
 	i18n *localizer.Localizer,
+	cfg Config,
 ) core.Notifier {
+	links := &template.Template{}
+	for name, tpl := range cfg.Links {
+		if tpl == "" {
+			continue
+		}
+
+		links = template.Must(
+			links.New(name).Parse(tpl),
+		)
+	}
+
 	return &notifier{
 		system:   system,
 		assetz:   asset.Cache(assetz),
@@ -36,6 +54,7 @@ func New(
 		users:    users,
 		flips:    flips,
 		i18n:     i18n,
+		links:    links,
 	}
 }
 
@@ -48,6 +67,16 @@ type notifier struct {
 	users    core.UserStore
 	flips    core.FlipStore
 	i18n     *localizer.Localizer
+	links    *template.Template
+}
+
+func (n *notifier) executeLink(name string, data interface{}) (string, error) {
+	b := bytes.Buffer{}
+	if err := n.links.ExecuteTemplate(&b, name, data); err != nil {
+		return "", err
+	}
+
+	return b.String(), nil
 }
 
 func (n *notifier) localize(id, lang string, args ...interface{}) string {
@@ -105,16 +134,25 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 		id = "tx_ok"
 	}
 
-	msg := n.localize(id, user.Lang, data)
-
 	var messages []*core.Message
-	for _, userID := range append(data.receipts, tx.UserID) {
+
+	msg := n.localize(id, user.Lang, data)
+	messages = append(messages, core.BuildMessage(&mixin.MessageRequest{
+		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+		RecipientID:    user.MixinID,
+		MessageID:      uuid.Modify(tx.TraceID, "notify"),
+		Category:       mixin.MessageCategoryPlainText,
+		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	}))
+
+	if len(data.Buttons) > 0 {
+		buttons, _ := json.Marshal(data.Buttons)
 		messages = append(messages, core.BuildMessage(&mixin.MessageRequest{
-			ConversationID: mixin.UniqueConversationID(n.system.ClientID, userID),
-			RecipientID:    userID,
-			MessageID:      uuid.Modify(tx.TraceID, "notify "+userID),
-			Category:       mixin.MessageCategoryPlainText,
-			Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(tx.TraceID, "notify buttons"),
+			Category:       mixin.MessageCategoryAppButtonGroup,
+			Data:           base64.StdEncoding.EncodeToString(buttons),
 		}))
 	}
 

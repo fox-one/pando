@@ -3,9 +3,11 @@ package notifier
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/internal/color"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
@@ -78,24 +80,73 @@ func (n *notifier) handleFlipTx(ctx context.Context, tx *core.Transaction, user 
 	data.AddLine(n.localize("flip_bid", user.Lang, args))
 	data.AddLine(n.localize("flip_bid_price", user.Lang, args))
 
+	if action, err := n.executeLink("flip_detail", map[string]string{
+		"flip_id": flipID,
+	}); err == nil {
+		label := n.localize("flip_button", user.Lang)
+		data.AddButton(label, action)
+	}
+
+	return n.notifyFlipParticipant(ctx, tx, vat, flip, args)
+}
+
+func (n *notifier) notifyFlipParticipant(ctx context.Context, tx *core.Transaction, vat *core.Vault, flip *core.Flip, args interface{}) error {
+	var (
+		user  *core.User
+		topic string
+		err   error
+	)
+
 	switch tx.Action {
 	case core.ActionFlipKick:
-		msg := n.localize("vat_kicked", user.Lang, args)
+		user, err = n.users.Find(ctx, vat.UserID)
+		topic = "vat_kicked"
+	case core.ActionFlipDeal:
+		user, err = n.users.Find(ctx, flip.Guy)
+		topic = "flip_win"
+	default:
+		return nil
+	}
+
+	if err != nil {
+		return err
+	}
+
+	var messages []*core.Message
+
+	{
+		msg := n.localize(topic, user.Lang, args)
 		req := &mixin.MessageRequest{
-			ConversationID: mixin.UniqueConversationID(n.system.ClientID, vat.UserID),
-			RecipientID:    vat.UserID,
-			MessageID:      uuid.Modify(vat.TraceID, "kick by "+tx.TraceID),
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vat.TraceID, tx.TraceID+topic),
 			Category:       mixin.MessageCategoryPlainText,
 			Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
 		}
 
-		if err := n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)}); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("messages.Create")
-			return err
-		}
-	case core.ActionFlipDeal:
-		data.cc(flip.Guy)
+		messages = append(messages, core.BuildMessage(req))
 	}
 
-	return nil
+	if action, err := n.executeLink("flip_detail", map[string]string{
+		"flip_id": flip.TraceID,
+	}); err == nil {
+		label := n.localize("flip_button", user.Lang)
+		buttons, _ := json.Marshal(mixin.AppButtonGroupMessage{mixin.AppButtonMessage{
+			Label:  label,
+			Action: action,
+			Color:  color.Random(),
+		}})
+
+		req := &mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vat.TraceID, tx.TraceID+topic+"buttons"),
+			Category:       mixin.MessageCategoryAppButtonGroup,
+			Data:           base64.StdEncoding.EncodeToString(buttons),
+		}
+
+		messages = append(messages, core.BuildMessage(req))
+	}
+
+	return n.messages.Create(ctx, messages)
 }

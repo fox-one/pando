@@ -44,6 +44,16 @@ vat_kicked: |
   - Liquidated collateral {{.Ink}} {{.Gem}}
   - Liquidated debt (include penalty) {{.Debt}} {{.Dai}}
 
+flip_win: |
+  🎉 Congratulations on winning the auction
+
+  - Collateral {{.Lot}} {{.Gem}}
+  - Bid {{.Bid}} {{.Dai}}
+  - Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+
+vault_button: Vault Detail
+flip_button: Auction Detail
+
 # Cat
 Cat/bad-data: "bad data"
 Cat/not-authorized: "not authorized"

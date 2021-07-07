@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/fox-one/mixin-sdk-go"
+	"github.com/fox-one/pando/internal/color"
 )
 
 func generateButtons(items []Item) mixin.AppButtonGroupMessage {
 	var (
-		color   = randomHexColor()
 		buttons = mixin.AppButtonGroupMessage{}
 		idx     int
 	)
@@ -21,7 +21,7 @@ func generateButtons(items []Item) mixin.AppButtonGroupMessage {
 		buttons = append(buttons, mixin.AppButtonMessage{
 			Label:  item.Value,
 			Action: item.Action,
-			Color:  color,
+			Color:  color.Random(),
 		})
 
 		if idx = idx + 1; idx >= 6 {
