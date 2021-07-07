@@ -13,6 +13,7 @@ import (
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/internal/color"
+	"github.com/fox-one/pando/notifier/message"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pando/service/asset"
@@ -49,7 +50,7 @@ func New(
 	return &notifier{
 		system:   system,
 		assetz:   asset.Cache(assetz),
-		messages: messages,
+		messages: message.Duplicate(messages, 10*time.Minute),
 		vats:     vats,
 		cats:     cats,
 		users:    users,
