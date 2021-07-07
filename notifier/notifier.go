@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/fox-one/mixin-sdk-go"
