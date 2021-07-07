@@ -19,8 +19,30 @@ vat_withdraw: Withdraw {{.Dink}} {{.Gem}}
 vat_generate: Generate {{.Debt}} {{.Dai}}
 vat_payback: Payback {{.Debt}} {{.Dai}}
 
+# flip
+flip_lot: Collateral {{.Lot}} {{.Gem}}
+flip_bid: Bid {{.Bid}} {{.Dai}}
+flip_bid_price: Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+
 vat_unsafe_warn: |
-  🚨 Vault {{.Name}} #{{.ID}} is At risk of being liquidated.
+  🚨 Vault {{.Name}} #{{.ID}} is in the risk of being liquidated
+
+  - Collateral {{.Ink}} {{.Gem}}
+  - Debt {{.Debt}} {{.Dai}}
+  - Rate {{.Rate}}
+
+vat_about_to_be_liquidated: |
+  🚨 Vault {{.Name}} #{{.ID}} is going to be liquidated
+
+  - Collateral {{.Ink}} {{.Gem}}
+  - Debt {{.Debt}} {{.Dai}}
+  - Rate {{.Rate}}
+
+vat_kicked: |
+  🚨 Vault {{.Name}} #{{.ID}} is liquidated
+
+  - Liquidated collateral {{.Ink}} {{.Gem}}
+  - Liquidated debt {{.Debt}} {{.Dai}}
 
 # Cat
 Cat/bad-data: "bad data"

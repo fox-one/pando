@@ -14,4 +14,6 @@ type Notifier interface {
 	Snapshot(ctx context.Context, transfer *Transfer, TxHash string) error
 	// VaultUnsafe notify the vault's owner the risk
 	VaultUnsafe(ctx context.Context, cat *Collateral, vault *Vault) error
+	// VaultLiquidatedSoon notify the owner of vault which is going to be liquidated
+	VaultLiquidatedSoon(ctx context.Context, cat *Collateral, vault *Vault) error
 }

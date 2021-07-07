@@ -27,3 +27,7 @@ func (d *dumb) Transaction(ctx context.Context, tx *core.Transaction) error {
 func (d *dumb) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
 	return nil
 }
+
+func (d *dumb) VaultLiquidatedSoon(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
+	return nil
+}

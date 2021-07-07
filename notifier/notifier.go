@@ -9,6 +9,7 @@ import (
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pkg/logger"
@@ -22,6 +23,7 @@ func New(
 	vats core.VaultStore,
 	cats core.CollateralStore,
 	users core.UserStore,
+	flips core.FlipStore,
 	i18n *localizer.Localizer,
 ) core.Notifier {
 	return &notifier{
@@ -31,6 +33,7 @@ func New(
 		vats:     vats,
 		cats:     cats,
 		users:    users,
+		flips:    flips,
 		i18n:     i18n,
 	}
 }
@@ -42,6 +45,7 @@ type notifier struct {
 	vats     core.VaultStore
 	cats     core.CollateralStore
 	users    core.UserStore
+	flips    core.FlipStore
 	i18n     *localizer.Localizer
 }
 
@@ -81,7 +85,7 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 	action := n.localize("Action"+tx.Action.String(), user.Lang)
 	data := TxData{
 		Action:  action,
-		Message: tx.Message,
+		Message: n.localize(tx.Message, user.Lang),
 	}
 
 	id := "tx_abort"
@@ -91,21 +95,29 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 			if err := n.handleVatTx(ctx, tx, user, &data); err != nil {
 				return err
 			}
+		case core.ActionFlipKick, core.ActionFlipBid, core.ActionFlipDeal:
+			if err := n.handleFlipTx(ctx, tx, user, &data); err != nil {
+				return err
+			}
 		}
 
 		id = "tx_ok"
 	}
 
 	msg := n.localize(id, user.Lang, data)
-	req := &mixin.MessageRequest{
-		ConversationID: mixin.UniqueConversationID(n.system.ClientID, tx.UserID),
-		RecipientID:    tx.UserID,
-		MessageID:      uuid.Modify(tx.TraceID, "notify"),
-		Category:       mixin.MessageCategoryPlainText,
-		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+
+	var messages []*core.Message
+	for _, userID := range append(data.receipts, tx.UserID) {
+		messages = append(messages, core.BuildMessage(&mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, userID),
+			RecipientID:    userID,
+			MessageID:      uuid.Modify(tx.TraceID, "notify "+userID),
+			Category:       mixin.MessageCategoryPlainText,
+			Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+		}))
 	}
 
-	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+	return n.messages.Create(ctx, messages)
 }
 
 func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signedTx string) error {
@@ -158,18 +170,76 @@ func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signed
 func (n *notifier) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
 	user, err := n.users.Find(ctx, vault.UserID)
 	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("users.Find")
+		return err
+	}
+
+	gem, err := n.assetz.Find(ctx, cat.Gem)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
+		return err
+	}
+
+	dai, err := n.assetz.Find(ctx, cat.Dai)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
 		return err
 	}
 
 	msg := n.localize("vat_unsafe_warn", user.Lang, map[string]interface{}{
 		"ID":   vault.ID,
 		"Name": cat.Name,
+		"Ink":  number.Humanize(vault.Ink),
+		"Gem":  gem.Symbol,
+		"Debt": number.Humanize(getDebt(cat, vault)),
+		"Dai":  dai.Symbol,
+		"Rate": getCollateralRate(cat, vault),
 	})
 
 	req := &mixin.MessageRequest{
 		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
 		RecipientID:    user.MixinID,
-		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("versions_%d_%d", cat.Version, vault.Version)),
+		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("unsafe_%d_%d", cat.Version, vault.Version)),
+		Category:       mixin.MessageCategoryPlainText,
+		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	}
+
+	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+}
+
+func (n *notifier) VaultLiquidatedSoon(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
+	user, err := n.users.Find(ctx, vault.UserID)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("users.Find")
+		return err
+	}
+
+	gem, err := n.assetz.Find(ctx, cat.Gem)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
+		return err
+	}
+
+	dai, err := n.assetz.Find(ctx, cat.Dai)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("assetz.Find")
+		return err
+	}
+
+	msg := n.localize("vat_about_to_be_liquidated", user.Lang, map[string]interface{}{
+		"ID":   vault.ID,
+		"Name": cat.Name,
+		"Ink":  number.Humanize(vault.Ink),
+		"Gem":  gem.Symbol,
+		"Debt": number.Humanize(getDebt(cat, vault)),
+		"Dai":  dai.Symbol,
+		"Rate": getCollateralRate(cat, vault),
+	})
+
+	req := &mixin.MessageRequest{
+		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+		RecipientID:    user.MixinID,
+		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("liquidated_soon_%d_%d", cat.Version, vault.Version)),
 		Category:       mixin.MessageCategoryPlainText,
 		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
 	}

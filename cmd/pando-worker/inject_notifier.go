@@ -18,6 +18,7 @@ func provideNotifier(
 	vats core.VaultStore,
 	cats core.CollateralStore,
 	users core.UserStore,
+	flips core.FlipStore,
 	localizer *localizer.Localizer,
 ) core.Notifier {
 	if _flag.notify {
@@ -28,6 +29,7 @@ func provideNotifier(
 			vats,
 			cats,
 			users,
+			flips,
 			localizer,
 		)
 	}

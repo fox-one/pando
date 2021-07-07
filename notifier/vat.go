@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pkg/logger"
 	"github.com/spf13/cast"
 )
@@ -54,18 +55,27 @@ func (n *notifier) handleVatTx(ctx context.Context, tx *core.Transaction, user *
 		return err
 	}
 
-	data.Lines = append(data.Lines, n.localize("vat_name", user.Lang, "Name", cat.Name, "ID", vat.ID))
+	args := map[string]interface{}{
+		"Name": cat.Name,
+		"ID":   vat.ID,
+		"Dink": number.Humanize(event.Dink),
+		"Debt": number.Humanize(event.Debt),
+		"Gem":  gem.Symbol,
+		"Dai":  dai.Symbol,
+	}
+
+	data.AddLine(n.localize("vat_name", user.Lang, args))
 
 	if event.Dink.IsPositive() {
-		data.Lines = append(data.Lines, n.localize("vat_deposit", user.Lang, "Dink", event.Dink.String(), "Gem", gem.Symbol))
+		data.AddLine(n.localize("vat_deposit", user.Lang, args))
 	} else if event.Dink.IsNegative() {
-		data.Lines = append(data.Lines, n.localize("vat_withdraw", user.Lang, "Dink", event.Dink.Abs().String(), "Gem", gem.Symbol))
+		data.AddLine(n.localize("vat_withdraw", user.Lang, args))
 	}
 
 	if event.Debt.IsPositive() {
-		data.Lines = append(data.Lines, n.localize("vat_generate", user.Lang, "Debt", event.Debt.String(), "Dai", dai.Symbol))
+		data.AddLine(n.localize("vat_generate", user.Lang, args))
 	} else if event.Debt.IsNegative() {
-		data.Lines = append(data.Lines, n.localize("vat_payback", user.Lang, "Debt", event.Debt.Abs().String(), "Dai", dai.Symbol))
+		data.AddLine(n.localize("vat_payback", user.Lang, args))
 	}
 
 	return nil

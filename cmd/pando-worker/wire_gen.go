@@ -76,7 +76,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	sync := pricesync.New(assetStore, assetService)
 	userStore := user2.New(db)
 	localizer := provideLocalizer(cfg)
-	notifier := provideNotifier(system, assetService, messageStore, vaultStore, collateralStore, userStore, localizer)
+	notifier := provideNotifier(system, assetService, messageStore, vaultStore, collateralStore, userStore, flipStore, localizer)
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)

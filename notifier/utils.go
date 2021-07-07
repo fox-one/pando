@@ -2,10 +2,14 @@ package notifier
 
 import (
 	"crypto/md5"
+	"fmt"
 	"io"
 	"math/big"
 
+	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/pkg/number"
 	"github.com/gofrs/uuid"
+	"github.com/shopspring/decimal"
 )
 
 func mixinRawTransactionTraceId(hash string, index uint8) string {
@@ -22,4 +26,20 @@ func mixinRawTransactionTraceId(hash string, index uint8) string {
 	}
 
 	return sid.String()
+}
+
+func getDebt(cat *core.Collateral, vat *core.Vault) decimal.Decimal {
+	return number.Ceil(cat.Rate.Mul(vat.Art), 8)
+}
+
+func getCollateralRate(cat *core.Collateral, vat *core.Vault) string {
+	ink := vat.Ink
+	debt := getDebt(cat, vat)
+
+	rate := decimal.Zero
+	if debt.IsPositive() {
+		rate = ink.Mul(cat.Price).Div(debt).Truncate(4)
+	}
+
+	return fmt.Sprintf(`%s%`, rate.Shift(2))
 }
