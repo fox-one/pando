@@ -71,6 +71,7 @@ func (n *notifier) handleFlipTx(ctx context.Context, tx *core.Transaction, user 
 		"VaultID": vat.ID,
 		"Lot":     number.Humanize(event.Lot),
 		"Bid":     number.Humanize(event.Bid),
+		"Tab":     number.Humanize(flip.Tab),
 		"Gem":     gem.Symbol,
 		"Dai":     dai.Symbol,
 		"Price":   number.Humanize(event.Bid.Div(event.Lot).Truncate(8)),

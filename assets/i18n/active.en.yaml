@@ -41,8 +41,8 @@ vat_about_to_be_liquidated: |
 vat_kicked: |
   ⚠️ Vault {{.Name}} #{{.ID}} is liquidated
 
-  - Liquidated collateral {{.Ink}} {{.Gem}}
-  - Liquidated debt (include penalty) {{.Debt}} {{.Dai}}
+  - Liquidated collateral {{.Lot}} {{.Gem}}
+  - Liquidated debt (include penalty) {{.Tab}} {{.Dai}}
 
 flip_win: |
   🎉 Congratulations on winning the auction

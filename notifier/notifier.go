@@ -12,6 +12,7 @@ import (
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
+	"github.com/fox-one/pando/internal/color"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pando/service/asset"
@@ -238,15 +239,40 @@ func (n *notifier) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault 
 	dur := 10 * time.Minute
 	trace := fmt.Sprintf("unsafe_%s_%s", cat.UpdatedAt.Truncate(dur), vault.UpdatedAt.Truncate(dur))
 
-	req := &mixin.MessageRequest{
-		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
-		RecipientID:    user.MixinID,
-		MessageID:      uuid.Modify(vault.TraceID, trace),
-		Category:       mixin.MessageCategoryPlainText,
-		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	var messages []*core.Message
+
+	{
+		messages = append(messages, core.BuildMessage(&mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vault.TraceID, trace),
+			Category:       mixin.MessageCategoryPlainText,
+			Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+		}))
 	}
 
-	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+	if action, err := n.executeLink("vault_detail", map[string]string{
+		"vault_id": vault.TraceID,
+	}); err == nil {
+		label := n.localize("vault_button", user.Lang)
+		buttons, _ := json.Marshal(mixin.AppButtonGroupMessage{mixin.AppButtonMessage{
+			Label:  label,
+			Action: action,
+			Color:  color.Random(),
+		}})
+
+		req := &mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vault.TraceID, trace+"buttons"),
+			Category:       mixin.MessageCategoryAppButtonGroup,
+			Data:           base64.StdEncoding.EncodeToString(buttons),
+		}
+
+		messages = append(messages, core.BuildMessage(req))
+	}
+
+	return n.messages.Create(ctx, messages)
 }
 
 func (n *notifier) VaultLiquidatedSoon(ctx context.Context, cat *core.Collateral, vault *core.Vault) error {
@@ -281,13 +307,38 @@ func (n *notifier) VaultLiquidatedSoon(ctx context.Context, cat *core.Collateral
 	dur := 5 * time.Minute
 	trace := fmt.Sprintf("liquidated_soon_%s_%s", cat.UpdatedAt.Truncate(dur), vault.UpdatedAt.Truncate(dur))
 
-	req := &mixin.MessageRequest{
-		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
-		RecipientID:    user.MixinID,
-		MessageID:      uuid.Modify(vault.TraceID, trace),
-		Category:       mixin.MessageCategoryPlainText,
-		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+	var messages []*core.Message
+
+	{
+		messages = append(messages, core.BuildMessage(&mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vault.TraceID, trace),
+			Category:       mixin.MessageCategoryPlainText,
+			Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
+		}))
 	}
 
-	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+	if action, err := n.executeLink("vault_detail", map[string]string{
+		"vault_id": vault.TraceID,
+	}); err == nil {
+		label := n.localize("vault_button", user.Lang)
+		buttons, _ := json.Marshal(mixin.AppButtonGroupMessage{mixin.AppButtonMessage{
+			Label:  label,
+			Action: action,
+			Color:  color.Random(),
+		}})
+
+		req := &mixin.MessageRequest{
+			ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
+			RecipientID:    user.MixinID,
+			MessageID:      uuid.Modify(vault.TraceID, trace+"buttons"),
+			Category:       mixin.MessageCategoryAppButtonGroup,
+			Data:           base64.StdEncoding.EncodeToString(buttons),
+		}
+
+		messages = append(messages, core.BuildMessage(req))
+	}
+
+	return n.messages.Create(ctx, messages)
 }
