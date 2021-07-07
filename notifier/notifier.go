@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
@@ -196,10 +197,13 @@ func (n *notifier) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault 
 		"Rate": getCollateralRate(cat, vault),
 	})
 
+	dur := 10 * time.Minute
+	trace := fmt.Sprintf("unsafe_%s_%s", cat.UpdatedAt.Truncate(dur), vault.UpdatedAt.Truncate(dur))
+
 	req := &mixin.MessageRequest{
 		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
 		RecipientID:    user.MixinID,
-		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("unsafe_%d_%d", cat.Version, vault.Version)),
+		MessageID:      uuid.Modify(vault.TraceID, trace),
 		Category:       mixin.MessageCategoryPlainText,
 		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
 	}
@@ -236,10 +240,13 @@ func (n *notifier) VaultLiquidatedSoon(ctx context.Context, cat *core.Collateral
 		"Rate": getCollateralRate(cat, vault),
 	})
 
+	dur := 5 * time.Minute
+	trace := fmt.Sprintf("liquidated_soon_%s_%s", cat.UpdatedAt.Truncate(dur), vault.UpdatedAt.Truncate(dur))
+
 	req := &mixin.MessageRequest{
 		ConversationID: mixin.UniqueConversationID(n.system.ClientID, user.MixinID),
 		RecipientID:    user.MixinID,
-		MessageID:      uuid.Modify(vault.TraceID, fmt.Sprintf("liquidated_soon_%d_%d", cat.Version, vault.Version)),
+		MessageID:      uuid.Modify(vault.TraceID, trace),
 		Category:       mixin.MessageCategoryPlainText,
 		Data:           base64.StdEncoding.EncodeToString([]byte(msg)),
 	}

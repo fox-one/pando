@@ -7,12 +7,12 @@ import (
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/mtg/types"
+	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/patrickmn/go-cache"
 	"github.com/shopspring/decimal"
 	"golang.org/x/sync/errgroup"
-	"golang.org/x/sync/semaphore"
 )
 
 func (w *Keeper) scanVaults(ctx context.Context) error {
@@ -74,9 +74,9 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral, nex
 		nextRate = nextPrice.Div(cat.Rate).Div(cat.Mat)
 	}
 
+	scanRate := decimal.Min(rate.Mul(number.Decimal("0.8")))
+
 	var (
-		g     errgroup.Group
-		sem   = semaphore.NewWeighted(5)
 		from  int64
 		limit = 100
 	)
@@ -84,13 +84,13 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral, nex
 	for {
 		select {
 		case <-ctx.Done():
-			return g.Wait()
+			return ctx.Err()
 		default:
 		}
 
 		vats, err := w.vaults.List(ctx, core.ListVaultRequest{
 			CollateralID: cat.TraceID,
-			Rate:         decimal.Min(rate, nextRate),
+			Rate:         scanRate,
 			Desc:         true,
 			FromID:       from,
 			Limit:        limit,
@@ -105,20 +105,21 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral, nex
 			vat := vats[idx]
 			from = vat.ID
 
-			if err := sem.Acquire(ctx, 1); err != nil {
-				return g.Wait()
-			}
-
-			if willBeLiquidated := vat.Rate.LessThanOrEqual(rate); willBeLiquidated {
-				return w.notifier.VaultUnsafe(ctx, cat, vat)
-			}
-
-			g.Go(func() error {
-				defer sem.Release(1)
-
+			switch {
+			case vat.Rate.GreaterThan(rate):
 				trace := uuid.Modify(vat.TraceID, fmt.Sprintf("%s-%d", rate, vat.Version))
-				return w.handleTransfer(ctx, trace, core.ActionFlipKick, types.UUID(vat.TraceID))
-			})
+				_ = w.handleTransfer(ctx, trace, core.ActionFlipKick, types.UUID(vat.TraceID))
+			case vat.Rate.GreaterThan(nextRate):
+				if err := w.notifier.VaultLiquidatedSoon(ctx, cat, vat); err != nil {
+					logger.FromContext(ctx).WithError(err).Errorln("notifier.VaultLiquidatedSoon")
+					return err
+				}
+			default:
+				if err := w.notifier.VaultUnsafe(ctx, cat, vat); err != nil {
+					logger.FromContext(ctx).WithError(err).Errorln("notifier.VaultUnsafe")
+					return err
+				}
+			}
 		}
 
 		if len(vats) < limit {
@@ -126,7 +127,7 @@ func (w *Keeper) scanUnsafeVaults(ctx context.Context, cat *core.Collateral, nex
 		}
 	}
 
-	return g.Wait()
+	return nil
 }
 
 func nextPrice(gem, dai *core.Oracle) (next decimal.Decimal, at time.Time) {
