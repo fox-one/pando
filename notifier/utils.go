@@ -38,8 +38,8 @@ func getCollateralRate(cat *core.Collateral, vat *core.Vault) string {
 
 	rate := decimal.Zero
 	if debt.IsPositive() {
-		rate = ink.Mul(cat.Price).Div(debt).Truncate(4)
+		rate = ink.Mul(cat.Price).Div(debt).Truncate(6)
 	}
 
-	return fmt.Sprintf(`%s%`, rate.Shift(2))
+	return fmt.Sprintf(`%s%%`, rate.Shift(2))
 }
