@@ -237,7 +237,7 @@ func (n *notifier) VaultUnsafe(ctx context.Context, cat *core.Collateral, vault 
 		"Rate": getCollateralRate(cat, vault),
 	})
 
-	dur := 10 * time.Minute
+	dur := time.Hour
 	trace := fmt.Sprintf("unsafe_%s_%s", cat.UpdatedAt.Truncate(dur), vault.UpdatedAt.Truncate(dur))
 
 	var messages []*core.Message
