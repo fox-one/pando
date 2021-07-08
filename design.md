@@ -32,6 +32,26 @@ The memo is maybe AES-encrypted, an ed25519 public key used for compound AES key
 | FollowID | user defined trace id for this transaction | uuid  |
 | Body     | action type & relevant parameters          | bytes |
 
+## Workers
+
+1. **Syncer** sync unhanded utxo by mixin messenger api & store into WalletStore as **outputs** in updated asc order.
+2. **Payee** pull unhanded utxo from WalletStore in order and parse memo to get the action then handle it. Transfers may be created during handling.
+3. **Assigner** select enough unspent UTXO and assign to a pending transfer.
+4. **Cashier** pull unhandled transfers from WalletStore in order, then request & sign multisig transfer. If enough signatures collected, generate a raw transaction.
+5. **TxSender** commit raw transactions to Mixin Network.
+
+### Syncer Workflow
+
+![Syncer Workflow](Resources/pando-syncer.png)
+
+### Payee Workflow
+
+![Payee Workflow](Resources/pando-payee.png)
+
+### Assigner & Cashier & TxSender Workflow
+
+![Assigner & Cashier Workflow](Resources/pando-cashier.png)
+
 ## Actions
 
 All actions supported by Pando with groups cat,flip,oracle,proposal,sys and vat. see [core/action](core/action.go) for details.
