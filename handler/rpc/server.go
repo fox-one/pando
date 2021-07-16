@@ -274,18 +274,25 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 // @param Authorization header string true "Example: Bearer foo"
 // @Success 200 {object} api.Resp_ListVaults
 // @Router /me/vats [get]
-func (s *Server) ListMyVaults(ctx context.Context, req *api.Req_ListMyVaults) (*api.Resp_ListVaults, error) {
+func (s *Server) ListMyVaults(ctx context.Context, req *api.Req_ListMyVaults) (*api.Resp_ListMyVaults, error) {
 	user, ok := request.UserFrom(ctx)
 	if !ok {
 		logger.FromContext(ctx).Debugln("rpc: authentication required")
 		return nil, twirp.NewError(twirp.Unauthenticated, "authentication required")
 	}
 
-	return s.ListVaults(ctx, &api.Req_ListVaults{
-		UserId: user.MixinID,
-		Cursor: req.Cursor,
-		Limit:  req.Limit,
-	})
+	vats, err := s.vaults.List(ctx, core.ListVaultRequest{UserID: user.MixinID})
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: vaults.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListMyVaults{}
+	for _, vat := range vats {
+		resp.Vaults = append(resp.Vaults, views.Vault(vat))
+	}
+
+	return resp, nil
 }
 
 // ListVaults godoc

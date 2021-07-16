@@ -251,6 +251,10 @@ message Resp {
         Pagination pagination = 2;
     }
 
+    message ListMyVaults {
+        repeated Vault vaults = 1;
+    }
+
     message ListVaultEvents {
         repeated Vault.Event events = 1;
     }
@@ -283,7 +287,7 @@ service Pando {
     // vaults
     rpc FindVault(Req.FindVault) returns (Vault);
     rpc ListVaults(Req.ListVaults) returns (Resp.ListVaults);
-    rpc ListMyVaults(Req.ListMyVaults) returns (Resp.ListVaults);
+    rpc ListMyVaults(Req.ListMyVaults) returns (Resp.ListMyVaults);
     rpc ListVaultEvents(Req.ListVaultEvents) returns (Resp.ListVaultEvents);
     // flips
     rpc FindFlip(Req.FindFlip) returns (Flip);

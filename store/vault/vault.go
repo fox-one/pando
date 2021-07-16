@@ -139,7 +139,11 @@ func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*co
 		tx = tx.Order("id")
 	}
 
-	if err := tx.Limit(req.Limit).Find(&vaults).Error; err != nil {
+	if req.Limit > 0 {
+		tx = tx.Limit(req.Limit)
+	}
+
+	if err := tx.Find(&vaults).Error; err != nil {
 		return nil, err
 	}
 

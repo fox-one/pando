@@ -61,7 +61,7 @@ func (w *Events) run(ctx context.Context) error {
 
 	const Limit = 100
 	fromID := v.Int64()
-	transactions, err := w.transactions.List(ctx, fromID, 100)
+	transactions, err := w.transactions.List(ctx, fromID, Limit)
 	if err != nil {
 		logger.FromContext(ctx).WithError(err).Errorln("transactions.List")
 		return err
