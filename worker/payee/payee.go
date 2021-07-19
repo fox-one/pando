@@ -160,7 +160,9 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 		return err
 	}
 
-	req.SysVersion = sysVersion.Int()
+	if v := sysVersion.Int(); v > req.SysVersion {
+		req.SysVersion = v
+	}
 
 	// 1, parse price message
 	if price, err := w.oraclez.Parse(ctx, message); err == nil {
@@ -265,12 +267,13 @@ func decodeMemo(memo string) []byte {
 
 func requestFromOutput(output *core.Output) *maker.Request {
 	return &maker.Request{
-		Now:      output.CreatedAt,
-		Version:  output.ID,
-		TraceID:  output.TraceID,
-		Sender:   output.Sender,
-		FollowID: output.TraceID,
-		AssetID:  output.AssetID,
-		Amount:   output.Amount,
+		Now:        output.CreatedAt,
+		Version:    output.ID,
+		SysVersion: 1,
+		TraceID:    output.TraceID,
+		Sender:     output.Sender,
+		FollowID:   output.TraceID,
+		AssetID:    output.AssetID,
+		Amount:     output.Amount,
 	}
 }
