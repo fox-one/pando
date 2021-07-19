@@ -43,6 +43,8 @@ const (
 	ActionCatEdit
 	// Update Collateral's Rate
 	ActionCatFold
+	// ActionCatMove move supply from ont to another
+	ActionCatMove
 )
 
 const (

@@ -24,6 +24,7 @@ enum Action {
     CatSupply = 22;
     CatEdit = 23;
     CatFold = 24;
+    CatMove = 25;
     // Vaults
     VatOpen = 31;
     VatDeposit = 32;
