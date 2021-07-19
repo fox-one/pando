@@ -11,8 +11,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type HandlerFunc func(r *Request) error
-
 type Request struct {
 	Now        time.Time
 	Version    int64
