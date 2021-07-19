@@ -65,6 +65,7 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 			from, to uuid.UUID
 			amount   decimal.Decimal
 		)
+		_, _ = mtg.Scan(data, &from, &to, &amount)
 
 		items = []Item{
 			{
