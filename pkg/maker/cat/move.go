@@ -46,7 +46,7 @@ func HandleMove(collaterals core.CollateralStore) maker.HandlerFunc {
 			return err
 		}
 
-		if err := require(from.Dai == to.Dai, "same-dai"); err != nil {
+		if err := require(from.Dai == to.Dai, "incompatible"); err != nil {
 			return err
 		}
 
