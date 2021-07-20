@@ -39,7 +39,7 @@ vat_about_to_be_liquidated: |
   - Rate {{.Rate}}
 
 vat_kicked: |
-  ⚠️ Vault {{.Name}} #{{.ID}} is liquidated
+  ⚠️ Vault {{.Name}} #{{.VaultID}} is liquidated
 
   - Liquidated collateral {{.Lot}} {{.Gem}}
   - Liquidated debt (include penalty) {{.Tab}} {{.Dai}}
