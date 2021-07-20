@@ -1,5 +1,5 @@
 login_done: |
-  授权成功，欢迎来到 Pando。
+  授權成功，歡迎來到 Pando。
 
 tx_ok: |
   ✅ {{.Action}}成功
@@ -9,74 +9,74 @@ tx_ok: |
   {{end}}
 
 tx_abort: |
-  ❌ {{.Action}}失败
+  ❌ {{.Action}}失敗
 
-  - 错误代码 "{{.Message}}"
+  - 錯誤代碼 "{{.Message}}"
 
 # vat
-vat_name: "金库 {{.Name}} #{{.ID}}"
+vat_name: "金庫 {{.Name}} #{{.ID}}"
 vat_deposit: 抵押 {{.Dink}} {{.Gem}}
 vat_withdraw: 取出 {{.Dink}} {{.Gem}}
 vat_generate: 借出 {{.Debt}} {{.Dai}}
-vat_payback: 还款 {{.Debt}} {{.Dai}}
+vat_payback: 還款 {{.Debt}} {{.Dai}}
 
 # flip
-flip_lot: 竞标抵押物 {{.Lot}} {{.Gem}}
-flip_bid: 竞标出价 {{.Bid}} {{.Dai}}
-flip_bid_price: 竞标单价 1 {{.Gem}} / {{.Price}} {{.Dai}}
+flip_lot: 競標抵押物 {{.Lot}} {{.Gem}}
+flip_bid: 競標出價 {{.Bid}} {{.Dai}}
+flip_bid_price: 競標單價 1 {{.Gem}} / {{.Price}} {{.Dai}}
 
 vat_unsafe_warn: |
-  ⚠️ 金库 {{.Name}} #{{.ID}} 抵押不足，有被清算的风险
+  ⚠️ 金庫 {{.Name}} #{{.ID}} 抵押不足，有被清算的風險
 
   - 抵押 {{.Ink}} {{.Gem}}
-  - 债务 {{.Debt}} {{.Dai}}
+  - 債務 {{.Debt}} {{.Dai}}
   - 抵押率 {{.Rate}}
 
 vat_about_to_be_liquidated: |
-  ⚠️ 金库 {{.Name}} #{{.ID}} 即将被清算，请立即还款或者增加抵押
+  ⚠️ 金庫 {{.Name}} #{{.ID}} 即將被清算，請立即還款或者增加抵押
 
   - 抵押 {{.Ink}} {{.Gem}}
-  - 债务 {{.Debt}} {{.Dai}}
+  - 債務 {{.Debt}} {{.Dai}}
   - 抵押率 {{.Rate}}
 
 vat_kicked: |
-  ⚠️ 金库 {{.Name}} #{{.VaultID}} 抵押不足被清算
+  ⚠️ 金庫 {{.Name}} #{{.VaultID}} 抵押不足被清算
 
   - 清算抵押 {{.Lot}} {{.Gem}}
-  - 清算债务（含罚金）{{.Tab}} {{.Dai}}
+  - 清算債務（含罰金）{{.Tab}} {{.Dai}}
 
 flip_win: |
-  🎉 恭喜赢得竞拍
+  🎉 恭喜贏得競拍
 
-  - 竞标抵押物 {{.Lot}} {{.Gem}}
-  - 竞标出价 {{.Bid}} {{.Dai}}
-  - 竞标单价 1 {{.Gem}} / {{.Price}} {{.Dai}}
+  - 競標抵押物 {{.Lot}} {{.Gem}}
+  - 競標出價 {{.Bid}} {{.Dai}}
+  - 競標單價 1 {{.Gem}} / {{.Price}} {{.Dai}}
 
-vault_button: 金库详情
-flip_button: 竞拍详情
+vault_button: 金庫詳情
+flip_button: 競拍詳情
 
 # Cat
-Cat/bad-data: "参数不合法"
-Cat/not-authorized: "没有权限操作"
-Cat/not-live: "抵押品未开启"
+Cat/bad-data: "參數不合法"
+Cat/not-authorized: "沒有權限操作"
+Cat/not-live: "抵押品未開啟"
 
 # Vat
-Vat/bad-data: "参数不合法"
-Vat/not-live: "抵押品未开启"
-Vat/not-authorized: "没有权限操作"
-Vat/ceiling-exceeded: "总债务超出上限"
+Vat/bad-data: "參數不合法"
+Vat/not-live: "抵押品未開啟"
+Vat/not-authorized: "沒有權限操作"
+Vat/ceiling-exceeded: "總債務超出上限"
 Vat/not-safe: "抵押率不足"
-Vat/dust: "剩余债务低于限值"
+Vat/dust: "剩餘債務低於限值"
 
 # Flip
-Flip/bad-data: "参数不合法"
-Flip/not-live: "抵押品未开启"
-Flip/not-authorized: "没有权限操作"
-Flip/not-finished: "拍卖没有结束"
-Flip/finished-tic: "拍卖出价已结束"
-Flip/finished-end: "拍卖已结束"
-Flip/bid-not-match: "出价不匹配"
-Flip/lot-not-lower: "竞价失败"
-Flip/insufficient-decrease: "加价幅度不够"
-Flip/bid-not-higher: "竞价失败"
-Flip/insufficient-increase: "加价幅度不够"
+Flip/bad-data: "參數不合法"
+Flip/not-live: "抵押品未開啟"
+Flip/not-authorized: "沒有權限操作"
+Flip/not-finished: "拍賣沒有結束"
+Flip/finished-tic: "拍賣出價已結束"
+Flip/finished-end: "拍賣已結束"
+Flip/bid-not-match: "出價不匹配"
+Flip/lot-not-lower: "競價失敗"
+Flip/insufficient-decrease: "加價幅度不夠"
+Flip/bid-not-higher: "競價失敗"
+Flip/insufficient-increase: "加價幅度不夠"
