@@ -79,10 +79,6 @@ func handleFrobV3(
 				}
 			}
 
-			if dink.IsZero() && debt.IsZero() {
-				return nil
-			}
-
 			dart := debt.Div(c.Rate)
 			if dart.IsNegative() && v.Art.Add(dart).Mul(c.Rate).Truncate(8).IsZero() {
 				dart = v.Art.Neg()
