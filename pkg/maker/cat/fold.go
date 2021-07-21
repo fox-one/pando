@@ -8,7 +8,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// Fold modify the debt multiplier, creating / destroying corresponding debt
+// HandleFold modify the debt multiplier, creating / destroying corresponding debt
 func HandleFold(collaterals core.CollateralStore) maker.HandlerFunc {
 	return func(r *maker.Request) error {
 		ctx := r.Context()

@@ -4,23 +4,13 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/pkg/maker"
 	"github.com/fox-one/pando/pkg/maker/cat"
+	"github.com/fox-one/pando/pkg/number"
 	"github.com/fox-one/pando/pkg/uuid"
 	"github.com/fox-one/pkg/logger"
 	"github.com/shopspring/decimal"
 )
 
-func HandleFrob(
-	collaterals core.CollateralStore,
-	vaults core.VaultStore,
-	wallets core.WalletStore,
-) maker.HandlerFunc {
-	return maker.HandlerVersion(map[int]maker.HandlerFunc{
-		0: handleFrobLegacy(collaterals, vaults, wallets),
-		3: handleFrobV3(collaterals, vaults, wallets),
-	})
-}
-
-func handleFrobLegacy(
+func handleFrobV3(
 	collaterals core.CollateralStore,
 	vaults core.VaultStore,
 	wallets core.WalletStore,
@@ -76,9 +66,16 @@ func handleFrobLegacy(
 				}
 			}
 
+			refundDebt := decimal.Zero
 			if debt.IsNegative() { // 还贷
 				if err := require(r.AssetID == c.Dai && debt.Abs().Equal(r.Amount), "dai-not-match"); err != nil {
 					return err
+				}
+
+				// 超额还款
+				if currentDebt := number.Ceil(v.Art.Mul(c.Rate), 8); debt.Add(currentDebt).IsNegative() {
+					refundDebt = debt.Add(currentDebt).Abs()
+					debt = currentDebt.Neg()
 				}
 			}
 
@@ -130,6 +127,22 @@ func handleFrobLegacy(
 				})
 			}
 
+			if refundDebt.IsPositive() && r.Sender != "" {
+				memo := core.TransferAction{
+					ID:     r.FollowID,
+					Source: core.TransferSourceRefund,
+				}.Encode()
+
+				transfers = append(transfers, &core.Transfer{
+					TraceID:   uuid.Modify(r.TraceID, memo),
+					AssetID:   c.Dai,
+					Amount:    refundDebt,
+					Memo:      memo,
+					Threshold: 1,
+					Opponents: []string{r.Sender},
+				})
+			}
+
 			if err := wallets.CreateTransfers(ctx, transfers); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("wallets.CreateTransfers")
 				return err
@@ -176,39 +189,4 @@ func handleFrobLegacy(
 
 		return nil
 	}
-}
-
-// Frob modify a Vault
-func frob(r *maker.Request, c *core.Collateral, v *core.Vault, dink, dart decimal.Decimal) error {
-	switch {
-	case r.SysVersion >= 2:
-		if err := require(dart.Sign() <= 0 || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
-			return err
-		}
-	default:
-		if err := require(dart.IsNegative() || c.Art.Add(dart).Mul(c.Rate).LessThanOrEqual(c.Line), "ceiling-exceeded"); err != nil {
-			return err
-		}
-	}
-
-	ink, art := v.Ink.Add(dink), v.Art.Add(dart)
-	tab := art.Mul(c.Rate)
-
-	switch {
-	case r.SysVersion >= 2:
-		// either less risky than before, or it is safe
-		if err := require((dart.Sign() <= 0 && dink.Sign() >= 0) || ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
-			return err
-		}
-	default:
-		if err := require(ink.Mul(c.Price).GreaterThanOrEqual(tab.Mul(c.Mat)), "not-safe"); err != nil {
-			return err
-		}
-	}
-
-	if err := require(tab.IsZero() || tab.GreaterThanOrEqual(c.Dust), "dust"); err != nil {
-		return err
-	}
-
-	return nil
 }

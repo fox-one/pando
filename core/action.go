@@ -43,6 +43,8 @@ const (
 	ActionCatEdit
 	// Update Collateral's Rate
 	ActionCatFold
+	// ActionCatMove move supply from ont to another
+	ActionCatMove
 )
 
 const (
@@ -116,6 +118,10 @@ func DecodeTransactionAction(b []byte) (*TransactionAction, error) {
 
 	return &action, nil
 }
+
+const (
+	TransferSourceRefund = "Refund"
+)
 
 type TransferAction struct {
 	ID     string `json:"id,omitempty"`

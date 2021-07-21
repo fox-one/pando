@@ -60,6 +60,27 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 
 			items = append(items, item)
 		}
+	case core.ActionCatMove:
+		var (
+			from, to uuid.UUID
+			amount   decimal.Decimal
+		)
+		_, _ = mtg.Scan(data, &from, &to, &amount)
+
+		items = []Item{
+			{
+				Key:   "from",
+				Value: s.fetchCatName(ctx, from.String()),
+			},
+			{
+				Key:   "to",
+				Value: s.fetchCatName(ctx, to.String()),
+			},
+			{
+				Key:   "amount",
+				Value: number.Humanize(amount),
+			},
+		}
 	case core.ActionOracleCreate:
 		var (
 			id        uuid.UUID
