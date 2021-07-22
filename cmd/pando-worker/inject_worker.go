@@ -45,6 +45,7 @@ func provideDataDogConfig(cfg *config.Config) datadog.Config {
 	return datadog.Config{
 		ConversationID: cfg.DataDog.ConversationID,
 		Interval:       _flag.datadog.interval,
+		Version:        version,
 	}
 }
 

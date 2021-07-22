@@ -19,6 +19,7 @@ import (
 type Config struct {
 	ConversationID string `valid:"uuid,required"`
 	Interval       time.Duration
+	Version        string
 }
 
 func New(
@@ -38,6 +39,7 @@ func New(
 		interval:       cfg.Interval,
 		launchAt:       time.Now(),
 		conversationID: cfg.ConversationID,
+		version:        cfg.Version,
 	}
 }
 
@@ -48,6 +50,7 @@ type Datadog struct {
 	interval       time.Duration
 	launchAt       time.Time
 	conversationID string
+	version        string
 }
 
 func (w *Datadog) Run(ctx context.Context) error {
@@ -143,6 +146,10 @@ func (w *Datadog) run(ctx context.Context) error {
 				{
 					Name:  "uptime",
 					Value: uptime.String(),
+				},
+				{
+					Name:  "version",
+					Value: w.version,
 				},
 			},
 		})
