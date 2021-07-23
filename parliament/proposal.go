@@ -81,6 +81,29 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 				Value: number.Humanize(amount),
 			},
 		}
+	case core.ActionCatGain:
+		var (
+			id      uuid.UUID
+			amount  decimal.Decimal
+			receipt uuid.UUID
+		)
+		_, _ = mtg.Scan(data, &id, &amount, &receipt)
+
+		items = []Item{
+			{
+				Key:   "cat",
+				Value: s.fetchCatName(ctx, id.String()),
+			},
+			{
+				Key:   "amount",
+				Value: number.Humanize(amount),
+			},
+			{
+				Key:    "receipt",
+				Value:  s.fetchUserName(ctx, receipt.String()),
+				Action: userAction(receipt.String()),
+			},
+		}
 	case core.ActionOracleCreate:
 		var (
 			id        uuid.UUID

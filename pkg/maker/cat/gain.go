@@ -16,6 +16,10 @@ func HandleGain(
 		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
+		if err := require(r.Gov(), "not-authorized"); err != nil {
+			return err
+		}
+
 		c, err := From(r, collaterals)
 		if err != nil {
 			return err

@@ -43,7 +43,7 @@ const (
 	ActionCatEdit
 	// ActionCatFold Update Collateral's Rate
 	ActionCatFold
-	// ActionCatMove ActionCatMove move supply from ont to another
+	// ActionCatMove move supply from ont to another
 	ActionCatMove
 	// ActionCatGain withdraw profits from collateral
 	ActionCatGain
