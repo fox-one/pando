@@ -21,6 +21,8 @@ func _() {
 	_ = x[ActionCatEdit-23]
 	_ = x[ActionCatFold-24]
 	_ = x[ActionCatMove-25]
+	_ = x[ActionCatGain-26]
+	_ = x[ActionCatFill-27]
 	_ = x[ActionVat-30]
 	_ = x[ActionVatOpen-31]
 	_ = x[ActionVatDeposit-32]
@@ -42,7 +44,7 @@ func _() {
 const (
 	_Action_name_0 = "SysSysWithdrawSysProperty"
 	_Action_name_1 = "ProposalProposalMakeProposalShoutProposalVote"
-	_Action_name_2 = "CatCatCreateCatSupplyCatEditCatFoldCatMove"
+	_Action_name_2 = "CatCatCreateCatSupplyCatEditCatFoldCatMoveCatGainCatFill"
 	_Action_name_3 = "VatVatOpenVatDepositVatWithdrawVatPaybackVatGenerate"
 	_Action_name_4 = "FlipFlipKickFlipBidFlipDeal"
 	_Action_name_5 = "OracleOracleCreateOracleEditOraclePokeOracleRelyOracleDeny"
@@ -51,7 +53,7 @@ const (
 var (
 	_Action_index_0 = [...]uint8{0, 3, 14, 25}
 	_Action_index_1 = [...]uint8{0, 8, 20, 33, 45}
-	_Action_index_2 = [...]uint8{0, 3, 12, 21, 28, 35, 42}
+	_Action_index_2 = [...]uint8{0, 3, 12, 21, 28, 35, 42, 49, 56}
 	_Action_index_3 = [...]uint8{0, 3, 10, 20, 31, 41, 52}
 	_Action_index_4 = [...]uint8{0, 4, 12, 19, 27}
 	_Action_index_5 = [...]uint8{0, 6, 18, 28, 38, 48, 58}
@@ -64,7 +66,7 @@ func (i Action) String() string {
 	case 10 <= i && i <= 13:
 		i -= 10
 		return _Action_name_1[_Action_index_1[i]:_Action_index_1[i+1]]
-	case 20 <= i && i <= 25:
+	case 20 <= i && i <= 27:
 		i -= 20
 		return _Action_name_2[_Action_index_2[i]:_Action_index_2[i+1]]
 	case 30 <= i && i <= 35:
