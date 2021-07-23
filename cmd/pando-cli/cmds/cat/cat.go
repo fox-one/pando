@@ -16,6 +16,8 @@ func NewCmd() *cobra.Command {
 	cmd.AddCommand(NewEditCmd())
 	cmd.AddCommand(NewFoldCmd())
 	cmd.AddCommand(NewMoveCmd())
+	cmd.AddCommand(NewGainCmd())
+	cmd.AddCommand(NewFillCmd())
 
 	return cmd
 }

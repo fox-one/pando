@@ -22,68 +22,72 @@ const (
 )
 
 const (
-	// Proposal Actions
+	// ActionProposal Proposal Actions
 	ActionProposal Action = iota + 10
-	// Make a new proposal
+	// ActionProposalMake Make a new proposal
 	ActionProposalMake
-	// Call on other mtg members to vote for this proposal, mtg member only
+	// ActionProposalShout Call on other mtg members to vote for this proposal, mtg member only
 	ActionProposalShout
-	// Vote for this proposal, mtg member only
+	// ActionProposalVote Vote for this proposal, mtg member only
 	ActionProposalVote
 )
 
 const (
-	// Collateral Actions
+	// ActionCat Collateral Actions
 	ActionCat Action = iota + 20
-	// Create a new collateral type, Gov required
+	// ActionCatCreate Create a new collateral type, Gov required
 	ActionCatCreate
-	// Supply Dai to this collateral type
+	// ActionCatSupply Supply Dai to this collateral type
 	ActionCatSupply
-	// Edit Collateral parameters, Gov required
+	// ActionCatEdit Edit Collateral parameters, Gov required
 	ActionCatEdit
-	// Update Collateral's Rate
+	// ActionCatFold Update Collateral's Rate
 	ActionCatFold
 	// ActionCatMove move supply from ont to another
 	ActionCatMove
+	// ActionCatGain withdraw profits from collateral
+	ActionCatGain
+	// ActionCatFill make up for the loss
+	ActionCatFill
 )
 
 const (
-	// Vault Actions
+	// ActionVat Vault Actions
 	ActionVat Action = iota + 30
-	// Open a new Vault
+	// ActionVatOpen Open a new Vault
 	ActionVatOpen
-	// Deposit gem into Vault
+	// ActionVatDeposit Deposit gem into Vault
 	ActionVatDeposit
-	// Withdraw gem from Vault
+	// ActionVatWithdraw Withdraw gem from Vault
 	ActionVatWithdraw
-	// Pay back dai for Vault
+	// ActionVatPayback Pay back dai for Vault
 	ActionVatPayback
-	// Generate dai from Vault
+	// ActionVatGenerate Generate dai from Vault
 	ActionVatGenerate
 )
 
 const (
 	ActionFlip Action = iota + 40
-	// Launch an auction from an unsafe Vault by Keeper
+	// ActionFlipKick Launch an auction from an unsafe Vault by Keeper
 	ActionFlipKick
-	// Auction bid
+	// ActionFlipBid Auction bid
 	ActionFlipBid
-	// Auction done
+	// ActionFlipDeal Auction done
 	ActionFlipDeal
 )
 
 const (
-	// Oracle Actions
+	// ActionOracle Oracle Actions
 	ActionOracle Action = iota + 50
-	// Create a new price
+	// ActionOracleCreate Create a new price
 	ActionOracleCreate
-	// Edit can modify Next, hop & Threshold
+	// ActionOracleEdit Edit can modify Next, hop & Threshold
 	ActionOracleEdit
-	// Poke push the next price to be current
+	// ActionOraclePoke Poke push the next price to be current
 	ActionOraclePoke
-	// Rely add a new oracle feed
+	// ActionOracleRely Rely add a new oracle feed
 	ActionOracleRely
-	// Deny remove a existed oracle feed
+	// ActionOracleDeny Deny remove a existed oracle feed
 	ActionOracleDeny
 )
 
