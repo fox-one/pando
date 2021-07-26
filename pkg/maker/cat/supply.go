@@ -20,7 +20,7 @@ func HandleSupply(collaterals core.CollateralStore) maker.HandlerFunc {
 			return err
 		}
 
-		if err := require(c.Live > 0, "not-live"); err != nil {
+		if err := require(r.SysVersion >= 4 || c.Live > 0, "not-live"); err != nil {
 			return maker.WithFlag(err, maker.FlagRefund)
 		}
 
