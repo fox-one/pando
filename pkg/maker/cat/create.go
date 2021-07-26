@@ -59,6 +59,11 @@ func HandleCreate(
 			Tau:       3 * 60 * 60, // 3h
 		}
 
+		switch {
+		case r.SysVersion >= 4:
+			cat.Beg = number.Decimal("1.03")
+		}
+
 		prices, err := oracles.ListCurrent(ctx)
 		if err != nil {
 			log.WithError(err).Errorln("oracles.ListCurrent")
