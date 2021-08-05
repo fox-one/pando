@@ -1,0 +1,81 @@
+login_done: |
+  Successfully authorized. Welcome to Pando.
+
+tx_ok: |
+  ✅ {{.Action}} successfully
+
+  {{range .Lines -}}
+  - {{.}}
+  {{end}}
+
+tx_abort: |
+  ❌ {{.Action}} failed
+
+  - error message "{{.Message}}"
+
+vat_name: "Vault {{.Name}} #{{.ID}}"
+vat_deposit: Deposit {{.Dink}} {{.Gem}}
+vat_withdraw: Withdraw {{.Dink}} {{.Gem}}
+vat_generate: Generate {{.Debt}} {{.Dai}}
+vat_payback: Payback {{.Debt}} {{.Dai}}
+
+# flip
+flip_lot: Collateral {{.Lot}} {{.Gem}}
+flip_bid: Bid {{.Bid}} {{.Dai}}
+flip_bid_price: Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+
+vat_unsafe_warn: |
+  ⚠️ Vault {{.Name}} #{{.ID}} is in the risk of being liquidated
+
+  - Collateral {{.Ink}} {{.Gem}}
+  - Debt {{.Debt}} {{.Dai}}
+  - Rate {{.Rate}}
+
+vat_about_to_be_liquidated: |
+  ⚠️ Vault {{.Name}} #{{.ID}} is going to be liquidated
+
+  - Collateral {{.Ink}} {{.Gem}}
+  - Debt {{.Debt}} {{.Dai}}
+  - Rate {{.Rate}}
+
+vat_kicked: |
+  ⚠️ Vault {{.Name}} #{{.VaultID}} is liquidated
+
+  - Liquidated collateral {{.Lot}} {{.Gem}}
+  - Liquidated debt (include penalty) {{.Tab}} {{.Dai}}
+
+flip_win: |
+  🎉 Congratulations on winning the auction
+
+  - Collateral {{.Lot}} {{.Gem}}
+  - Bid {{.Bid}} {{.Dai}}
+  - Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+
+vault_button: Vault Detail
+flip_button: Auction Detail
+
+# Cat
+Cat/bad-data: "bad data"
+Cat/not-authorized: "not authorized"
+Cat/not-live: "collateral not live"
+
+# Vat
+Vat/bad-data: "bad data"
+Vat/not-live: "collateral not live"
+Vat/not-authorized: "not authorized"
+Vat/ceiling-exceeded: "debt ceiling exceeded"
+Vat/not-safe: "vault not safe"
+Vat/dust: "remain debt too little"
+
+# Flip
+Flip/bad-data: "bad data"
+Flip/not-live: "collateral not live"
+Flip/not-authorized: "not authorized"
+Flip/not-finished: "auction not end"
+Flip/finished-tic: "auction ended"
+Flip/finished-end: "auction ended"
+Flip/bid-not-match: "bid not match"
+Flip/lot-not-lower: "lot not lower"
+Flip/insufficient-decrease: "insufficient decrease for lot"
+Flip/bid-not-higher: "bid not higher"
+Flip/insufficient-increase: "insufficient-increase for bid"
