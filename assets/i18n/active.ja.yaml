@@ -1,81 +1,81 @@
 login_done: |
-  Successfully authorized. Welcome to Pando.
+  承認されました. パンドへようこそ.
 
 tx_ok: |
-  ✅ {{.Action}} successfully
+  ✅ {{.Action}} 成功に
 
   {{range .Lines -}}
   - {{.}}
   {{end}}
 
 tx_abort: |
-  ❌ {{.Action}} failed
+  ❌ {{.Action}} 失敗した
 
-  - error message "{{.Message}}"
+  - エラーメッセージ "{{.Message}}"
 
-vat_name: "Vault {{.Name}} #{{.ID}}"
-vat_deposit: Deposit {{.Dink}} {{.Gem}}
-vat_withdraw: Withdraw {{.Dink}} {{.Gem}}
-vat_generate: Generate {{.Debt}} {{.Dai}}
-vat_payback: Payback {{.Debt}} {{.Dai}}
+vat_name: "ボールト {{.Name}} #{{.ID}}"
+vat_deposit: デポジット {{.Dink}} {{.Gem}}
+vat_withdraw: 引き出す {{.Dink}} {{.Gem}}
+vat_generate: 生成する {{.Debt}} {{.Dai}}
+vat_payback: 返済 {{.Debt}} {{.Dai}}
 
 # flip
-flip_lot: Collateral {{.Lot}} {{.Gem}}
-flip_bid: Bid {{.Bid}} {{.Dai}}
-flip_bid_price: Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+flip_lot: 担保 {{.Lot}} {{.Gem}}
+flip_bid: 入札 {{.Bid}} {{.Dai}}
+flip_bid_price: 価額 1 {{.Gem}} / {{.Price}} {{.Dai}}
 
 vat_unsafe_warn: |
-  ⚠️ Vault {{.Name}} #{{.ID}} is in the risk of being liquidated
+  ⚠️ ボールト {{.Name}} #{{.ID}} は清算されるリスクがあります
 
-  - Collateral {{.Ink}} {{.Gem}}
-  - Debt {{.Debt}} {{.Dai}}
-  - Rate {{.Rate}}
+  - 担保 {{.Ink}} {{.Gem}}
+  - 債務 {{.Debt}} {{.Dai}}
+  - レート {{.Rate}}
 
 vat_about_to_be_liquidated: |
-  ⚠️ Vault {{.Name}} #{{.ID}} is going to be liquidated
+  ⚠️ ボールト {{.Name}} #{{.ID}} は清算され予定です
 
-  - Collateral {{.Ink}} {{.Gem}}
-  - Debt {{.Debt}} {{.Dai}}
-  - Rate {{.Rate}}
+  - 担保 {{.Ink}} {{.Gem}}
+  - 債務 {{.Debt}} {{.Dai}}
+  - レート {{.Rate}}
 
 vat_kicked: |
-  ⚠️ Vault {{.Name}} #{{.VaultID}} is liquidated
+  ⚠️ ボールト {{.Name}} #{{.VaultID}} は清算されました
 
-  - Liquidated collateral {{.Lot}} {{.Gem}}
-  - Liquidated debt (include penalty) {{.Tab}} {{.Dai}}
+  - 清算担保 {{.Lot}} {{.Gem}}
+  - 清算債務 (include penalty) {{.Tab}} {{.Dai}}
 
 flip_win: |
-  🎉 Congratulations on winning the auction
+  🎉 オークション優勝おめでとうございます
 
-  - Collateral {{.Lot}} {{.Gem}}
-  - Bid {{.Bid}} {{.Dai}}
-  - Price 1 {{.Gem}} / {{.Price}} {{.Dai}}
+  - 担保 {{.Lot}} {{.Gem}}
+  - 入札 {{.Bid}} {{.Dai}}
+  - 価額 1 {{.Gem}} / {{.Price}} {{.Dai}}
 
-vault_button: Vault Detail
-flip_button: Auction Detail
+vault_button: ボールトの詳細
+flip_button: オークションの詳細
 
 # Cat
-Cat/bad-data: "bad data"
-Cat/not-authorized: "not authorized"
-Cat/not-live: "collateral not live"
+Cat/bad-data: "非合法データ"
+Cat/not-authorized: "許可されていません"
+Cat/not-live: "担保が開かれていません"
 
 # Vat
-Vat/bad-data: "bad data"
-Vat/not-live: "collateral not live"
-Vat/not-authorized: "not authorized"
-Vat/ceiling-exceeded: "debt ceiling exceeded"
-Vat/not-safe: "vault not safe"
-Vat/dust: "remain debt too little"
+Vat/bad-data: "非合法データ"
+Vat/not-live: "担保が開かれていません"
+Vat/not-authorized: "許可されていません"
+Vat/ceiling-exceeded: "債務上限を超えました"
+Vat/not-safe: "ボールトは安全ではありません"
+Vat/dust: "残された借金が少なすぎます"
 
 # Flip
-Flip/bad-data: "bad data"
-Flip/not-live: "collateral not live"
-Flip/not-authorized: "not authorized"
-Flip/not-finished: "auction not end"
-Flip/finished-tic: "auction ended"
-Flip/finished-end: "auction ended"
-Flip/bid-not-match: "bid not match"
-Flip/lot-not-lower: "lot not lower"
-Flip/insufficient-decrease: "insufficient decrease for lot"
-Flip/bid-not-higher: "bid not higher"
-Flip/insufficient-increase: "insufficient-increase for bid"
+Flip/bad-data: "非合法データ"
+Flip/not-live: "担保が開かれていません"
+Flip/not-authorized: "許可されていません"
+Flip/not-finished: "オークションは終わっていません"
+Flip/finished-tic: "オークション終了"
+Flip/finished-end: "オークション終了"
+Flip/bid-not-match: "入札が一致しません"
+Flip/lot-not-lower: "入札は失敗しました"
+Flip/insufficient-decrease: "ロットの減少が足りません"
+Flip/bid-not-higher: "入札は失敗しました"
+Flip/insufficient-increase: "入札の増加が足りません"
