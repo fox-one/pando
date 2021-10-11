@@ -1,34 +1,34 @@
 # Sys
-ActionSysWithdraw: System Withdraw
+ActionSysWithdraw: システムで引き出す
 
 # Proposal
-ActionProposalMake: Make Proposal
-ActionProposalShout: Promote Proposal
-ActionProposalVote: Vote Proposal
+ActionProposalMake: 提案する
+ActionProposalShout: 提案を促進する
+ActionProposalVote: 提案を投票する
 
 # Cat
-ActionCatCreate: Create New Collateral Type
-ActionCatSupply: Supply To Collateral
-ActionCatEdit: Edit Collateral Type
-ActionCatFold: Refresh Collateral Debt Rate
+ActionCatCreate: 新しい担保タイプを作成する
+ActionCatSupply: 担保を提供する
+ActionCatEdit: 担保タイプを編集する
+ActionCatFold: 担保債務金利を更新する
 
 # Vat
-ActionVatOpen: Open New Vault
-ActionVatDeposit: Deposit
-ActionVatWithdraw: Withdraw
-ActionVatPayback: Payback
-ActionVatGenerate: Generate
+ActionVatOpen: 新しいボールトをオープンする
+ActionVatDeposit: デポジット
+ActionVatWithdraw: 引き出す
+ActionVatPayback: 返済
+ActionVatGenerate: 生成
 
 # Flip
-ActionFlipKick: Liquidate Unsafe Vault
-ActionFlipBid: Bid
-ActionFlipDeal: Deal Auction
+ActionFlipKick: 危ないボールトを清算する
+ActionFlipBid: 入札
+ActionFlipDeal: ディールオークション
 
 # Oracle
-ActionOracleCreate: Create New Oracle Asset
-ActionOracleEdit: Edit Oracle Asset
-ActionOraclePoke: Feed Price
-ActionOracleRely: Add New Oracle Feed
-ActionOracleDeny: Remove Oracle Feed
+ActionOracleCreate: 新しいオラクルアセットを作成する
+ActionOracleEdit: オラクルアセットを編集する
+ActionOraclePoke: フィードの価格
+ActionOracleRely: 新しいオラクルフィードを追加する
+ActionOracleDeny: オラクルフィードを削除する
 
 
