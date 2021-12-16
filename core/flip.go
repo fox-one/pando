@@ -43,6 +43,7 @@ type (
 		Action    Action          `json:"action,omitempty"`
 		Bid       decimal.Decimal `sql:"type:decimal(64,8)" json:"bid,omitempty"`
 		Lot       decimal.Decimal `sql:"type:decimal(64,8)" json:"lot,omitempty"`
+		Guy       string          `sql:"size:36" json:"guy,omitempty"`
 	}
 
 	// FlipStore define operations for working on Flip & FlipEvent on db

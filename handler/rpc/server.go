@@ -454,9 +454,14 @@ func (s *Server) ListFlipEvents(ctx context.Context, req *api.Req_ListFlipEvents
 		return nil, err
 	}
 
+	userID := ""
+	if user, ok := request.UserFrom(ctx); ok {
+		userID = user.MixinID
+	}
+
 	resp := &api.Resp_ListFlipEvents{}
 	for _, event := range events {
-		resp.Events = append(resp.Events, views.FlipEvent(event))
+		resp.Events = append(resp.Events, views.FlipEvent(event, userID))
 	}
 
 	return resp, nil
