@@ -34,6 +34,6 @@ func FlipEvent(event *core.FlipEvent, me string) *api.Flip_Event {
 		Action:    api.Action(event.Action),
 		Bid:       event.Bid.String(),
 		Lot:       event.Lot.String(),
-		IsMe:      event.Guy == me,
+		IsMe:      event.Guy != "" && event.Guy == me,
 	}
 }
