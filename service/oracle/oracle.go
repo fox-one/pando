@@ -3,7 +3,6 @@ package oracle
 import (
 	"context"
 	"encoding/base64"
-	"errors"
 	"time"
 
 	"github.com/fox-one/pando/core"
@@ -25,20 +24,12 @@ type oracleService struct {
 
 func (s *oracleService) Parse(ctx context.Context, b []byte) (*core.Oracle, error) {
 	var p dirtoracle.PriceData
+
 	if err := p.UnmarshalBinary(b); err != nil {
-		return nil, err
+		return nil, nil
 	}
 
-	oracle, err := s.oracles.Find(ctx, p.AssetID)
-	if err != nil {
-		return nil, err
-	}
-
-	if oracle.Threshold == 0 {
-		return nil, errors.New("oracle with zero threshold is not allowed to be poke")
-	}
-
-	oracle = &core.Oracle{
+	oracle := &core.Oracle{
 		CreatedAt: time.Unix(p.Timestamp, 0),
 		AssetID:   p.AssetID,
 		Current:   p.Price,
@@ -49,26 +40,30 @@ func (s *oracleService) Parse(ctx context.Context, b []byte) (*core.Oracle, erro
 		return nil, err
 	}
 
-	var pubs []*blst.PublicKey
+	var (
+		pubs      []*blst.PublicKey
+		governors []string
+	)
+
 	for idx, feed := range feeds {
 		if p.Signature.Mask&(0x1<<(idx+1)) != 0 {
 			bts, err := base64.StdEncoding.DecodeString(feed.PublicKey)
 			if err != nil {
-				return nil, err
+				continue
 			}
 
 			pub := blst.PublicKey{}
 			if err := pub.FromBytes(bts); err != nil {
-				return nil, err
+				continue
 			}
 
 			pubs = append(pubs, &pub)
-			oracle.Governors = append(oracle.Governors, feed.UserID)
+			governors = append(governors, feed.UserID)
 		}
 	}
 
-	if passed := int64(len(pubs)) >= oracle.Threshold && blst.AggregatePublicKeys(pubs).Verify(p.Payload(), &p.Signature.Signature); !passed {
-		return nil, errors.New("oracle verify not pass")
+	if passed := blst.AggregatePublicKeys(pubs).Verify(p.Payload(), &p.Signature.Signature); passed {
+		oracle.Governors = governors
 	}
 
 	return oracle, nil

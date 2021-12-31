@@ -168,16 +168,17 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 	}
 
 	// 1, parse price message
-	if price, err := w.oraclez.Parse(ctx, message); err == nil {
+	price, err := w.oraclez.Parse(ctx, message)
+	if err != nil {
+		log.WithError(err).Errorln("oraclez.Parse")
+		return err
+	}
+
+	if price != nil {
 		req.Action = core.ActionOraclePoke
-		if body, err := mtg.Encode(types.UUID(price.AssetID), price.Current, price.CreatedAt.Unix()); err == nil {
-			req.Body = body
-			req.Governors = price.Governors
-
-			return w.handleRequest(req.WithContext(ctx))
-		}
-
-		return nil
+		req.Body, _ = mtg.Encode(types.UUID(price.AssetID), price.Current, price.CreatedAt.Unix())
+		req.Governors = price.Governors
+		return w.handleRequest(req.WithContext(ctx))
 	}
 
 	// 2. decode tx message
