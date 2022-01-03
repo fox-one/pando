@@ -134,6 +134,28 @@ message Flip {
     Action action = 12;
 }
 
+message Proposal {
+    message Item {
+        string key = 1;
+        string value = 2;
+        string hint = 3;
+        string action = 4;
+    }
+
+    string id = 1;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp created_at = 2;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp passed_at = 3;
+    string creator = 4;
+    string asset_id = 5;
+    string amount = 6;
+    Action action = 7;
+    string data = 8;
+    repeated string votes = 9;
+    repeated Item items = 10;
+}
+
 message Oracle {
     string asset_id = 1;
     int32 hop = 2;
@@ -235,6 +257,16 @@ message Req {
         string cursor = 1;
         int64 limit = 2;
     }
+
+    message ListProposals {
+        string cursor = 1;
+        int64 limit = 2;
+    }
+
+    message FindProposal {
+        // @inject_tag: valid:"uuid,required"
+        string id = 1;
+    }
 }
 
 message Resp {
@@ -276,6 +308,11 @@ message Resp {
         repeated Transaction transactions = 1;
         Pagination pagination = 2;
     }
+
+    message ListProposals {
+        repeated Proposal proposals = 1;
+        Pagination pagination = 2;
+    }
 }
 
 service Pando {
@@ -300,4 +337,7 @@ service Pando {
     // tx
     rpc FindTransaction(Req.FindTransaction) returns (Transaction);
     rpc ListTransactions(Req.ListTransactions) returns (Resp.ListTransactions);
+    // proposals
+    rpc FindProposal(Req.FindProposal) returns (Proposal);
+    rpc ListProposals(Req.ListProposals) returns (Resp.ListProposals);
 }

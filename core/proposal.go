@@ -28,11 +28,29 @@ type (
 		Votes pq.StringArray `sql:"type:varchar(1024)" json:"votes,omitempty"`
 	}
 
+	ProposalItem struct {
+		// Key is the parameter name
+		Key string `json:"key,omitempty"`
+		// Value the proposal applied
+		Value string `json:"value,omitempty"`
+		// Hint the parameter hint
+		Hint string `json:"hint,omitempty"`
+		// Action the value applied
+		Action string `json:"action,omitempty"`
+	}
+
 	// ProposalStore define operations for working with proposals on db.
 	ProposalStore interface {
 		Create(ctx context.Context, proposal *Proposal) error
 		Find(ctx context.Context, trace string) (*Proposal, error)
 		Update(ctx context.Context, proposal *Proposal, version int64) error
+		// List returns proposals in asc order
 		List(ctx context.Context, fromID int64, limit int) ([]*Proposal, error)
+		// ListReverse returns proposals in desc order
+		ListReverse(ctx context.Context, fromID int64, limit int) ([]*Proposal, error)
+	}
+
+	ProposalService interface {
+		ListItems(ctx context.Context, proposal *Proposal) ([]ProposalItem, error)
 	}
 )

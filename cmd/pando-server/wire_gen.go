@@ -12,6 +12,7 @@ import (
 	"github.com/fox-one/pando/notifier"
 	"github.com/fox-one/pando/server"
 	asset2 "github.com/fox-one/pando/service/asset"
+	proposal2 "github.com/fox-one/pando/service/proposal"
 	user2 "github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pando/session"
@@ -20,6 +21,7 @@ import (
 	"github.com/fox-one/pando/store/flip"
 	"github.com/fox-one/pando/store/message"
 	"github.com/fox-one/pando/store/oracle"
+	"github.com/fox-one/pando/store/proposal"
 	"github.com/fox-one/pando/store/transaction"
 	"github.com/fox-one/pando/store/user"
 	"github.com/fox-one/pando/store/vault"
@@ -58,8 +60,10 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	notifierConfig := _wireConfigValue
 	coreNotifier := notifier.New(system, assetService, messageStore, vaultStore, collateralStore, userStore, flipStore, localizer, notifierConfig)
 	oracleStore := oracle.New(db)
-	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, coreNotifier, oracleStore, system)
-	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore)
+	proposalStore := proposal.New(db)
+	proposalService := proposal2.New(assetService, userService, collateralStore)
+	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, coreNotifier, oracleStore, proposalStore, proposalService, system)
+	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore, proposalService, proposalStore)
 	mux := provideRoute(apiServer, rpcServer, coreSession)
 	serverServer := provideServer(mux)
 	return serverServer, nil

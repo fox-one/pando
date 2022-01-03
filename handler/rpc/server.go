@@ -24,6 +24,8 @@ func New(
 	oracles core.OracleStore,
 	collaterals core.CollateralStore,
 	transactions core.TransactionStore,
+	proposalz core.ProposalService,
+	proposals core.ProposalStore,
 ) *Server {
 	return &Server{
 		assets:       assets,
@@ -32,6 +34,8 @@ func New(
 		oracles:      oracles,
 		collaterals:  collaterals,
 		transactions: transactions,
+		proposals:    proposals,
+		proposalz:    proposalz,
 	}
 }
 
@@ -42,6 +46,8 @@ type Server struct {
 	oracles      core.OracleStore
 	collaterals  core.CollateralStore
 	transactions core.TransactionStore
+	proposalz    core.ProposalService
+	proposals    core.ProposalStore
 }
 
 func (s *Server) TwirpServer() api.TwirpServer {
@@ -527,6 +533,72 @@ func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransact
 
 		if idx == limit-1 {
 			resp.Pagination.NextCursor = cast.ToString(t.ID)
+			resp.Pagination.HasNext = true
+			break
+		}
+	}
+
+	return resp, nil
+}
+
+// FindProposal godoc
+// @Summary find proposal by id
+// @Description
+// @Tags Proposals
+// @Accept  json
+// @Produce  json
+// @param id path string true "proposal id"
+// @Success 200 {object} api.Proposal
+// @Router /proposals/{id} [get]
+func (s *Server) FindProposal(ctx context.Context, req *api.Req_FindProposal) (*api.Proposal, error) {
+	proposal, err := s.proposals.Find(ctx, req.Id)
+	if err != nil {
+		if store.IsErrNotFound(err) {
+			return nil, twirp.NotFoundError("proposal not found")
+		}
+
+		return nil, err
+	}
+
+	items, err := s.proposalz.ListItems(ctx, proposal)
+	if err != nil {
+		return nil, err
+	}
+
+	return views.Proposal(proposal, items...), nil
+}
+
+// ListProposals godoc
+// @Summary list proposals
+// @Description
+// @Tags Proposals
+// @Accept  json
+// @Produce  json
+// @param request query api.Req_ListProposals false "default limit 50"
+// @Success 200 {object} api.Resp_ListProposals
+// @Router /proposals [get]
+func (s *Server) ListProposals(ctx context.Context, req *api.Req_ListProposals) (*api.Resp_ListProposals, error) {
+	fromID := cast.ToInt64(req.Cursor)
+	limit := 50
+	if l := int(req.Limit); l > 0 && l < limit {
+		limit = l
+	}
+
+	proposals, err := s.proposals.ListReverse(ctx, fromID, limit+1)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: proposals.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListProposals{
+		Pagination: &api.Pagination{},
+	}
+
+	for idx, p := range proposals {
+		resp.Proposals = append(resp.Proposals, views.Proposal(p))
+
+		if idx == limit-1 {
+			resp.Pagination.NextCursor = cast.ToString(p.ID)
 			resp.Pagination.HasNext = true
 			break
 		}

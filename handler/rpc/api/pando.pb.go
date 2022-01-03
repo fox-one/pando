@@ -191,7 +191,7 @@ func (x Transaction_Status) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Transaction_Status.Descriptor instead.
 func (Transaction_Status) EnumDescriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{6, 0}
+	return file_pando_proto_rawDescGZIP(), []int{7, 0}
 }
 
 type Pagination struct {
@@ -812,6 +812,127 @@ func (x *Flip) GetAction() Action {
 	return Action__
 }
 
+type Proposal struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" swaggertype:"string" format:"date"`
+	// @inject_tag: swaggertype:"string" format:"date"
+	PassedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=passed_at,json=passedAt,proto3" json:"passed_at,omitempty" swaggertype:"string" format:"date"`
+	Creator  string                 `protobuf:"bytes,4,opt,name=creator,proto3" json:"creator,omitempty"`
+	AssetId  string                 `protobuf:"bytes,5,opt,name=asset_id,json=assetId,proto3" json:"asset_id,omitempty"`
+	Amount   string                 `protobuf:"bytes,6,opt,name=amount,proto3" json:"amount,omitempty"`
+	Action   Action                 `protobuf:"varint,7,opt,name=action,proto3,enum=fox.pando.service.Action" json:"action,omitempty"`
+	Data     string                 `protobuf:"bytes,8,opt,name=data,proto3" json:"data,omitempty"`
+	Votes    []string               `protobuf:"bytes,9,rep,name=votes,proto3" json:"votes,omitempty"`
+	Items    []*Proposal_Item       `protobuf:"bytes,10,rep,name=items,proto3" json:"items,omitempty"`
+}
+
+func (x *Proposal) Reset() {
+	*x = Proposal{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pando_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Proposal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Proposal) ProtoMessage() {}
+
+func (x *Proposal) ProtoReflect() protoreflect.Message {
+	mi := &file_pando_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Proposal.ProtoReflect.Descriptor instead.
+func (*Proposal) Descriptor() ([]byte, []int) {
+	return file_pando_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Proposal) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Proposal) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Proposal) GetPassedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PassedAt
+	}
+	return nil
+}
+
+func (x *Proposal) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
+}
+
+func (x *Proposal) GetAssetId() string {
+	if x != nil {
+		return x.AssetId
+	}
+	return ""
+}
+
+func (x *Proposal) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *Proposal) GetAction() Action {
+	if x != nil {
+		return x.Action
+	}
+	return Action__
+}
+
+func (x *Proposal) GetData() string {
+	if x != nil {
+		return x.Data
+	}
+	return ""
+}
+
+func (x *Proposal) GetVotes() []string {
+	if x != nil {
+		return x.Votes
+	}
+	return nil
+}
+
+func (x *Proposal) GetItems() []*Proposal_Item {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 type Oracle struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -831,7 +952,7 @@ type Oracle struct {
 func (x *Oracle) Reset() {
 	*x = Oracle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[5]
+		mi := &file_pando_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -844,7 +965,7 @@ func (x *Oracle) String() string {
 func (*Oracle) ProtoMessage() {}
 
 func (x *Oracle) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[5]
+	mi := &file_pando_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -857,7 +978,7 @@ func (x *Oracle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Oracle.ProtoReflect.Descriptor instead.
 func (*Oracle) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{5}
+	return file_pando_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Oracle) GetAssetId() string {
@@ -928,7 +1049,7 @@ type Transaction struct {
 func (x *Transaction) Reset() {
 	*x = Transaction{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[6]
+		mi := &file_pando_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -941,7 +1062,7 @@ func (x *Transaction) String() string {
 func (*Transaction) ProtoMessage() {}
 
 func (x *Transaction) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[6]
+	mi := &file_pando_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -954,7 +1075,7 @@ func (x *Transaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Transaction.ProtoReflect.Descriptor instead.
 func (*Transaction) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{6}
+	return file_pando_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Transaction) GetId() string {
@@ -1022,7 +1143,7 @@ type Req struct {
 func (x *Req) Reset() {
 	*x = Req{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[7]
+		mi := &file_pando_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1035,7 +1156,7 @@ func (x *Req) String() string {
 func (*Req) ProtoMessage() {}
 
 func (x *Req) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[7]
+	mi := &file_pando_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1048,7 +1169,7 @@ func (x *Req) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req.ProtoReflect.Descriptor instead.
 func (*Req) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7}
+	return file_pando_proto_rawDescGZIP(), []int{8}
 }
 
 type Resp struct {
@@ -1060,7 +1181,7 @@ type Resp struct {
 func (x *Resp) Reset() {
 	*x = Resp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[8]
+		mi := &file_pando_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1073,7 +1194,7 @@ func (x *Resp) String() string {
 func (*Resp) ProtoMessage() {}
 
 func (x *Resp) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[8]
+	mi := &file_pando_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1086,7 +1207,7 @@ func (x *Resp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp.ProtoReflect.Descriptor instead.
 func (*Resp) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8}
+	return file_pando_proto_rawDescGZIP(), []int{9}
 }
 
 type Vault_Event struct {
@@ -1106,7 +1227,7 @@ type Vault_Event struct {
 func (x *Vault_Event) Reset() {
 	*x = Vault_Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[9]
+		mi := &file_pando_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1119,7 +1240,7 @@ func (x *Vault_Event) String() string {
 func (*Vault_Event) ProtoMessage() {}
 
 func (x *Vault_Event) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[9]
+	mi := &file_pando_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1194,7 +1315,7 @@ type Flip_Event struct {
 func (x *Flip_Event) Reset() {
 	*x = Flip_Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[10]
+		mi := &file_pando_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1207,7 +1328,7 @@ func (x *Flip_Event) String() string {
 func (*Flip_Event) ProtoMessage() {}
 
 func (x *Flip_Event) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[10]
+	mi := &file_pando_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1258,11 +1379,83 @@ func (x *Flip_Event) GetLot() string {
 	return ""
 }
 
+<<<<<<< HEAD
 func (x *Flip_Event) GetIsMe() bool {
 	if x != nil {
 		return x.IsMe
 	}
 	return false
+=======
+type Proposal_Item struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key    string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value  string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	Hint   string `protobuf:"bytes,3,opt,name=hint,proto3" json:"hint,omitempty"`
+	Action string `protobuf:"bytes,4,opt,name=action,proto3" json:"action,omitempty"`
+}
+
+func (x *Proposal_Item) Reset() {
+	*x = Proposal_Item{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pando_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Proposal_Item) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Proposal_Item) ProtoMessage() {}
+
+func (x *Proposal_Item) ProtoReflect() protoreflect.Message {
+	mi := &file_pando_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Proposal_Item.ProtoReflect.Descriptor instead.
+func (*Proposal_Item) Descriptor() ([]byte, []int) {
+	return file_pando_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *Proposal_Item) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *Proposal_Item) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *Proposal_Item) GetHint() string {
+	if x != nil {
+		return x.Hint
+	}
+	return ""
+}
+
+func (x *Proposal_Item) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+>>>>>>> e2c0f9d (add /proposals)
 }
 
 type Req_FindAsset struct {
@@ -1277,7 +1470,7 @@ type Req_FindAsset struct {
 func (x *Req_FindAsset) Reset() {
 	*x = Req_FindAsset{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[11]
+		mi := &file_pando_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1290,7 +1483,7 @@ func (x *Req_FindAsset) String() string {
 func (*Req_FindAsset) ProtoMessage() {}
 
 func (x *Req_FindAsset) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[11]
+	mi := &file_pando_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1303,7 +1496,7 @@ func (x *Req_FindAsset) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindAsset.ProtoReflect.Descriptor instead.
 func (*Req_FindAsset) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 0}
+	return file_pando_proto_rawDescGZIP(), []int{8, 0}
 }
 
 func (x *Req_FindAsset) GetId() string {
@@ -1322,7 +1515,7 @@ type Req_ListAssets struct {
 func (x *Req_ListAssets) Reset() {
 	*x = Req_ListAssets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[12]
+		mi := &file_pando_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1335,7 +1528,7 @@ func (x *Req_ListAssets) String() string {
 func (*Req_ListAssets) ProtoMessage() {}
 
 func (x *Req_ListAssets) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[12]
+	mi := &file_pando_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1348,7 +1541,7 @@ func (x *Req_ListAssets) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListAssets.ProtoReflect.Descriptor instead.
 func (*Req_ListAssets) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 1}
+	return file_pando_proto_rawDescGZIP(), []int{8, 1}
 }
 
 type Req_FindOracle struct {
@@ -1363,7 +1556,7 @@ type Req_FindOracle struct {
 func (x *Req_FindOracle) Reset() {
 	*x = Req_FindOracle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[13]
+		mi := &file_pando_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1376,7 +1569,7 @@ func (x *Req_FindOracle) String() string {
 func (*Req_FindOracle) ProtoMessage() {}
 
 func (x *Req_FindOracle) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[13]
+	mi := &file_pando_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1389,7 +1582,7 @@ func (x *Req_FindOracle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindOracle.ProtoReflect.Descriptor instead.
 func (*Req_FindOracle) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 2}
+	return file_pando_proto_rawDescGZIP(), []int{8, 2}
 }
 
 func (x *Req_FindOracle) GetId() string {
@@ -1408,7 +1601,7 @@ type Req_ListOracles struct {
 func (x *Req_ListOracles) Reset() {
 	*x = Req_ListOracles{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[14]
+		mi := &file_pando_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1421,7 +1614,7 @@ func (x *Req_ListOracles) String() string {
 func (*Req_ListOracles) ProtoMessage() {}
 
 func (x *Req_ListOracles) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[14]
+	mi := &file_pando_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1434,7 +1627,7 @@ func (x *Req_ListOracles) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListOracles.ProtoReflect.Descriptor instead.
 func (*Req_ListOracles) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 3}
+	return file_pando_proto_rawDescGZIP(), []int{8, 3}
 }
 
 // List All Collaterals
@@ -1447,7 +1640,7 @@ type Req_ListCollaterals struct {
 func (x *Req_ListCollaterals) Reset() {
 	*x = Req_ListCollaterals{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[15]
+		mi := &file_pando_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1460,7 +1653,7 @@ func (x *Req_ListCollaterals) String() string {
 func (*Req_ListCollaterals) ProtoMessage() {}
 
 func (x *Req_ListCollaterals) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[15]
+	mi := &file_pando_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1473,7 +1666,7 @@ func (x *Req_ListCollaterals) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListCollaterals.ProtoReflect.Descriptor instead.
 func (*Req_ListCollaterals) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 4}
+	return file_pando_proto_rawDescGZIP(), []int{8, 4}
 }
 
 // Find Collateral By TraceID
@@ -1489,7 +1682,7 @@ type Req_FindCollateral struct {
 func (x *Req_FindCollateral) Reset() {
 	*x = Req_FindCollateral{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[16]
+		mi := &file_pando_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1502,7 +1695,7 @@ func (x *Req_FindCollateral) String() string {
 func (*Req_FindCollateral) ProtoMessage() {}
 
 func (x *Req_FindCollateral) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[16]
+	mi := &file_pando_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1515,7 +1708,7 @@ func (x *Req_FindCollateral) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindCollateral.ProtoReflect.Descriptor instead.
 func (*Req_FindCollateral) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 5}
+	return file_pando_proto_rawDescGZIP(), []int{8, 5}
 }
 
 func (x *Req_FindCollateral) GetId() string {
@@ -1537,7 +1730,7 @@ type Req_FindVault struct {
 func (x *Req_FindVault) Reset() {
 	*x = Req_FindVault{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[17]
+		mi := &file_pando_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1550,7 +1743,7 @@ func (x *Req_FindVault) String() string {
 func (*Req_FindVault) ProtoMessage() {}
 
 func (x *Req_FindVault) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[17]
+	mi := &file_pando_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1563,7 +1756,7 @@ func (x *Req_FindVault) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindVault.ProtoReflect.Descriptor instead.
 func (*Req_FindVault) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 6}
+	return file_pando_proto_rawDescGZIP(), []int{8, 6}
 }
 
 func (x *Req_FindVault) GetId() string {
@@ -1588,7 +1781,7 @@ type Req_ListVaults struct {
 func (x *Req_ListVaults) Reset() {
 	*x = Req_ListVaults{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[18]
+		mi := &file_pando_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1601,7 +1794,7 @@ func (x *Req_ListVaults) String() string {
 func (*Req_ListVaults) ProtoMessage() {}
 
 func (x *Req_ListVaults) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[18]
+	mi := &file_pando_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1614,7 +1807,7 @@ func (x *Req_ListVaults) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListVaults.ProtoReflect.Descriptor instead.
 func (*Req_ListVaults) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 7}
+	return file_pando_proto_rawDescGZIP(), []int{8, 7}
 }
 
 func (x *Req_ListVaults) GetCollateralId() string {
@@ -1657,7 +1850,7 @@ type Req_ListMyVaults struct {
 func (x *Req_ListMyVaults) Reset() {
 	*x = Req_ListMyVaults{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[19]
+		mi := &file_pando_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1670,7 +1863,7 @@ func (x *Req_ListMyVaults) String() string {
 func (*Req_ListMyVaults) ProtoMessage() {}
 
 func (x *Req_ListMyVaults) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[19]
+	mi := &file_pando_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1683,7 +1876,7 @@ func (x *Req_ListMyVaults) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListMyVaults.ProtoReflect.Descriptor instead.
 func (*Req_ListMyVaults) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 8}
+	return file_pando_proto_rawDescGZIP(), []int{8, 8}
 }
 
 func (x *Req_ListMyVaults) GetCursor() string {
@@ -1712,7 +1905,7 @@ type Req_ListVaultEvents struct {
 func (x *Req_ListVaultEvents) Reset() {
 	*x = Req_ListVaultEvents{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[20]
+		mi := &file_pando_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1725,7 +1918,7 @@ func (x *Req_ListVaultEvents) String() string {
 func (*Req_ListVaultEvents) ProtoMessage() {}
 
 func (x *Req_ListVaultEvents) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[20]
+	mi := &file_pando_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1738,7 +1931,7 @@ func (x *Req_ListVaultEvents) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListVaultEvents.ProtoReflect.Descriptor instead.
 func (*Req_ListVaultEvents) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 9}
+	return file_pando_proto_rawDescGZIP(), []int{8, 9}
 }
 
 func (x *Req_ListVaultEvents) GetId() string {
@@ -1760,7 +1953,7 @@ type Req_FindFlip struct {
 func (x *Req_FindFlip) Reset() {
 	*x = Req_FindFlip{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[21]
+		mi := &file_pando_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1773,7 +1966,7 @@ func (x *Req_FindFlip) String() string {
 func (*Req_FindFlip) ProtoMessage() {}
 
 func (x *Req_FindFlip) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[21]
+	mi := &file_pando_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1786,7 +1979,7 @@ func (x *Req_FindFlip) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindFlip.ProtoReflect.Descriptor instead.
 func (*Req_FindFlip) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 10}
+	return file_pando_proto_rawDescGZIP(), []int{8, 10}
 }
 
 func (x *Req_FindFlip) GetId() string {
@@ -1808,7 +2001,7 @@ type Req_ListFlips struct {
 func (x *Req_ListFlips) Reset() {
 	*x = Req_ListFlips{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[22]
+		mi := &file_pando_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1821,7 +2014,7 @@ func (x *Req_ListFlips) String() string {
 func (*Req_ListFlips) ProtoMessage() {}
 
 func (x *Req_ListFlips) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[22]
+	mi := &file_pando_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1834,7 +2027,7 @@ func (x *Req_ListFlips) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListFlips.ProtoReflect.Descriptor instead.
 func (*Req_ListFlips) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 11}
+	return file_pando_proto_rawDescGZIP(), []int{8, 11}
 }
 
 func (x *Req_ListFlips) GetCursor() string {
@@ -1862,7 +2055,7 @@ type Req_ListFlipEvents struct {
 func (x *Req_ListFlipEvents) Reset() {
 	*x = Req_ListFlipEvents{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[23]
+		mi := &file_pando_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1875,7 +2068,7 @@ func (x *Req_ListFlipEvents) String() string {
 func (*Req_ListFlipEvents) ProtoMessage() {}
 
 func (x *Req_ListFlipEvents) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[23]
+	mi := &file_pando_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1888,7 +2081,7 @@ func (x *Req_ListFlipEvents) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListFlipEvents.ProtoReflect.Descriptor instead.
 func (*Req_ListFlipEvents) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 12}
+	return file_pando_proto_rawDescGZIP(), []int{8, 12}
 }
 
 func (x *Req_ListFlipEvents) GetId() string {
@@ -1911,7 +2104,7 @@ type Req_FindTransaction struct {
 func (x *Req_FindTransaction) Reset() {
 	*x = Req_FindTransaction{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[24]
+		mi := &file_pando_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1924,7 +2117,7 @@ func (x *Req_FindTransaction) String() string {
 func (*Req_FindTransaction) ProtoMessage() {}
 
 func (x *Req_FindTransaction) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[24]
+	mi := &file_pando_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1937,7 +2130,7 @@ func (x *Req_FindTransaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_FindTransaction.ProtoReflect.Descriptor instead.
 func (*Req_FindTransaction) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 13}
+	return file_pando_proto_rawDescGZIP(), []int{8, 13}
 }
 
 func (x *Req_FindTransaction) GetId() string {
@@ -1959,7 +2152,7 @@ type Req_ListTransactions struct {
 func (x *Req_ListTransactions) Reset() {
 	*x = Req_ListTransactions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[25]
+		mi := &file_pando_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1972,7 +2165,7 @@ func (x *Req_ListTransactions) String() string {
 func (*Req_ListTransactions) ProtoMessage() {}
 
 func (x *Req_ListTransactions) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[25]
+	mi := &file_pando_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1985,7 +2178,7 @@ func (x *Req_ListTransactions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Req_ListTransactions.ProtoReflect.Descriptor instead.
 func (*Req_ListTransactions) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{7, 14}
+	return file_pando_proto_rawDescGZIP(), []int{8, 14}
 }
 
 func (x *Req_ListTransactions) GetCursor() string {
@@ -2002,6 +2195,109 @@ func (x *Req_ListTransactions) GetLimit() int64 {
 	return 0
 }
 
+type Req_ListProposals struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Cursor string `protobuf:"bytes,1,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	Limit  int64  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+}
+
+func (x *Req_ListProposals) Reset() {
+	*x = Req_ListProposals{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pando_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Req_ListProposals) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Req_ListProposals) ProtoMessage() {}
+
+func (x *Req_ListProposals) ProtoReflect() protoreflect.Message {
+	mi := &file_pando_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Req_ListProposals.ProtoReflect.Descriptor instead.
+func (*Req_ListProposals) Descriptor() ([]byte, []int) {
+	return file_pando_proto_rawDescGZIP(), []int{8, 15}
+}
+
+func (x *Req_ListProposals) GetCursor() string {
+	if x != nil {
+		return x.Cursor
+	}
+	return ""
+}
+
+func (x *Req_ListProposals) GetLimit() int64 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type Req_FindProposal struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// @inject_tag: valid:"uuid,required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" valid:"uuid,required"`
+}
+
+func (x *Req_FindProposal) Reset() {
+	*x = Req_FindProposal{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pando_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Req_FindProposal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Req_FindProposal) ProtoMessage() {}
+
+func (x *Req_FindProposal) ProtoReflect() protoreflect.Message {
+	mi := &file_pando_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Req_FindProposal.ProtoReflect.Descriptor instead.
+func (*Req_FindProposal) Descriptor() ([]byte, []int) {
+	return file_pando_proto_rawDescGZIP(), []int{8, 16}
+}
+
+func (x *Req_FindProposal) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type Resp_ListAssets struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2013,7 +2309,7 @@ type Resp_ListAssets struct {
 func (x *Resp_ListAssets) Reset() {
 	*x = Resp_ListAssets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[26]
+		mi := &file_pando_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2026,7 +2322,7 @@ func (x *Resp_ListAssets) String() string {
 func (*Resp_ListAssets) ProtoMessage() {}
 
 func (x *Resp_ListAssets) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[26]
+	mi := &file_pando_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2039,7 +2335,7 @@ func (x *Resp_ListAssets) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListAssets.ProtoReflect.Descriptor instead.
 func (*Resp_ListAssets) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 0}
+	return file_pando_proto_rawDescGZIP(), []int{9, 0}
 }
 
 func (x *Resp_ListAssets) GetAssets() []*Asset {
@@ -2060,7 +2356,7 @@ type Resp_ListOracles struct {
 func (x *Resp_ListOracles) Reset() {
 	*x = Resp_ListOracles{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[27]
+		mi := &file_pando_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2073,7 +2369,7 @@ func (x *Resp_ListOracles) String() string {
 func (*Resp_ListOracles) ProtoMessage() {}
 
 func (x *Resp_ListOracles) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[27]
+	mi := &file_pando_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2086,7 +2382,7 @@ func (x *Resp_ListOracles) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListOracles.ProtoReflect.Descriptor instead.
 func (*Resp_ListOracles) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 1}
+	return file_pando_proto_rawDescGZIP(), []int{9, 1}
 }
 
 func (x *Resp_ListOracles) GetOracles() []*Oracle {
@@ -2107,7 +2403,7 @@ type Resp_ListCollaterals struct {
 func (x *Resp_ListCollaterals) Reset() {
 	*x = Resp_ListCollaterals{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[28]
+		mi := &file_pando_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2120,7 +2416,7 @@ func (x *Resp_ListCollaterals) String() string {
 func (*Resp_ListCollaterals) ProtoMessage() {}
 
 func (x *Resp_ListCollaterals) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[28]
+	mi := &file_pando_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2133,7 +2429,7 @@ func (x *Resp_ListCollaterals) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListCollaterals.ProtoReflect.Descriptor instead.
 func (*Resp_ListCollaterals) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 2}
+	return file_pando_proto_rawDescGZIP(), []int{9, 2}
 }
 
 func (x *Resp_ListCollaterals) GetCollaterals() []*Collateral {
@@ -2155,7 +2451,7 @@ type Resp_ListVaults struct {
 func (x *Resp_ListVaults) Reset() {
 	*x = Resp_ListVaults{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[29]
+		mi := &file_pando_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2168,7 +2464,7 @@ func (x *Resp_ListVaults) String() string {
 func (*Resp_ListVaults) ProtoMessage() {}
 
 func (x *Resp_ListVaults) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[29]
+	mi := &file_pando_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2181,7 +2477,7 @@ func (x *Resp_ListVaults) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListVaults.ProtoReflect.Descriptor instead.
 func (*Resp_ListVaults) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 3}
+	return file_pando_proto_rawDescGZIP(), []int{9, 3}
 }
 
 func (x *Resp_ListVaults) GetVaults() []*Vault {
@@ -2209,7 +2505,7 @@ type Resp_ListMyVaults struct {
 func (x *Resp_ListMyVaults) Reset() {
 	*x = Resp_ListMyVaults{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[30]
+		mi := &file_pando_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2222,7 +2518,7 @@ func (x *Resp_ListMyVaults) String() string {
 func (*Resp_ListMyVaults) ProtoMessage() {}
 
 func (x *Resp_ListMyVaults) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[30]
+	mi := &file_pando_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2235,7 +2531,7 @@ func (x *Resp_ListMyVaults) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListMyVaults.ProtoReflect.Descriptor instead.
 func (*Resp_ListMyVaults) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 4}
+	return file_pando_proto_rawDescGZIP(), []int{9, 4}
 }
 
 func (x *Resp_ListMyVaults) GetVaults() []*Vault {
@@ -2256,7 +2552,7 @@ type Resp_ListVaultEvents struct {
 func (x *Resp_ListVaultEvents) Reset() {
 	*x = Resp_ListVaultEvents{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[31]
+		mi := &file_pando_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2269,7 +2565,7 @@ func (x *Resp_ListVaultEvents) String() string {
 func (*Resp_ListVaultEvents) ProtoMessage() {}
 
 func (x *Resp_ListVaultEvents) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[31]
+	mi := &file_pando_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2282,7 +2578,7 @@ func (x *Resp_ListVaultEvents) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListVaultEvents.ProtoReflect.Descriptor instead.
 func (*Resp_ListVaultEvents) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 5}
+	return file_pando_proto_rawDescGZIP(), []int{9, 5}
 }
 
 func (x *Resp_ListVaultEvents) GetEvents() []*Vault_Event {
@@ -2304,7 +2600,7 @@ type Resp_ListFlips struct {
 func (x *Resp_ListFlips) Reset() {
 	*x = Resp_ListFlips{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[32]
+		mi := &file_pando_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2317,7 +2613,7 @@ func (x *Resp_ListFlips) String() string {
 func (*Resp_ListFlips) ProtoMessage() {}
 
 func (x *Resp_ListFlips) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[32]
+	mi := &file_pando_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2330,7 +2626,7 @@ func (x *Resp_ListFlips) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListFlips.ProtoReflect.Descriptor instead.
 func (*Resp_ListFlips) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 6}
+	return file_pando_proto_rawDescGZIP(), []int{9, 6}
 }
 
 func (x *Resp_ListFlips) GetFlips() []*Flip {
@@ -2358,7 +2654,7 @@ type Resp_ListFlipEvents struct {
 func (x *Resp_ListFlipEvents) Reset() {
 	*x = Resp_ListFlipEvents{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[33]
+		mi := &file_pando_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2371,7 +2667,7 @@ func (x *Resp_ListFlipEvents) String() string {
 func (*Resp_ListFlipEvents) ProtoMessage() {}
 
 func (x *Resp_ListFlipEvents) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[33]
+	mi := &file_pando_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2384,7 +2680,7 @@ func (x *Resp_ListFlipEvents) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListFlipEvents.ProtoReflect.Descriptor instead.
 func (*Resp_ListFlipEvents) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 7}
+	return file_pando_proto_rawDescGZIP(), []int{9, 7}
 }
 
 func (x *Resp_ListFlipEvents) GetEvents() []*Flip_Event {
@@ -2406,7 +2702,7 @@ type Resp_ListTransactions struct {
 func (x *Resp_ListTransactions) Reset() {
 	*x = Resp_ListTransactions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pando_proto_msgTypes[34]
+		mi := &file_pando_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2419,7 +2715,7 @@ func (x *Resp_ListTransactions) String() string {
 func (*Resp_ListTransactions) ProtoMessage() {}
 
 func (x *Resp_ListTransactions) ProtoReflect() protoreflect.Message {
-	mi := &file_pando_proto_msgTypes[34]
+	mi := &file_pando_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2432,7 +2728,7 @@ func (x *Resp_ListTransactions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resp_ListTransactions.ProtoReflect.Descriptor instead.
 func (*Resp_ListTransactions) Descriptor() ([]byte, []int) {
-	return file_pando_proto_rawDescGZIP(), []int{8, 8}
+	return file_pando_proto_rawDescGZIP(), []int{9, 8}
 }
 
 func (x *Resp_ListTransactions) GetTransactions() []*Transaction {
@@ -2443,6 +2739,61 @@ func (x *Resp_ListTransactions) GetTransactions() []*Transaction {
 }
 
 func (x *Resp_ListTransactions) GetPagination() *Pagination {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
+type Resp_ListProposals struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Proposals  []*Proposal `protobuf:"bytes,1,rep,name=proposals,proto3" json:"proposals,omitempty"`
+	Pagination *Pagination `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (x *Resp_ListProposals) Reset() {
+	*x = Resp_ListProposals{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pando_proto_msgTypes[39]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Resp_ListProposals) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Resp_ListProposals) ProtoMessage() {}
+
+func (x *Resp_ListProposals) ProtoReflect() protoreflect.Message {
+	mi := &file_pando_proto_msgTypes[39]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Resp_ListProposals.ProtoReflect.Descriptor instead.
+func (*Resp_ListProposals) Descriptor() ([]byte, []int) {
+	return file_pando_proto_rawDescGZIP(), []int{9, 9}
+}
+
+func (x *Resp_ListProposals) GetProposals() []*Proposal {
+	if x != nil {
+		return x.Proposals
+	}
+	return nil
+}
+
+func (x *Resp_ListProposals) GetPagination() *Pagination {
 	if x != nil {
 		return x.Pagination
 	}
@@ -2569,6 +2920,7 @@ var file_pando_proto_rawDesc = []byte{
 	0x65, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
 	0x12, 0x10, 0x0a, 0x03, 0x62, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x62,
 	0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x6f, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
+<<<<<<< HEAD
 	0x03, 0x6c, 0x6f, 0x74, 0x12, 0x13, 0x0a, 0x05, 0x69, 0x73, 0x5f, 0x6d, 0x65, 0x18, 0x06, 0x20,
 	0x01, 0x28, 0x08, 0x52, 0x04, 0x69, 0x73, 0x4d, 0x65, 0x22, 0xd4, 0x01, 0x0a, 0x06, 0x4f, 0x72,
 	0x61, 0x63, 0x6c, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x69, 0x64,
@@ -2806,6 +3158,298 @@ var file_pando_proto_rawDesc = []byte{
 	0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x72,
 	0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x06, 0x5a, 0x04, 0x2f, 0x61,
 	0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+=======
+	0x03, 0x6c, 0x6f, 0x74, 0x22, 0xcc, 0x03, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
+	0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x39, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
+	0x70, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x37, 0x0a, 0x09,
+	0x70, 0x61, 0x73, 0x73, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x08, 0x70, 0x61, 0x73,
+	0x73, 0x65, 0x64, 0x41, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12,
+	0x19, 0x0a, 0x08, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x73, 0x73, 0x65, 0x74, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x31, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x19, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x6f, 0x74,
+	0x65, 0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x12,
+	0x36, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x0a, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x2e, 0x49, 0x74, 0x65, 0x6d,
+	0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x1a, 0x5a, 0x0a, 0x04, 0x49, 0x74, 0x65, 0x6d, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x68, 0x69, 0x6e, 0x74, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x68, 0x69, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0xd4, 0x01, 0x0a, 0x06, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x19,
+	0x0a, 0x08, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x61, 0x73, 0x73, 0x65, 0x74, 0x49, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x68, 0x6f, 0x70,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x68, 0x6f, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x63,
+	0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x75,
+	0x72, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x65, 0x78, 0x74, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x65, 0x78, 0x74, 0x12, 0x33, 0x0a, 0x07, 0x70, 0x65, 0x65,
+	0x6b, 0x5f, 0x61, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d,
+	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x06, 0x70, 0x65, 0x65, 0x6b, 0x41, 0x74, 0x12, 0x1c,
+	0x0a, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x1c, 0x0a, 0x09,
+	0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52,
+	0x09, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x22, 0xd9, 0x02, 0x0a, 0x0b, 0x54,
+	0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x39, 0x0a, 0x0a, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x69,
+	0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x73, 0x73, 0x65, 0x74, 0x49, 0x64,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x31, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x19, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3d, 0x0a, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x25, 0x2e, 0x66, 0x6f,
+	0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73,
+	0x67, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x1e, 0x0a, 0x0a,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x22, 0x28, 0x0a, 0x06,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e,
+	0x67, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x41, 0x62, 0x6f, 0x72, 0x74, 0x10, 0x01, 0x12, 0x06,
+	0x0a, 0x02, 0x4f, 0x4b, 0x10, 0x02, 0x22, 0xc7, 0x05, 0x0a, 0x03, 0x52, 0x65, 0x71, 0x1a, 0x1b,
+	0x0a, 0x09, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0x0c, 0x0a, 0x0a, 0x4c,
+	0x69, 0x73, 0x74, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x1a, 0x1c, 0x0a, 0x0a, 0x46, 0x69, 0x6e,
+	0x64, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0x0d, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74, 0x4f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x73, 0x1a, 0x11, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x1a, 0x20, 0x0a, 0x0e, 0x46, 0x69, 0x6e,
+	0x64, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0x1b, 0x0a, 0x09, 0x46,
+	0x69, 0x6e, 0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0x78, 0x0a, 0x0a, 0x4c, 0x69, 0x73, 0x74,
+	0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
+	0x65, 0x72, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63,
+	0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x75,
+	0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05,
+	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x1a, 0x3c, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x4d, 0x79, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69,
+	0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x1a, 0x21, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x69, 0x64, 0x1a, 0x1a, 0x0a, 0x08, 0x46, 0x69, 0x6e, 0x64, 0x46, 0x6c, 0x69, 0x70, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a,
+	0x39, 0x0a, 0x09, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x73, 0x12, 0x16, 0x0a, 0x06,
+	0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x75,
+	0x72, 0x73, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x1a, 0x20, 0x0a, 0x0e, 0x4c, 0x69,
+	0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a, 0x21, 0x0a, 0x0f,
+	0x46, 0x69, 0x6e, 0x64, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x1a,
+	0x40, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c,
+	0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69,
+	0x74, 0x1a, 0x3d, 0x0a, 0x0d, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
+	0x6c, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x63, 0x75, 0x72, 0x73, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69,
+	0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x1a, 0x1e, 0x0a, 0x0c, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x22, 0xd2, 0x07, 0x0a, 0x04, 0x52, 0x65, 0x73, 0x70, 0x1a, 0x3e, 0x0a, 0x0a, 0x4c, 0x69, 0x73,
+	0x74, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x12, 0x30, 0x0a, 0x06, 0x61, 0x73, 0x73, 0x65, 0x74,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61,
+	0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x73, 0x73, 0x65,
+	0x74, 0x52, 0x06, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x1a, 0x42, 0x0a, 0x0b, 0x4c, 0x69, 0x73,
+	0x74, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x73, 0x12, 0x33, 0x0a, 0x07, 0x6f, 0x72, 0x61, 0x63,
+	0x6c, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x66, 0x6f, 0x78, 0x2e,
+	0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x4f, 0x72,
+	0x61, 0x63, 0x6c, 0x65, 0x52, 0x07, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x73, 0x1a, 0x52, 0x0a,
+	0x0f, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73,
+	0x12, 0x3f, 0x0a, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
+	0x65, 0x72, 0x61, 0x6c, 0x52, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c,
+	0x73, 0x1a, 0x7d, 0x0a, 0x0a, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x12,
+	0x30, 0x0a, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x18, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x1a, 0x40, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x4d, 0x79, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73,
+	0x12, 0x30, 0x0a, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x18, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x06, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x1a, 0x49, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x36, 0x0a, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x2e,
+	0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x1a, 0x79, 0x0a,
+	0x09, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x73, 0x12, 0x2d, 0x0a, 0x05, 0x66, 0x6c,
+	0x69, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x66, 0x6f, 0x78, 0x2e,
+	0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6c,
+	0x69, 0x70, 0x52, 0x05, 0x66, 0x6c, 0x69, 0x70, 0x73, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x61, 0x67,
+	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e,
+	0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70, 0x61,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x47, 0x0a, 0x0e, 0x4c, 0x69, 0x73, 0x74,
+	0x46, 0x6c, 0x69, 0x70, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x35, 0x0a, 0x06, 0x65, 0x76,
+	0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x66, 0x6f, 0x78,
+	0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46,
+	0x6c, 0x69, 0x70, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74,
+	0x73, 0x1a, 0x95, 0x01, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x42, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x66,
+	0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x74, 0x72,
+	0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x61,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x89, 0x01, 0x0a, 0x0d, 0x4c, 0x69,
+	0x73, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x39, 0x0a, 0x09, 0x70,
+	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x09, 0x70, 0x72, 0x6f,
+	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x66, 0x6f, 0x78,
+	0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x50,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2a, 0x97, 0x03, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x05, 0x0a, 0x01, 0x5f, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x53, 0x79, 0x73, 0x57, 0x69,
+	0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x10, 0x01, 0x12, 0x15, 0x0a, 0x11, 0x41, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x53, 0x79, 0x73, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x10, 0x02, 0x12,
+	0x10, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x4d, 0x61, 0x6b, 0x65, 0x10,
+	0x0b, 0x12, 0x11, 0x0a, 0x0d, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x68, 0x6f,
+	0x75, 0x74, 0x10, 0x0c, 0x12, 0x10, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x56, 0x6f, 0x74, 0x65, 0x10, 0x0d, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x61, 0x74, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x10, 0x15, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x61, 0x74, 0x53, 0x75, 0x70, 0x70,
+	0x6c, 0x79, 0x10, 0x16, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x61, 0x74, 0x45, 0x64, 0x69, 0x74, 0x10,
+	0x17, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x61, 0x74, 0x46, 0x6f, 0x6c, 0x64, 0x10, 0x18, 0x12, 0x0b,
+	0x0a, 0x07, 0x43, 0x61, 0x74, 0x4d, 0x6f, 0x76, 0x65, 0x10, 0x19, 0x12, 0x0b, 0x0a, 0x07, 0x43,
+	0x61, 0x74, 0x47, 0x61, 0x69, 0x6e, 0x10, 0x1a, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x61, 0x74, 0x46,
+	0x69, 0x6c, 0x6c, 0x10, 0x1b, 0x12, 0x0b, 0x0a, 0x07, 0x56, 0x61, 0x74, 0x4f, 0x70, 0x65, 0x6e,
+	0x10, 0x1f, 0x12, 0x0e, 0x0a, 0x0a, 0x56, 0x61, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x10, 0x20, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x61, 0x74, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61,
+	0x77, 0x10, 0x21, 0x12, 0x0e, 0x0a, 0x0a, 0x56, 0x61, 0x74, 0x50, 0x61, 0x79, 0x62, 0x61, 0x63,
+	0x6b, 0x10, 0x22, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x61, 0x74, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x61,
+	0x74, 0x65, 0x10, 0x23, 0x12, 0x0c, 0x0a, 0x08, 0x46, 0x6c, 0x69, 0x70, 0x4b, 0x69, 0x63, 0x6b,
+	0x10, 0x29, 0x12, 0x0b, 0x0a, 0x07, 0x46, 0x6c, 0x69, 0x70, 0x42, 0x69, 0x64, 0x10, 0x2a, 0x12,
+	0x0c, 0x0a, 0x08, 0x46, 0x6c, 0x69, 0x70, 0x44, 0x65, 0x61, 0x6c, 0x10, 0x2b, 0x12, 0x10, 0x0a,
+	0x0c, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x10, 0x33, 0x12,
+	0x0e, 0x0a, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x45, 0x64, 0x69, 0x74, 0x10, 0x34, 0x12,
+	0x0e, 0x0a, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x50, 0x6f, 0x6b, 0x65, 0x10, 0x35, 0x12,
+	0x0e, 0x0a, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x52, 0x65, 0x6c, 0x79, 0x10, 0x36, 0x12,
+	0x0e, 0x0a, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x44, 0x65, 0x6e, 0x79, 0x10, 0x37, 0x32,
+	0xcd, 0x0b, 0x0a, 0x05, 0x50, 0x61, 0x6e, 0x64, 0x6f, 0x12, 0x47, 0x0a, 0x09, 0x46, 0x69, 0x6e,
+	0x64, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x20, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e,
+	0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46,
+	0x69, 0x6e, 0x64, 0x41, 0x73, 0x73, 0x65, 0x74, 0x1a, 0x18, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x41, 0x73, 0x73,
+	0x65, 0x74, 0x12, 0x53, 0x0a, 0x0a, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73,
+	0x12, 0x21, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x73, 0x73,
+	0x65, 0x74, 0x73, 0x1a, 0x22, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73,
+	0x74, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x12, 0x4a, 0x0a, 0x0a, 0x46, 0x69, 0x6e, 0x64, 0x4f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x21, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69,
+	0x6e, 0x64, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x1a, 0x19, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x4f, 0x72, 0x61,
+	0x63, 0x6c, 0x65, 0x12, 0x56, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74, 0x4f, 0x72, 0x61, 0x63, 0x6c,
+	0x65, 0x73, 0x12, 0x22, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x73, 0x1a, 0x23, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e,
+	0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e,
+	0x4c, 0x69, 0x73, 0x74, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x73, 0x12, 0x62, 0x0a, 0x0f, 0x4c,
+	0x69, 0x73, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x12, 0x26,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61,
+	0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x1a, 0x27, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e,
+	0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e,
+	0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x12,
+	0x56, 0x0a, 0x0e, 0x46, 0x69, 0x6e, 0x64, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61,
+	0x6c, 0x12, 0x25, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x43, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x1a, 0x1d, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x43, 0x6f, 0x6c,
+	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x47, 0x0a, 0x09, 0x46, 0x69, 0x6e, 0x64, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x12, 0x20, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f,
+	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69, 0x6e,
+	0x64, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x1a, 0x18, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e,
+	0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x12, 0x53, 0x0a, 0x0a, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x12, 0x21,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x73, 0x1a, 0x22, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x12, 0x59, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x4d, 0x79, 0x56,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x12, 0x23, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69,
+	0x73, 0x74, 0x4d, 0x79, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x1a, 0x24, 0x2e, 0x66, 0x6f, 0x78,
+	0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52,
+	0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4d, 0x79, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73,
+	0x12, 0x62, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x73, 0x12, 0x26, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74,
+	0x56, 0x61, 0x75, 0x6c, 0x74, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x1a, 0x27, 0x2e, 0x66, 0x6f,
+	0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x73, 0x12, 0x44, 0x0a, 0x08, 0x46, 0x69, 0x6e, 0x64, 0x46, 0x6c, 0x69, 0x70,
+	0x12, 0x1f, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x46, 0x6c, 0x69,
+	0x70, 0x1a, 0x17, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6c, 0x69, 0x70, 0x12, 0x50, 0x0a, 0x09, 0x4c, 0x69,
+	0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x73, 0x12, 0x20, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61,
+	0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e,
+	0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x73, 0x1a, 0x21, 0x2e, 0x66, 0x6f, 0x78, 0x2e,
+	0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x73, 0x12, 0x5f, 0x0a, 0x0e,
+	0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x25,
+	0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x73, 0x1a, 0x26, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c,
+	0x69, 0x73, 0x74, 0x46, 0x6c, 0x69, 0x70, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x59, 0x0a,
+	0x0f, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x26, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x72, 0x61,
+	0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x1e, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x54, 0x72, 0x61,
+	0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x65, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74,
+	0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x27, 0x2e, 0x66,
+	0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x1a, 0x28, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64,
+	0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c,
+	0x69, 0x73, 0x74, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12,
+	0x50, 0x0a, 0x0c, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x12,
+	0x23, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x1a, 0x1b, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f,
+	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
+	0x6c, 0x12, 0x5c, 0x0a, 0x0d, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
+	0x6c, 0x73, 0x12, 0x24, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70, 0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x71, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50,
+	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x1a, 0x25, 0x2e, 0x66, 0x6f, 0x78, 0x2e, 0x70,
+	0x61, 0x6e, 0x64, 0x6f, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x42,
+	0x07, 0x5a, 0x05, 0x2e, 0x3b, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+>>>>>>> e2c0f9d (add /proposals)
 }
 
 var (
@@ -2821,7 +3465,7 @@ func file_pando_proto_rawDescGZIP() []byte {
 }
 
 var file_pando_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_pando_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
+var file_pando_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
 var file_pando_proto_goTypes = []interface{}{
 	(Action)(0),                   // 0: fox.pando.service.Action
 	(Transaction_Status)(0),       // 1: fox.pando.service.Transaction.Status
@@ -2830,102 +3474,117 @@ var file_pando_proto_goTypes = []interface{}{
 	(*Collateral)(nil),            // 4: fox.pando.service.Collateral
 	(*Vault)(nil),                 // 5: fox.pando.service.Vault
 	(*Flip)(nil),                  // 6: fox.pando.service.Flip
-	(*Oracle)(nil),                // 7: fox.pando.service.Oracle
-	(*Transaction)(nil),           // 8: fox.pando.service.Transaction
-	(*Req)(nil),                   // 9: fox.pando.service.Req
-	(*Resp)(nil),                  // 10: fox.pando.service.Resp
-	(*Vault_Event)(nil),           // 11: fox.pando.service.Vault.Event
-	(*Flip_Event)(nil),            // 12: fox.pando.service.Flip.Event
-	(*Req_FindAsset)(nil),         // 13: fox.pando.service.Req.FindAsset
-	(*Req_ListAssets)(nil),        // 14: fox.pando.service.Req.ListAssets
-	(*Req_FindOracle)(nil),        // 15: fox.pando.service.Req.FindOracle
-	(*Req_ListOracles)(nil),       // 16: fox.pando.service.Req.ListOracles
-	(*Req_ListCollaterals)(nil),   // 17: fox.pando.service.Req.ListCollaterals
-	(*Req_FindCollateral)(nil),    // 18: fox.pando.service.Req.FindCollateral
-	(*Req_FindVault)(nil),         // 19: fox.pando.service.Req.FindVault
-	(*Req_ListVaults)(nil),        // 20: fox.pando.service.Req.ListVaults
-	(*Req_ListMyVaults)(nil),      // 21: fox.pando.service.Req.ListMyVaults
-	(*Req_ListVaultEvents)(nil),   // 22: fox.pando.service.Req.ListVaultEvents
-	(*Req_FindFlip)(nil),          // 23: fox.pando.service.Req.FindFlip
-	(*Req_ListFlips)(nil),         // 24: fox.pando.service.Req.ListFlips
-	(*Req_ListFlipEvents)(nil),    // 25: fox.pando.service.Req.ListFlipEvents
-	(*Req_FindTransaction)(nil),   // 26: fox.pando.service.Req.FindTransaction
-	(*Req_ListTransactions)(nil),  // 27: fox.pando.service.Req.ListTransactions
-	(*Resp_ListAssets)(nil),       // 28: fox.pando.service.Resp.ListAssets
-	(*Resp_ListOracles)(nil),      // 29: fox.pando.service.Resp.ListOracles
-	(*Resp_ListCollaterals)(nil),  // 30: fox.pando.service.Resp.ListCollaterals
-	(*Resp_ListVaults)(nil),       // 31: fox.pando.service.Resp.ListVaults
-	(*Resp_ListMyVaults)(nil),     // 32: fox.pando.service.Resp.ListMyVaults
-	(*Resp_ListVaultEvents)(nil),  // 33: fox.pando.service.Resp.ListVaultEvents
-	(*Resp_ListFlips)(nil),        // 34: fox.pando.service.Resp.ListFlips
-	(*Resp_ListFlipEvents)(nil),   // 35: fox.pando.service.Resp.ListFlipEvents
-	(*Resp_ListTransactions)(nil), // 36: fox.pando.service.Resp.ListTransactions
-	(*timestamppb.Timestamp)(nil), // 37: google.protobuf.Timestamp
+	(*Proposal)(nil),              // 7: fox.pando.service.Proposal
+	(*Oracle)(nil),                // 8: fox.pando.service.Oracle
+	(*Transaction)(nil),           // 9: fox.pando.service.Transaction
+	(*Req)(nil),                   // 10: fox.pando.service.Req
+	(*Resp)(nil),                  // 11: fox.pando.service.Resp
+	(*Vault_Event)(nil),           // 12: fox.pando.service.Vault.Event
+	(*Flip_Event)(nil),            // 13: fox.pando.service.Flip.Event
+	(*Proposal_Item)(nil),         // 14: fox.pando.service.Proposal.Item
+	(*Req_FindAsset)(nil),         // 15: fox.pando.service.Req.FindAsset
+	(*Req_ListAssets)(nil),        // 16: fox.pando.service.Req.ListAssets
+	(*Req_FindOracle)(nil),        // 17: fox.pando.service.Req.FindOracle
+	(*Req_ListOracles)(nil),       // 18: fox.pando.service.Req.ListOracles
+	(*Req_ListCollaterals)(nil),   // 19: fox.pando.service.Req.ListCollaterals
+	(*Req_FindCollateral)(nil),    // 20: fox.pando.service.Req.FindCollateral
+	(*Req_FindVault)(nil),         // 21: fox.pando.service.Req.FindVault
+	(*Req_ListVaults)(nil),        // 22: fox.pando.service.Req.ListVaults
+	(*Req_ListMyVaults)(nil),      // 23: fox.pando.service.Req.ListMyVaults
+	(*Req_ListVaultEvents)(nil),   // 24: fox.pando.service.Req.ListVaultEvents
+	(*Req_FindFlip)(nil),          // 25: fox.pando.service.Req.FindFlip
+	(*Req_ListFlips)(nil),         // 26: fox.pando.service.Req.ListFlips
+	(*Req_ListFlipEvents)(nil),    // 27: fox.pando.service.Req.ListFlipEvents
+	(*Req_FindTransaction)(nil),   // 28: fox.pando.service.Req.FindTransaction
+	(*Req_ListTransactions)(nil),  // 29: fox.pando.service.Req.ListTransactions
+	(*Req_ListProposals)(nil),     // 30: fox.pando.service.Req.ListProposals
+	(*Req_FindProposal)(nil),      // 31: fox.pando.service.Req.FindProposal
+	(*Resp_ListAssets)(nil),       // 32: fox.pando.service.Resp.ListAssets
+	(*Resp_ListOracles)(nil),      // 33: fox.pando.service.Resp.ListOracles
+	(*Resp_ListCollaterals)(nil),  // 34: fox.pando.service.Resp.ListCollaterals
+	(*Resp_ListVaults)(nil),       // 35: fox.pando.service.Resp.ListVaults
+	(*Resp_ListMyVaults)(nil),     // 36: fox.pando.service.Resp.ListMyVaults
+	(*Resp_ListVaultEvents)(nil),  // 37: fox.pando.service.Resp.ListVaultEvents
+	(*Resp_ListFlips)(nil),        // 38: fox.pando.service.Resp.ListFlips
+	(*Resp_ListFlipEvents)(nil),   // 39: fox.pando.service.Resp.ListFlipEvents
+	(*Resp_ListTransactions)(nil), // 40: fox.pando.service.Resp.ListTransactions
+	(*Resp_ListProposals)(nil),    // 41: fox.pando.service.Resp.ListProposals
+	(*timestamppb.Timestamp)(nil), // 42: google.protobuf.Timestamp
 }
 var file_pando_proto_depIdxs = []int32{
 	3,  // 0: fox.pando.service.Asset.chain:type_name -> fox.pando.service.Asset
-	37, // 1: fox.pando.service.Collateral.created_at:type_name -> google.protobuf.Timestamp
-	37, // 2: fox.pando.service.Collateral.rho:type_name -> google.protobuf.Timestamp
-	37, // 3: fox.pando.service.Vault.created_at:type_name -> google.protobuf.Timestamp
-	37, // 4: fox.pando.service.Flip.created_at:type_name -> google.protobuf.Timestamp
-	37, // 5: fox.pando.service.Flip.tic:type_name -> google.protobuf.Timestamp
-	37, // 6: fox.pando.service.Flip.end:type_name -> google.protobuf.Timestamp
+	42, // 1: fox.pando.service.Collateral.created_at:type_name -> google.protobuf.Timestamp
+	42, // 2: fox.pando.service.Collateral.rho:type_name -> google.protobuf.Timestamp
+	42, // 3: fox.pando.service.Vault.created_at:type_name -> google.protobuf.Timestamp
+	42, // 4: fox.pando.service.Flip.created_at:type_name -> google.protobuf.Timestamp
+	42, // 5: fox.pando.service.Flip.tic:type_name -> google.protobuf.Timestamp
+	42, // 6: fox.pando.service.Flip.end:type_name -> google.protobuf.Timestamp
 	0,  // 7: fox.pando.service.Flip.action:type_name -> fox.pando.service.Action
-	37, // 8: fox.pando.service.Oracle.peek_at:type_name -> google.protobuf.Timestamp
-	37, // 9: fox.pando.service.Transaction.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 10: fox.pando.service.Transaction.action:type_name -> fox.pando.service.Action
-	1,  // 11: fox.pando.service.Transaction.status:type_name -> fox.pando.service.Transaction.Status
-	37, // 12: fox.pando.service.Vault.Event.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 13: fox.pando.service.Vault.Event.action:type_name -> fox.pando.service.Action
-	37, // 14: fox.pando.service.Flip.Event.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 15: fox.pando.service.Flip.Event.action:type_name -> fox.pando.service.Action
-	3,  // 16: fox.pando.service.Resp.ListAssets.assets:type_name -> fox.pando.service.Asset
-	7,  // 17: fox.pando.service.Resp.ListOracles.oracles:type_name -> fox.pando.service.Oracle
-	4,  // 18: fox.pando.service.Resp.ListCollaterals.collaterals:type_name -> fox.pando.service.Collateral
-	5,  // 19: fox.pando.service.Resp.ListVaults.vaults:type_name -> fox.pando.service.Vault
-	2,  // 20: fox.pando.service.Resp.ListVaults.pagination:type_name -> fox.pando.service.Pagination
-	5,  // 21: fox.pando.service.Resp.ListMyVaults.vaults:type_name -> fox.pando.service.Vault
-	11, // 22: fox.pando.service.Resp.ListVaultEvents.events:type_name -> fox.pando.service.Vault.Event
-	6,  // 23: fox.pando.service.Resp.ListFlips.flips:type_name -> fox.pando.service.Flip
-	2,  // 24: fox.pando.service.Resp.ListFlips.pagination:type_name -> fox.pando.service.Pagination
-	12, // 25: fox.pando.service.Resp.ListFlipEvents.events:type_name -> fox.pando.service.Flip.Event
-	8,  // 26: fox.pando.service.Resp.ListTransactions.transactions:type_name -> fox.pando.service.Transaction
-	2,  // 27: fox.pando.service.Resp.ListTransactions.pagination:type_name -> fox.pando.service.Pagination
-	13, // 28: fox.pando.service.Pando.FindAsset:input_type -> fox.pando.service.Req.FindAsset
-	14, // 29: fox.pando.service.Pando.ListAssets:input_type -> fox.pando.service.Req.ListAssets
-	15, // 30: fox.pando.service.Pando.FindOracle:input_type -> fox.pando.service.Req.FindOracle
-	16, // 31: fox.pando.service.Pando.ListOracles:input_type -> fox.pando.service.Req.ListOracles
-	17, // 32: fox.pando.service.Pando.ListCollaterals:input_type -> fox.pando.service.Req.ListCollaterals
-	18, // 33: fox.pando.service.Pando.FindCollateral:input_type -> fox.pando.service.Req.FindCollateral
-	19, // 34: fox.pando.service.Pando.FindVault:input_type -> fox.pando.service.Req.FindVault
-	20, // 35: fox.pando.service.Pando.ListVaults:input_type -> fox.pando.service.Req.ListVaults
-	21, // 36: fox.pando.service.Pando.ListMyVaults:input_type -> fox.pando.service.Req.ListMyVaults
-	22, // 37: fox.pando.service.Pando.ListVaultEvents:input_type -> fox.pando.service.Req.ListVaultEvents
-	23, // 38: fox.pando.service.Pando.FindFlip:input_type -> fox.pando.service.Req.FindFlip
-	24, // 39: fox.pando.service.Pando.ListFlips:input_type -> fox.pando.service.Req.ListFlips
-	25, // 40: fox.pando.service.Pando.ListFlipEvents:input_type -> fox.pando.service.Req.ListFlipEvents
-	26, // 41: fox.pando.service.Pando.FindTransaction:input_type -> fox.pando.service.Req.FindTransaction
-	27, // 42: fox.pando.service.Pando.ListTransactions:input_type -> fox.pando.service.Req.ListTransactions
-	3,  // 43: fox.pando.service.Pando.FindAsset:output_type -> fox.pando.service.Asset
-	28, // 44: fox.pando.service.Pando.ListAssets:output_type -> fox.pando.service.Resp.ListAssets
-	7,  // 45: fox.pando.service.Pando.FindOracle:output_type -> fox.pando.service.Oracle
-	29, // 46: fox.pando.service.Pando.ListOracles:output_type -> fox.pando.service.Resp.ListOracles
-	30, // 47: fox.pando.service.Pando.ListCollaterals:output_type -> fox.pando.service.Resp.ListCollaterals
-	4,  // 48: fox.pando.service.Pando.FindCollateral:output_type -> fox.pando.service.Collateral
-	5,  // 49: fox.pando.service.Pando.FindVault:output_type -> fox.pando.service.Vault
-	31, // 50: fox.pando.service.Pando.ListVaults:output_type -> fox.pando.service.Resp.ListVaults
-	32, // 51: fox.pando.service.Pando.ListMyVaults:output_type -> fox.pando.service.Resp.ListMyVaults
-	33, // 52: fox.pando.service.Pando.ListVaultEvents:output_type -> fox.pando.service.Resp.ListVaultEvents
-	6,  // 53: fox.pando.service.Pando.FindFlip:output_type -> fox.pando.service.Flip
-	34, // 54: fox.pando.service.Pando.ListFlips:output_type -> fox.pando.service.Resp.ListFlips
-	35, // 55: fox.pando.service.Pando.ListFlipEvents:output_type -> fox.pando.service.Resp.ListFlipEvents
-	8,  // 56: fox.pando.service.Pando.FindTransaction:output_type -> fox.pando.service.Transaction
-	36, // 57: fox.pando.service.Pando.ListTransactions:output_type -> fox.pando.service.Resp.ListTransactions
-	43, // [43:58] is the sub-list for method output_type
-	28, // [28:43] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	42, // 8: fox.pando.service.Proposal.created_at:type_name -> google.protobuf.Timestamp
+	42, // 9: fox.pando.service.Proposal.passed_at:type_name -> google.protobuf.Timestamp
+	0,  // 10: fox.pando.service.Proposal.action:type_name -> fox.pando.service.Action
+	14, // 11: fox.pando.service.Proposal.items:type_name -> fox.pando.service.Proposal.Item
+	42, // 12: fox.pando.service.Oracle.peek_at:type_name -> google.protobuf.Timestamp
+	42, // 13: fox.pando.service.Transaction.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 14: fox.pando.service.Transaction.action:type_name -> fox.pando.service.Action
+	1,  // 15: fox.pando.service.Transaction.status:type_name -> fox.pando.service.Transaction.Status
+	42, // 16: fox.pando.service.Vault.Event.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 17: fox.pando.service.Vault.Event.action:type_name -> fox.pando.service.Action
+	42, // 18: fox.pando.service.Flip.Event.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 19: fox.pando.service.Flip.Event.action:type_name -> fox.pando.service.Action
+	3,  // 20: fox.pando.service.Resp.ListAssets.assets:type_name -> fox.pando.service.Asset
+	8,  // 21: fox.pando.service.Resp.ListOracles.oracles:type_name -> fox.pando.service.Oracle
+	4,  // 22: fox.pando.service.Resp.ListCollaterals.collaterals:type_name -> fox.pando.service.Collateral
+	5,  // 23: fox.pando.service.Resp.ListVaults.vaults:type_name -> fox.pando.service.Vault
+	2,  // 24: fox.pando.service.Resp.ListVaults.pagination:type_name -> fox.pando.service.Pagination
+	5,  // 25: fox.pando.service.Resp.ListMyVaults.vaults:type_name -> fox.pando.service.Vault
+	12, // 26: fox.pando.service.Resp.ListVaultEvents.events:type_name -> fox.pando.service.Vault.Event
+	6,  // 27: fox.pando.service.Resp.ListFlips.flips:type_name -> fox.pando.service.Flip
+	2,  // 28: fox.pando.service.Resp.ListFlips.pagination:type_name -> fox.pando.service.Pagination
+	13, // 29: fox.pando.service.Resp.ListFlipEvents.events:type_name -> fox.pando.service.Flip.Event
+	9,  // 30: fox.pando.service.Resp.ListTransactions.transactions:type_name -> fox.pando.service.Transaction
+	2,  // 31: fox.pando.service.Resp.ListTransactions.pagination:type_name -> fox.pando.service.Pagination
+	7,  // 32: fox.pando.service.Resp.ListProposals.proposals:type_name -> fox.pando.service.Proposal
+	2,  // 33: fox.pando.service.Resp.ListProposals.pagination:type_name -> fox.pando.service.Pagination
+	15, // 34: fox.pando.service.Pando.FindAsset:input_type -> fox.pando.service.Req.FindAsset
+	16, // 35: fox.pando.service.Pando.ListAssets:input_type -> fox.pando.service.Req.ListAssets
+	17, // 36: fox.pando.service.Pando.FindOracle:input_type -> fox.pando.service.Req.FindOracle
+	18, // 37: fox.pando.service.Pando.ListOracles:input_type -> fox.pando.service.Req.ListOracles
+	19, // 38: fox.pando.service.Pando.ListCollaterals:input_type -> fox.pando.service.Req.ListCollaterals
+	20, // 39: fox.pando.service.Pando.FindCollateral:input_type -> fox.pando.service.Req.FindCollateral
+	21, // 40: fox.pando.service.Pando.FindVault:input_type -> fox.pando.service.Req.FindVault
+	22, // 41: fox.pando.service.Pando.ListVaults:input_type -> fox.pando.service.Req.ListVaults
+	23, // 42: fox.pando.service.Pando.ListMyVaults:input_type -> fox.pando.service.Req.ListMyVaults
+	24, // 43: fox.pando.service.Pando.ListVaultEvents:input_type -> fox.pando.service.Req.ListVaultEvents
+	25, // 44: fox.pando.service.Pando.FindFlip:input_type -> fox.pando.service.Req.FindFlip
+	26, // 45: fox.pando.service.Pando.ListFlips:input_type -> fox.pando.service.Req.ListFlips
+	27, // 46: fox.pando.service.Pando.ListFlipEvents:input_type -> fox.pando.service.Req.ListFlipEvents
+	28, // 47: fox.pando.service.Pando.FindTransaction:input_type -> fox.pando.service.Req.FindTransaction
+	29, // 48: fox.pando.service.Pando.ListTransactions:input_type -> fox.pando.service.Req.ListTransactions
+	31, // 49: fox.pando.service.Pando.FindProposal:input_type -> fox.pando.service.Req.FindProposal
+	30, // 50: fox.pando.service.Pando.ListProposals:input_type -> fox.pando.service.Req.ListProposals
+	3,  // 51: fox.pando.service.Pando.FindAsset:output_type -> fox.pando.service.Asset
+	32, // 52: fox.pando.service.Pando.ListAssets:output_type -> fox.pando.service.Resp.ListAssets
+	8,  // 53: fox.pando.service.Pando.FindOracle:output_type -> fox.pando.service.Oracle
+	33, // 54: fox.pando.service.Pando.ListOracles:output_type -> fox.pando.service.Resp.ListOracles
+	34, // 55: fox.pando.service.Pando.ListCollaterals:output_type -> fox.pando.service.Resp.ListCollaterals
+	4,  // 56: fox.pando.service.Pando.FindCollateral:output_type -> fox.pando.service.Collateral
+	5,  // 57: fox.pando.service.Pando.FindVault:output_type -> fox.pando.service.Vault
+	35, // 58: fox.pando.service.Pando.ListVaults:output_type -> fox.pando.service.Resp.ListVaults
+	36, // 59: fox.pando.service.Pando.ListMyVaults:output_type -> fox.pando.service.Resp.ListMyVaults
+	37, // 60: fox.pando.service.Pando.ListVaultEvents:output_type -> fox.pando.service.Resp.ListVaultEvents
+	6,  // 61: fox.pando.service.Pando.FindFlip:output_type -> fox.pando.service.Flip
+	38, // 62: fox.pando.service.Pando.ListFlips:output_type -> fox.pando.service.Resp.ListFlips
+	39, // 63: fox.pando.service.Pando.ListFlipEvents:output_type -> fox.pando.service.Resp.ListFlipEvents
+	9,  // 64: fox.pando.service.Pando.FindTransaction:output_type -> fox.pando.service.Transaction
+	40, // 65: fox.pando.service.Pando.ListTransactions:output_type -> fox.pando.service.Resp.ListTransactions
+	7,  // 66: fox.pando.service.Pando.FindProposal:output_type -> fox.pando.service.Proposal
+	41, // 67: fox.pando.service.Pando.ListProposals:output_type -> fox.pando.service.Resp.ListProposals
+	51, // [51:68] is the sub-list for method output_type
+	34, // [34:51] is the sub-list for method input_type
+	34, // [34:34] is the sub-list for extension type_name
+	34, // [34:34] is the sub-list for extension extendee
+	0,  // [0:34] is the sub-list for field type_name
 }
 
 func init() { file_pando_proto_init() }
@@ -2995,7 +3654,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Oracle); i {
+			switch v := v.(*Proposal); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3007,7 +3666,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Transaction); i {
+			switch v := v.(*Oracle); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3019,7 +3678,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req); i {
+			switch v := v.(*Transaction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3031,7 +3690,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp); i {
+			switch v := v.(*Req); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3043,7 +3702,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Vault_Event); i {
+			switch v := v.(*Resp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3055,7 +3714,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Flip_Event); i {
+			switch v := v.(*Vault_Event); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3067,7 +3726,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindAsset); i {
+			switch v := v.(*Flip_Event); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3079,7 +3738,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListAssets); i {
+			switch v := v.(*Proposal_Item); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3091,7 +3750,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindOracle); i {
+			switch v := v.(*Req_FindAsset); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3103,7 +3762,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListOracles); i {
+			switch v := v.(*Req_ListAssets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3115,7 +3774,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListCollaterals); i {
+			switch v := v.(*Req_FindOracle); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3127,7 +3786,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindCollateral); i {
+			switch v := v.(*Req_ListOracles); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3139,7 +3798,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindVault); i {
+			switch v := v.(*Req_ListCollaterals); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3151,7 +3810,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListVaults); i {
+			switch v := v.(*Req_FindCollateral); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3163,7 +3822,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListMyVaults); i {
+			switch v := v.(*Req_FindVault); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3175,7 +3834,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListVaultEvents); i {
+			switch v := v.(*Req_ListVaults); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3187,7 +3846,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindFlip); i {
+			switch v := v.(*Req_ListMyVaults); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3199,7 +3858,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListFlips); i {
+			switch v := v.(*Req_ListVaultEvents); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3211,7 +3870,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListFlipEvents); i {
+			switch v := v.(*Req_FindFlip); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3223,7 +3882,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_FindTransaction); i {
+			switch v := v.(*Req_ListFlips); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3235,7 +3894,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Req_ListTransactions); i {
+			switch v := v.(*Req_ListFlipEvents); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3247,7 +3906,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListAssets); i {
+			switch v := v.(*Req_FindTransaction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3259,7 +3918,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListOracles); i {
+			switch v := v.(*Req_ListTransactions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3271,7 +3930,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListCollaterals); i {
+			switch v := v.(*Req_ListProposals); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3283,7 +3942,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListVaults); i {
+			switch v := v.(*Req_FindProposal); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3295,7 +3954,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListMyVaults); i {
+			switch v := v.(*Resp_ListAssets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3307,7 +3966,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListVaultEvents); i {
+			switch v := v.(*Resp_ListOracles); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3319,7 +3978,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListFlips); i {
+			switch v := v.(*Resp_ListCollaterals); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3331,7 +3990,7 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resp_ListFlipEvents); i {
+			switch v := v.(*Resp_ListVaults); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3343,7 +4002,67 @@ func file_pando_proto_init() {
 			}
 		}
 		file_pando_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Resp_ListMyVaults); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pando_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Resp_ListVaultEvents); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pando_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Resp_ListFlips); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pando_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Resp_ListFlipEvents); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pando_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Resp_ListTransactions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pando_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Resp_ListProposals); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3361,7 +4080,7 @@ func file_pando_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pando_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   35,
+			NumMessages:   40,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
