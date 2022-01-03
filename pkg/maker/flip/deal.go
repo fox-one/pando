@@ -73,6 +73,7 @@ func HandleDeal(
 				Action:    r.Action,
 				Bid:       f.Bid,
 				Lot:       f.Lot,
+				Guy:       r.Sender,
 			}
 
 			if err := flips.CreateEvent(ctx, event); err != nil {

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package fox.pando.service;
-option go_package = ".;api";
+option go_package = "/api";
 
 import "google/protobuf/timestamp.proto";
 
@@ -114,6 +114,7 @@ message Flip {
         Action action = 3;
         string bid = 4;
         string lot = 5;
+        bool is_me = 6;
     }
 
     string id = 1;

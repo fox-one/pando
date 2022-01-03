@@ -61,6 +61,7 @@ func HandleKick(
 				Action:    r.Action,
 				Bid:       flip.Bid,
 				Lot:       flip.Lot,
+				Guy:       r.Sender,
 			}); err != nil {
 				logger.FromContext(ctx).WithError(err).Errorln("flips.CreateEvent")
 				return err

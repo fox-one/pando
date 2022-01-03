@@ -41,7 +41,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/swag v1.7.0
-	github.com/twitchtv/twirp v7.1.1+incompatible
+	github.com/twitchtv/twirp v8.1.1+incompatible
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c

@@ -27,12 +27,13 @@ func Flip(flip *core.Flip) *api.Flip {
 	}
 }
 
-func FlipEvent(event *core.FlipEvent) *api.Flip_Event {
+func FlipEvent(event *core.FlipEvent, me string) *api.Flip_Event {
 	return &api.Flip_Event{
 		FlipId:    event.FlipID,
 		CreatedAt: Time(&event.CreatedAt),
 		Action:    api.Action(event.Action),
 		Bid:       event.Bid.String(),
 		Lot:       event.Lot.String(),
+		IsMe:      event.Guy != "" && event.Guy == me,
 	}
 }

@@ -100,6 +100,7 @@ func HandleBid(
 				Action:    r.Action,
 				Bid:       r.Amount,
 				Lot:       lot,
+				Guy:       r.Sender,
 			}
 
 			if err := flips.CreateEvent(ctx, event); err != nil {
