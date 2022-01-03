@@ -906,6 +906,9 @@ var doc = `{
                 "flip_id": {
                     "type": "string"
                 },
+                "is_me": {
+                    "type": "boolean"
+                },
                 "lot": {
                     "type": "string"
                 }
