@@ -26,6 +26,8 @@ func New(
 	walletz core.WalletService,
 	notifier core.Notifier,
 	oracles core.OracleStore,
+	proposals core.ProposalStore,
+	proposalz core.ProposalService,
 	system *core.System,
 ) *Server {
 	return &Server{
@@ -39,6 +41,8 @@ func New(
 		walletz:      walletz,
 		notifier:     notifier,
 		oracles:      oracles,
+		proposalz:    proposalz,
+		proposals:    proposals,
 		system:       system,
 	}
 }
@@ -54,6 +58,8 @@ type Server struct {
 	walletz      core.WalletService
 	notifier     core.Notifier
 	oracles      core.OracleStore
+	proposals    core.ProposalStore
+	proposalz    core.ProposalService
 	system       *core.System
 }
 
@@ -71,7 +77,7 @@ func (s *Server) Handler() http.Handler {
 
 	r.Post("/login", user.HandleOauth(s.userz, s.sessions, s.notifier))
 
-	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions).TwirpServer()
+	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions, s.proposalz, s.proposals).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {
@@ -112,6 +118,11 @@ func (s *Server) Handler() http.Handler {
 
 	r.Route("/actions", func(r chi.Router) {
 		r.Post("/", actions.HandleCreate(s.walletz, s.system))
+	})
+
+	r.Route("/proposals", func(r chi.Router) {
+		r.Get("/", rt.Handle("ListProposals"))
+		r.Get("/{id}", rt.Handle("FindProposal"))
 	})
 
 	return r

@@ -83,3 +83,17 @@ func (s *proposalStore) List(ctx context.Context, fromID int64, limit int) ([]*c
 
 	return proposals, nil
 }
+
+func (s *proposalStore) ListReverse(ctx context.Context, fromID int64, limit int) ([]*core.Proposal, error) {
+	var proposals []*core.Proposal
+	tx := s.db.View()
+	if fromID > 0 {
+		tx = tx.Where("id < ?", fromID)
+	}
+
+	if err := tx.Limit(limit).Order("id desc").Find(&proposals).Error; err != nil {
+		return nil, err
+	}
+
+	return proposals, nil
+}

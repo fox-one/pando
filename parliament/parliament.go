@@ -27,6 +27,7 @@ func New(
 	assetz core.AssetService,
 	walletz core.WalletService,
 	collaterals core.CollateralStore,
+	proposalz core.ProposalService,
 	system *core.System,
 	cfg Config,
 ) core.Parliament {
@@ -46,6 +47,7 @@ func New(
 		userz:       userz,
 		assetz:      asset.Cache(assetz),
 		walletz:     walletz,
+		proposalz:   proposalz,
 		collaterals: collaterals,
 		system:      system,
 		links:       links,
@@ -57,6 +59,7 @@ type parliament struct {
 	userz       core.UserService
 	assetz      core.AssetService
 	walletz     core.WalletService
+	proposalz   core.ProposalService
 	collaterals core.CollateralStore
 	system      *core.System
 	links       *template.Template
@@ -137,8 +140,7 @@ func (s *parliament) ProposalCreated(ctx context.Context, p *core.Proposal) erro
 		},
 	}
 
-	data, _ := base64.StdEncoding.DecodeString(p.Data)
-	view.Meta = s.renderProposalItems(ctx, p.Action, data)
+	view.Meta = s.renderProposalItems(ctx, p)
 
 	items := append(view.Info, view.Meta...)
 	voteAction, err := s.requestVoteAction(ctx, p)

@@ -151,6 +151,8 @@ definitions:
         type: string
       flip_id:
         type: string
+      is_me:
+        type: boolean
       lot:
         type: string
     type: object
@@ -182,6 +184,48 @@ definitions:
       has_next:
         type: boolean
       next_cursor:
+        type: string
+    type: object
+  api.Proposal:
+    properties:
+      action:
+        type: integer
+      amount:
+        type: string
+      asset_id:
+        type: string
+      created_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      creator:
+        type: string
+      data:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/api.Proposal_Item'
+        type: array
+      passed_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      votes:
+        items:
+          type: string
+        type: array
+    type: object
+  api.Proposal_Item:
+    properties:
+      action:
+        type: string
+      hint:
+        type: string
+      key:
+        type: string
+      value:
         type: string
     type: object
   api.Resp_ListAssets:
@@ -219,6 +263,15 @@ definitions:
       oracles:
         items:
           $ref: '#/definitions/api.Oracle'
+        type: array
+    type: object
+  api.Resp_ListProposals:
+    properties:
+      pagination:
+        $ref: '#/definitions/api.Pagination'
+      proposals:
+        items:
+          $ref: '#/definitions/api.Proposal'
         type: array
     type: object
   api.Resp_ListTransactions:
@@ -610,6 +663,47 @@ paths:
       summary: find oracle by asset id
       tags:
       - Oracles
+  /proposals:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: cursor
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListProposals'
+      summary: list proposals
+      tags:
+      - Proposals
+  /proposals/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: proposal id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Proposal'
+      summary: find proposal by id
+      tags:
+      - Proposals
   /time:
     get:
       consumes:

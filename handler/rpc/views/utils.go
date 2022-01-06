@@ -3,8 +3,8 @@ package views
 import (
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func Milliseconds(t *time.Time) float64 {
@@ -28,6 +28,5 @@ func Time(t *time.Time) *tspb.Timestamp {
 		return nil
 	}
 
-	pt, _ := ptypes.TimestampProto(*t)
-	return pt
+	return timestamppb.New(*t)
 }

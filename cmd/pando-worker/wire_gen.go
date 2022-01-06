@@ -12,6 +12,7 @@ import (
 	"github.com/fox-one/pando/service/asset"
 	message2 "github.com/fox-one/pando/service/message"
 	oracle2 "github.com/fox-one/pando/service/oracle"
+	proposal2 "github.com/fox-one/pando/service/proposal"
 	"github.com/fox-one/pando/service/user"
 	wallet2 "github.com/fox-one/pando/service/wallet"
 	asset2 "github.com/fox-one/pando/store/asset"
@@ -67,8 +68,9 @@ func buildApp(cfg *config.Config) (app, error) {
 	userConfig := _wireConfigValue
 	userService := user.New(client, userConfig)
 	assetService := asset.New(client)
+	proposalService := proposal2.New(assetService, userService, collateralStore)
 	parliamentConfig := provideParliamentConfig(cfg)
-	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, system, parliamentConfig)
+	coreParliament := parliament.New(messageStore, userService, assetService, walletService, collateralStore, proposalService, system, parliamentConfig)
 	oracleStore := oracle.New(db)
 	oracleService := oracle2.New(oracleStore)
 	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, collateralStore, vaultStore, flipStore, store, coreParliament, oracleStore, oracleService, system)

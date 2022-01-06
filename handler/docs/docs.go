@@ -415,6 +415,71 @@ var doc = `{
                 }
             }
         },
+        "/proposals": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "list proposals",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListProposals"
+                        }
+                    }
+                }
+            }
+        },
+        "/proposals/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "find proposal by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "proposal id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Proposal"
+                        }
+                    }
+                }
+            }
+        },
         "/time": {
             "get": {
                 "consumes": [
@@ -841,6 +906,9 @@ var doc = `{
                 "flip_id": {
                     "type": "string"
                 },
+                "is_me": {
+                    "type": "boolean"
+                },
                 "lot": {
                     "type": "string"
                 }
@@ -884,6 +952,68 @@ var doc = `{
                     "type": "boolean"
                 },
                 "next_cursor": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Proposal": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Proposal_Item"
+                    }
+                },
+                "passed_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "votes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "api.Proposal_Item": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "hint": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }
@@ -942,6 +1072,20 @@ var doc = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/api.Oracle"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListProposals": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                },
+                "proposals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Proposal"
                     }
                 }
             }

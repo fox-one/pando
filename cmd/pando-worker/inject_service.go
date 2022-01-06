@@ -11,6 +11,7 @@ import (
 	"github.com/fox-one/pando/service/asset"
 	"github.com/fox-one/pando/service/message"
 	"github.com/fox-one/pando/service/oracle"
+	"github.com/fox-one/pando/service/proposal"
 	"github.com/fox-one/pando/service/user"
 	"github.com/fox-one/pando/service/wallet"
 	"github.com/fox-one/pkg/text/localizer"
@@ -29,6 +30,7 @@ var serviceSet = wire.NewSet(
 	provideWalletServiceConfig,
 	wallet.New,
 	provideLocalizer,
+	proposal.New,
 )
 
 func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
