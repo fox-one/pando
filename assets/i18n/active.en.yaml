@@ -1,5 +1,12 @@
 login_done: |
-  Successfully authorized. Welcome to Pando.
+  Successfully authorized. Welcome to Pando Leaf.
+  
+  Before using Leaf, please make sure you understand the working principle of Leaf and agree to the following terms:
+  
+  1. Leaf does not guarantee the accuracy of real-time asset price due to force majeure factors such as network latency.
+  2. All notifications of Leaf (including price alerts and liquidation alerts) are for reference only. There's no guarantee that the messages will be pushed right in time for any suggested action.
+  3. The MTG nodes have the right to intervene in the system when emergent and necessary, and make public announcement after it is done.
+
 
 tx_ok: |
   ✅ {{.Action}} successfully
