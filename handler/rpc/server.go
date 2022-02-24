@@ -521,9 +521,9 @@ func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.
 			if govalidator.IsIn(flip.TraceID, participatedFlipIds...) {
 				tags = append(tags, api.Flip_Participated)
 			}
-
-			resp.Flips = append(resp.Flips, views.Flip(flip, tags...))
 		}
+
+		resp.Flips = append(resp.Flips, views.Flip(flip, tags...))
 	}
 
 	return resp, nil

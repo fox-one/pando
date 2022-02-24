@@ -194,7 +194,7 @@ func (s *flipStore) QueryFlips(ctx context.Context, query core.FlipQuery) ([]*co
 		return nil, 0, err
 	}
 
-	if total < query.Offset {
+	if total > query.Offset {
 		if err := tx.Offset(query.Offset).Limit(query.Limit).Find(&flips).Error; err != nil {
 			return nil, 0, err
 		}
