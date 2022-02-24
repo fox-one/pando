@@ -7,6 +7,18 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+type FlipPhase int
+
+const (
+	_ FlipPhase = iota
+	FlipPhaseTend
+	FlipPhaseDent
+	FlipPhaseBid
+	FlipPhaseDeal
+)
+
+//go:generate stringer --type FlipPhase --trimprefix FlipPhase
+
 type (
 	// Flip represent auction by kicking unsafe vaults
 	Flip struct {
@@ -46,6 +58,13 @@ type (
 		Guy       string          `sql:"size:36" json:"guy,omitempty"`
 	}
 
+	FlipQuery struct {
+		Phase         FlipPhase
+		VaultUserID   string
+		Participator  string
+		Offset, Limit int64
+	}
+
 	// FlipStore define operations for working on Flip & FlipEvent on db
 	FlipStore interface {
 		Create(ctx context.Context, flip *Flip) error
@@ -56,6 +75,9 @@ type (
 		CreateEvent(ctx context.Context, event *FlipEvent) error
 		FindEvent(ctx context.Context, flipID string, version int64) (*FlipEvent, error)
 		ListEvents(ctx context.Context, flipID string) ([]*FlipEvent, error)
+
+		ListParticipates(ctx context.Context, userID string) ([]string, error)
+		QueryFlips(ctx context.Context, query FlipQuery) ([]*Flip, int64, error)
 	}
 )
 

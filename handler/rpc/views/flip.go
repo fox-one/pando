@@ -7,7 +7,7 @@ import (
 	"github.com/fox-one/pando/handler/rpc/api"
 )
 
-func Flip(flip *core.Flip) *api.Flip {
+func Flip(flip *core.Flip, tags ...api.Flip_Tag) *api.Flip {
 	tic := time.Unix(flip.Tic, 0)
 	end := time.Unix(flip.End, 0)
 
@@ -22,8 +22,9 @@ func Flip(flip *core.Flip) *api.Flip {
 		Art:          flip.Art.String(),
 		CollateralId: flip.CollateralID,
 		VaultId:      flip.VaultID,
-		Guy:          flip.Guy,
-		Action:       api.Action(flip.Action),
+		// Guy:          flip.Guy,
+		Action: api.Action(flip.Action),
+		Tags:   tags,
 	}
 }
 

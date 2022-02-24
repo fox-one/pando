@@ -117,6 +117,12 @@ message Flip {
         bool is_me = 6;
     }
 
+    enum Tag {
+        MyVault = 0;
+        Participated = 1;
+        Leading = 2;
+    }
+
     string id = 1;
     // @inject_tag: swaggertype:"string" format:"date"
     google.protobuf.Timestamp created_at = 2;
@@ -132,6 +138,7 @@ message Flip {
     string vault_id = 10;
     string guy = 11;
     Action action = 12;
+    repeated Tag tags = 13;
 }
 
 message Proposal {
@@ -243,6 +250,14 @@ message Req {
         int64 limit = 2;
     }
 
+    message QueryFlips {
+        int64 offset = 1;
+        int64 limit = 2;
+        string phase = 3;
+        string my_vaults = 4;
+        string my_bids = 5;
+    }
+
     message ListFlipEvents {
         string id = 1;
     }
@@ -300,6 +315,11 @@ message Resp {
         Pagination pagination = 2;
     }
 
+    message QueryFlips {
+        repeated Flip flips = 1;
+        int64 total = 2;
+    }
+
     message ListFlipEvents {
         repeated Flip.Event events = 1;
     }
@@ -334,6 +354,7 @@ service Pando {
     rpc FindFlip(Req.FindFlip) returns (Flip);
     rpc ListFlips(Req.ListFlips) returns (Resp.ListFlips);
     rpc ListFlipEvents(Req.ListFlipEvents) returns (Resp.ListFlipEvents);
+    rpc QueryFlips(Req.QueryFlips) returns (Resp.QueryFlips);
     // tx
     rpc FindTransaction(Req.FindTransaction) returns (Transaction);
     rpc ListTransactions(Req.ListTransactions) returns (Resp.ListTransactions);
