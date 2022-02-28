@@ -480,6 +480,55 @@ var doc = `{
                 }
             }
         },
+        "/query-flips": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flips"
+                ],
+                "summary": "query flips",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "my_bids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "my_vaults",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "phase",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_QueryFlips"
+                        }
+                    }
+                }
+            }
+        },
         "/time": {
             "get": {
                 "consumes": [
@@ -879,6 +928,12 @@ var doc = `{
                 "tab": {
                     "type": "string"
                 },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "tic": {
                     "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
                     "type": "string",
@@ -1126,6 +1181,20 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/api.Vault"
                     }
+                }
+            }
+        },
+        "api.Resp_QueryFlips": {
+            "type": "object",
+            "properties": {
+                "flips": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Flip"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

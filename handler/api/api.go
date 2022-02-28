@@ -111,7 +111,7 @@ func (s *Server) Handler() http.Handler {
 		r.Get("/{id}/events", rt.Handle("ListFlipEvents"))
 	})
 
-	r.Get("/query_flips", rt.Handle("QueryFlips"))
+	r.Get("/query-flips", rt.Handle("QueryFlips"))
 
 	r.Route("/transactions", func(r chi.Router) {
 		r.Get("/{id}", rt.Handle("FindTransaction"))

@@ -449,7 +449,7 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 // @Produce json
 // @param request query api.Req_QueryFlips false "default limit 50"
 // @Success 200 {object} api.Resp_QueryFlips
-// @Router /query_flips [get]
+// @Router /query-flips [get]
 func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.Resp_QueryFlips, error) {
 	if req.Limit <= 0 || req.Limit > 50 {
 		req.Limit = 50
@@ -487,7 +487,7 @@ func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.
 		return nil, err
 	}
 
-	resp := &api.Resp_QueryFlips{Total: total}
+	resp := &api.Resp_QueryFlips{Total: int32(total)}
 	if len(flips) == 0 {
 		return resp, nil
 	}

@@ -317,7 +317,7 @@ message Resp {
 
     message QueryFlips {
         repeated Flip flips = 1;
-        int64 total = 2;
+        int32 total = 2;
     }
 
     message ListFlipEvents {
