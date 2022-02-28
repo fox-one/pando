@@ -326,6 +326,37 @@ func (mr *MockFlipStoreMockRecorder) ListEvents(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEvents", reflect.TypeOf((*MockFlipStore)(nil).ListEvents), arg0, arg1)
 }
 
+// ListParticipates mocks base method
+func (m *MockFlipStore) ListParticipates(arg0 context.Context, arg1 string) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListParticipates", arg0, arg1)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListParticipates indicates an expected call of ListParticipates
+func (mr *MockFlipStoreMockRecorder) ListParticipates(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListParticipates", reflect.TypeOf((*MockFlipStore)(nil).ListParticipates), arg0, arg1)
+}
+
+// QueryFlips mocks base method
+func (m *MockFlipStore) QueryFlips(arg0 context.Context, arg1 core.FlipQuery) ([]*core.Flip, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "QueryFlips", arg0, arg1)
+	ret0, _ := ret[0].([]*core.Flip)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// QueryFlips indicates an expected call of QueryFlips
+func (mr *MockFlipStoreMockRecorder) QueryFlips(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryFlips", reflect.TypeOf((*MockFlipStore)(nil).QueryFlips), arg0, arg1)
+}
+
 // Update mocks base method
 func (m *MockFlipStore) Update(arg0 context.Context, arg1 *core.Flip, arg2 int64) error {
 	m.ctrl.T.Helper()
@@ -444,17 +475,17 @@ func (mr *MockMessageServiceMockRecorder) Meet(arg0, arg1 interface{}) *gomock.C
 }
 
 // Send mocks base method
-func (m *MockMessageService) Send(arg0 context.Context, arg1 []*core.Message) error {
+func (m *MockMessageService) Send(arg0 context.Context, arg1 []*core.Message, arg2 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Send", arg0, arg1)
+	ret := m.ctrl.Call(m, "Send", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Send indicates an expected call of Send
-func (mr *MockMessageServiceMockRecorder) Send(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockMessageServiceMockRecorder) Send(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockMessageService)(nil).Send), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Send", reflect.TypeOf((*MockMessageService)(nil).Send), arg0, arg1, arg2)
 }
 
 // MockNotifier is a mock of Notifier interface
@@ -520,6 +551,20 @@ func (m *MockNotifier) Transaction(arg0 context.Context, arg1 *core.Transaction)
 func (mr *MockNotifierMockRecorder) Transaction(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Transaction", reflect.TypeOf((*MockNotifier)(nil).Transaction), arg0, arg1)
+}
+
+// VaultLiquidatedSoon mocks base method
+func (m *MockNotifier) VaultLiquidatedSoon(arg0 context.Context, arg1 *core.Collateral, arg2 *core.Vault) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VaultLiquidatedSoon", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// VaultLiquidatedSoon indicates an expected call of VaultLiquidatedSoon
+func (mr *MockNotifierMockRecorder) VaultLiquidatedSoon(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VaultLiquidatedSoon", reflect.TypeOf((*MockNotifier)(nil).VaultLiquidatedSoon), arg0, arg1, arg2)
 }
 
 // VaultUnsafe mocks base method
@@ -778,6 +823,21 @@ func (m *MockProposalStore) List(arg0 context.Context, arg1 int64, arg2 int) ([]
 func (mr *MockProposalStoreMockRecorder) List(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockProposalStore)(nil).List), arg0, arg1, arg2)
+}
+
+// ListReverse mocks base method
+func (m *MockProposalStore) ListReverse(arg0 context.Context, arg1 int64, arg2 int) ([]*core.Proposal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListReverse", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*core.Proposal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListReverse indicates an expected call of ListReverse
+func (mr *MockProposalStoreMockRecorder) ListReverse(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListReverse", reflect.TypeOf((*MockProposalStore)(nil).ListReverse), arg0, arg1, arg2)
 }
 
 // Update mocks base method
@@ -1265,6 +1325,21 @@ func (m *MockVaultStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.
 func (mr *MockVaultStoreMockRecorder) ListEvents(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEvents", reflect.TypeOf((*MockVaultStore)(nil).ListEvents), arg0, arg1)
+}
+
+// PluckUser mocks base method
+func (m *MockVaultStore) PluckUser(arg0 context.Context, arg1 string) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PluckUser", arg0, arg1)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PluckUser indicates an expected call of PluckUser
+func (mr *MockVaultStoreMockRecorder) PluckUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PluckUser", reflect.TypeOf((*MockVaultStore)(nil).PluckUser), arg0, arg1)
 }
 
 // Update mocks base method

@@ -132,6 +132,10 @@ definitions:
         type: string
       tab:
         type: string
+      tags:
+        items:
+          type: integer
+        type: array
       tic:
         description: '@inject_tag: swaggertype:"string" format:"date"'
         format: date
@@ -298,6 +302,15 @@ definitions:
         items:
           $ref: '#/definitions/api.Vault'
         type: array
+    type: object
+  api.Resp_QueryFlips:
+    properties:
+      flips:
+        items:
+          $ref: '#/definitions/api.Flip'
+        type: array
+      total:
+        type: integer
     type: object
   api.Transaction:
     properties:
@@ -704,6 +717,36 @@ paths:
       summary: find proposal by id
       tags:
       - Proposals
+  /query-flips:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: my_bids
+        type: string
+      - in: query
+        name: my_vaults
+        type: string
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: phase
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_QueryFlips'
+      summary: query flips
+      tags:
+      - Flips
   /time:
     get:
       consumes:

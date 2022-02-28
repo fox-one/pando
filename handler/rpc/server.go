@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/core"
@@ -397,10 +399,6 @@ func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip
 		return nil, twirp.NotFoundError("flip not init")
 	}
 
-	if user, ok := request.UserFrom(ctx); !ok || user.MixinID != flip.Guy {
-		flip.Guy = ""
-	}
-
 	return views.Flip(flip), nil
 }
 
@@ -431,7 +429,6 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 	}
 
 	for idx, f := range flips {
-		f.Guy = ""
 		resp.Flips = append(resp.Flips, views.Flip(f))
 
 		if idx == limit-1 {
@@ -439,6 +436,94 @@ func (s *Server) ListFlips(ctx context.Context, req *api.Req_ListFlips) (*api.Re
 			resp.Pagination.HasNext = true
 			break
 		}
+	}
+
+	return resp, nil
+}
+
+// QueryFlips godoc
+// @Summary query flips
+// @Description
+// @Tags Flips
+// @Accept json
+// @Produce json
+// @param request query api.Req_QueryFlips false "default limit 50"
+// @Success 200 {object} api.Resp_QueryFlips
+// @Router /query-flips [get]
+func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.Resp_QueryFlips, error) {
+	if req.Limit <= 0 || req.Limit > 50 {
+		req.Limit = 50
+	}
+
+	query := core.FlipQuery{
+		Offset: req.Offset,
+		Limit:  req.Limit,
+	}
+
+	for _, phase := range []core.FlipPhase{
+		core.FlipPhaseTend,
+		core.FlipPhaseDent,
+		core.FlipPhaseBid,
+		core.FlipPhaseDeal,
+	} {
+		if strings.EqualFold(req.Phase, phase.String()) {
+			query.Phase = phase
+		}
+	}
+
+	user, authorized := request.UserFrom(ctx)
+	if authorized {
+		if ok, _ := strconv.ParseBool(req.MyVaults); ok {
+			query.VaultUserID = user.MixinID
+		}
+
+		if ok, _ := strconv.ParseBool(req.MyBids); ok {
+			query.Participator = user.MixinID
+		}
+	}
+
+	flips, total, err := s.flips.QueryFlips(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &api.Resp_QueryFlips{Total: int32(total)}
+	if len(flips) == 0 {
+		return resp, nil
+	}
+
+	var myVaultIds, participatedFlipIds []string
+
+	if authorized {
+		myVaultIds, err = s.vaults.PluckUser(ctx, user.MixinID)
+		if err != nil {
+			return nil, err
+		}
+
+		participatedFlipIds, err = s.flips.ListParticipates(ctx, user.MixinID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for _, flip := range flips {
+		var tags []api.Flip_Tag
+
+		if authorized {
+			if flip.Guy == user.MixinID {
+				tags = append(tags, api.Flip_Leading)
+			}
+
+			if govalidator.IsIn(flip.VaultID, myVaultIds...) {
+				tags = append(tags, api.Flip_MyVault)
+			}
+
+			if govalidator.IsIn(flip.TraceID, participatedFlipIds...) {
+				tags = append(tags, api.Flip_Participated)
+			}
+		}
+
+		resp.Flips = append(resp.Flips, views.Flip(flip, tags...))
 	}
 
 	return resp, nil

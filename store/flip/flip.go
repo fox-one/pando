@@ -33,6 +33,10 @@ func init() {
 			return err
 		}
 
+		if err := tx.AddIndex("idx_flip_events_guy", "guy").Error; err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
@@ -139,4 +143,62 @@ func (s *flipStore) ListEvents(ctx context.Context, flipID string) ([]*core.Flip
 	}
 
 	return events, nil
+}
+
+func (s *flipStore) ListParticipates(ctx context.Context, userID string) ([]string, error) {
+	var ids []string
+	if err := s.db.View().Model(core.FlipEvent{}).
+		Select("DISTINCT(flip_id)").
+		Where("guy = ?", userID).
+		Pluck("flip_id", &ids).Error; err != nil {
+		return nil, err
+	}
+
+	return ids, nil
+}
+
+func (s *flipStore) QueryFlips(ctx context.Context, query core.FlipQuery) ([]*core.Flip, int64, error) {
+	db := s.db.View()
+	tx := db.Model(core.Flip{}).Order("id DESC")
+
+	if query.Phase > 0 {
+		if query.Phase == core.FlipPhaseDeal {
+			tx = tx.Where("action = ?", core.ActionFlipDeal)
+		} else {
+			tx = tx.Where("action != ?", core.ActionFlipDeal)
+
+			if query.Phase == core.FlipPhaseTend {
+				tx = tx.Where("bid < tab")
+			} else if query.Phase == core.FlipPhaseDent {
+				tx = tx.Where("bid = tab")
+			}
+		}
+	}
+
+	if query.VaultUserID != "" {
+		sub := db.Model(core.Vault{}).Select("trace_id").Where("user_id = ?", query.VaultUserID).QueryExpr()
+		tx = tx.Where("vault_id IN (?)", sub)
+	}
+
+	if query.Participator != "" {
+		sub := db.Model(core.FlipEvent{}).Select("DISTINCT(flip_id)").Where("guy = ?", query.Participator).QueryExpr()
+		tx = tx.Where("trace_id IN (?)", sub)
+	}
+
+	var (
+		flips []*core.Flip
+		total int64
+	)
+
+	if err := tx.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if total > query.Offset {
+		if err := tx.Offset(query.Offset).Limit(query.Limit).Find(&flips).Error; err != nil {
+			return nil, 0, err
+		}
+	}
+
+	return flips, total, nil
 }

@@ -150,6 +150,18 @@ func (s *vaultStore) List(ctx context.Context, req core.ListVaultRequest) ([]*co
 	return vaults, nil
 }
 
+func (s *vaultStore) PluckUser(ctx context.Context, userID string) ([]string, error) {
+	var ids []string
+	if err := s.db.View().Model(core.Vault{}).
+		Select("trace_id").
+		Where("user_id = ?", userID).
+		Pluck("trace_id", ids).Error; err != nil {
+		return nil, err
+	}
+
+	return ids, nil
+}
+
 func (s *vaultStore) CountCollateral(ctx context.Context) (map[string]int64, error) {
 	tx := s.db.View().Model(core.Vault{}).
 		Select("collateral_id,Count(id) as count").

@@ -53,6 +53,7 @@ type (
 		Update(ctx context.Context, vault *Vault, version int64) error
 		Find(ctx context.Context, traceID string) (*Vault, error)
 		List(ctx context.Context, req ListVaultRequest) ([]*Vault, error)
+		PluckUser(ctx context.Context, userID string) ([]string, error)
 		CountCollateral(ctx context.Context) (map[string]int64, error)
 		// Events
 		CreateEvent(ctx context.Context, event *VaultEvent) error
