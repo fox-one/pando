@@ -155,7 +155,7 @@ func (s *vaultStore) PluckUser(ctx context.Context, userID string) ([]string, er
 	if err := s.db.View().Model(core.Vault{}).
 		Select("trace_id").
 		Where("user_id = ?", userID).
-		Pluck("trace_id", ids).Error; err != nil {
+		Pluck("trace_id", &ids).Error; err != nil {
 		return nil, err
 	}
 
