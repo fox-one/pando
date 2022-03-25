@@ -77,6 +77,7 @@ func (w *Syncer) run(ctx context.Context) error {
 	nextOffset := outputs[len(outputs)-1].UpdatedAt
 	end := len(outputs) < limit
 
+	core.SortOutputs(outputs)
 	if err := w.wallets.Save(ctx, outputs, end); err != nil {
 		log.WithError(err).Errorln("wallets.Save")
 		return err
