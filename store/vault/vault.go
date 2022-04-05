@@ -214,15 +214,6 @@ func (s *vaultStore) FindEvent(ctx context.Context, vaultID string, version int6
 	return &event, nil
 }
 
-func (s *vaultStore) ListEvents(ctx context.Context, fromID, limit int64) ([]*core.VaultEvent, error) {
-	var events []*core.VaultEvent
-	if err := s.db.View().Where("id >= ?", fromID).Order("id").Limit(limit).Find(&events).Error; err != nil {
-		return nil, err
-	}
-
-	return events, nil
-}
-
 func (s *vaultStore) ListVaultEvents(ctx context.Context, vaultID string) ([]*core.VaultEvent, error) {
 	var events []*core.VaultEvent
 	if err := s.db.View().Where("vault_id = ?", vaultID).Order("version DESC").Find(&events).Error; err != nil {

@@ -3,9 +3,11 @@ package asset
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
+	"github.com/shopspring/decimal"
 )
 
 func New(c *mixin.Client) core.AssetService {
@@ -48,6 +50,15 @@ func (s *assetService) List(ctx context.Context) ([]*core.Asset, error) {
 	}
 
 	return convertAssets(assets[:idx]), nil
+}
+
+func (s *assetService) ReadPrice(ctx context.Context, assetID string, at time.Time) (decimal.Decimal, error) {
+	ticker, err := mixin.ReadTicker(ctx, assetID, at)
+	if err != nil {
+		return decimal.Zero, err
+	}
+
+	return ticker.PriceUSD, nil
 }
 
 func convertAsset(asset *mixin.Asset) *core.Asset {

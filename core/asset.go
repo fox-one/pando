@@ -32,5 +32,6 @@ type (
 	AssetService interface {
 		Find(ctx context.Context, id string) (*Asset, error)
 		List(ctx context.Context) ([]*Asset, error)
+		ReadPrice(ctx context.Context, assetID string, at time.Time) (decimal.Decimal, error)
 	}
 )

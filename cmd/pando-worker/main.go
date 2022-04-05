@@ -18,6 +18,7 @@ var (
 	_flag struct {
 		notify  bool
 		keeper  bool
+		stater  bool
 		debug   bool
 		port    int
 		cfgFile string
@@ -40,7 +41,8 @@ var (
 
 func init() {
 	flag.BoolVar(&_flag.notify, "notify", false, "enable notifier")
-	flag.BoolVar(&_flag.keeper, "keeper", false, "run keeper")
+	flag.BoolVar(&_flag.keeper, "keeper", false, "run keeper worker")
+	flag.BoolVar(&_flag.stater, "stater", false, "run stater worker")
 	flag.BoolVar(&_flag.debug, "debug", false, "debug mode")
 	flag.IntVar(&_flag.port, "port", 7777, "server port")
 	flag.StringVar(&_flag.cfgFile, "config", "", "config filename")

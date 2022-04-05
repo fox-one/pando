@@ -12,6 +12,7 @@ import (
 	"github.com/fox-one/pando/worker/payee"
 	"github.com/fox-one/pando/worker/pricesync"
 	"github.com/fox-one/pando/worker/spentsync"
+	"github.com/fox-one/pando/worker/stater"
 	"github.com/fox-one/pando/worker/syncer"
 	"github.com/fox-one/pando/worker/txsender"
 	"github.com/google/wire"
@@ -31,6 +32,7 @@ var workerSet = wire.NewSet(
 	assigner.New,
 	provideDataDogConfig,
 	datadog.New,
+	stater.New,
 	provideWorkers,
 )
 
@@ -61,11 +63,16 @@ func provideWorkers(
 	i *keeper.Keeper,
 	j *assigner.Assigner,
 	k *datadog.Datadog,
+	l *stater.Stater,
 ) []worker.Worker {
 	workers := []worker.Worker{a, b, c, d, e, f, g, h, j, k}
 
 	if _flag.keeper {
 		workers = append(workers, i)
+	}
+
+	if _flag.stater {
+		workers = append(workers, l)
 	}
 
 	return workers
