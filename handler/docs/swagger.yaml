@@ -31,6 +31,19 @@ definitions:
         description: payment memo
         type: string
     type: object
+  api.AggregatedStat:
+    properties:
+      dai_value:
+        type: string
+      date:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      gem_value:
+        type: string
+      timestamp:
+        type: integer
+    type: object
   api.Asset:
     properties:
       chain:
@@ -232,6 +245,13 @@ definitions:
       value:
         type: string
     type: object
+  api.Resp_ListAggregatedStats:
+    properties:
+      stats:
+        items:
+          $ref: '#/definitions/api.AggregatedStat'
+        type: array
+    type: object
   api.Resp_ListAssets:
     properties:
       assets:
@@ -278,6 +298,13 @@ definitions:
           $ref: '#/definitions/api.Proposal'
         type: array
     type: object
+  api.Resp_ListStats:
+    properties:
+      stats:
+        items:
+          $ref: '#/definitions/api.Stat'
+        type: array
+    type: object
   api.Resp_ListTransactions:
     properties:
       pagination:
@@ -310,6 +337,29 @@ definitions:
           $ref: '#/definitions/api.Flip'
         type: array
       total:
+        type: integer
+    type: object
+  api.Stat:
+    properties:
+      collateral_id:
+        type: string
+      dai:
+        type: string
+      dai_price:
+        type: string
+      date:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      debt:
+        type: string
+      gem:
+        type: string
+      gem_price:
+        type: string
+      ink:
+        type: string
+      timestamp:
         type: integer
     type: object
   api.Transaction:
@@ -747,6 +797,47 @@ paths:
       summary: query flips
       tags:
       - Flips
+  /stats:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: from
+        type: integer
+      - in: query
+        name: to
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListAggregatedStats'
+      summary: list aggregated stats
+      tags:
+      - Stats
+  /stats/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: collateral id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListStats'
+      summary: list stats
+      tags:
+      - Stats
   /time:
     get:
       consumes:

@@ -28,6 +28,7 @@ func New(
 	oracles core.OracleStore,
 	proposals core.ProposalStore,
 	proposalz core.ProposalService,
+	stats core.StatStore,
 	system *core.System,
 ) *Server {
 	return &Server{
@@ -43,6 +44,7 @@ func New(
 		oracles:      oracles,
 		proposalz:    proposalz,
 		proposals:    proposals,
+		stats:        stats,
 		system:       system,
 	}
 }
@@ -60,6 +62,7 @@ type Server struct {
 	oracles      core.OracleStore
 	proposals    core.ProposalStore
 	proposalz    core.ProposalService
+	stats        core.StatStore
 	system       *core.System
 }
 
@@ -77,7 +80,7 @@ func (s *Server) Handler() http.Handler {
 
 	r.Post("/login", user.HandleOauth(s.userz, s.sessions, s.notifier))
 
-	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions, s.proposalz, s.proposals).TwirpServer()
+	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions, s.proposalz, s.proposals, s.stats).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
 	r.Route("/assets", func(r chi.Router) {
@@ -125,6 +128,11 @@ func (s *Server) Handler() http.Handler {
 	r.Route("/proposals", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListProposals"))
 		r.Get("/{id}", rt.Handle("FindProposal"))
+	})
+
+	r.Route("/stats", func(r chi.Router) {
+		r.Get("/{id}", rt.Handle("ListStats"))
+		r.Get("/", rt.Handle("ListAggregatedStats"))
 	})
 
 	return r

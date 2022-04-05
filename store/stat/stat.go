@@ -35,11 +35,11 @@ type statStore struct {
 
 func (s *statStore) Save(ctx context.Context, stat *core.Stat) error {
 	updates := map[string]interface{}{
-		"ink":        stat.Ink,
-		"debt":       stat.Debt,
-		"ink_price":  stat.InkPrice,
-		"debt_price": stat.DebtPrice,
-		"version":    stat.Version,
+		"ink":       stat.Ink,
+		"debt":      stat.Debt,
+		"gem_price": stat.GemPrice,
+		"dai_price": stat.DaiPrice,
+		"version":   stat.Version,
 	}
 
 	tx := s.db.Update().Model(stat).
@@ -79,8 +79,8 @@ func (s *statStore) Find(ctx context.Context, collateralID string, date time.Tim
 	return stats[0], nil
 }
 
-func (s *statStore) List(ctx context.Context, collateralID string, from, to time.Time) ([]core.Stat, error) {
-	var stats []core.Stat
+func (s *statStore) List(ctx context.Context, collateralID string, from, to time.Time) ([]*core.Stat, error) {
+	var stats []*core.Stat
 
 	if err := s.db.View().
 		Where("collateral_id = ? AND date >= ? AND date <= ?", collateralID, from, to).
@@ -94,7 +94,7 @@ func (s *statStore) List(ctx context.Context, collateralID string, from, to time
 
 func (s *statStore) Aggregate(ctx context.Context, from, to time.Time) ([]core.AggregatedStat, error) {
 	rows, err := s.db.View().Model(core.Stat{}).Where("date >= ? AND date <= ?", from, to).
-		Select("date, SUM(ink * ink_price) AS gem_value, SUM(debt * debt_price) AS dai_value").
+		Select("date, SUM(ink * gem_price) AS gem_value, SUM(debt * dai_price) AS dai_value").
 		Group("date").Rows()
 
 	if err != nil {

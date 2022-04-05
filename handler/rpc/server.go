@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/core"
@@ -28,6 +29,7 @@ func New(
 	transactions core.TransactionStore,
 	proposalz core.ProposalService,
 	proposals core.ProposalStore,
+	stats core.StatStore,
 ) *Server {
 	return &Server{
 		assets:       assets,
@@ -38,6 +40,7 @@ func New(
 		transactions: transactions,
 		proposals:    proposals,
 		proposalz:    proposalz,
+		stats:        stats,
 	}
 }
 
@@ -50,6 +53,7 @@ type Server struct {
 	transactions core.TransactionStore
 	proposalz    core.ProposalService
 	proposals    core.ProposalStore
+	stats        core.StatStore
 }
 
 func (s *Server) TwirpServer() api.TwirpServer {
@@ -687,6 +691,72 @@ func (s *Server) ListProposals(ctx context.Context, req *api.Req_ListProposals) 
 			resp.Pagination.HasNext = true
 			break
 		}
+	}
+
+	return resp, nil
+}
+
+// ListStats godoc
+// @Summary list stats
+// @Description
+// @Tags Stats
+// @Accept  json
+// @Produce  json
+// @param id path string true "collateral id"
+// @Success 200 {object} api.Resp_ListStats false
+// @Router /stats/{id} [get]
+func (s *Server) ListStats(ctx context.Context, req *api.Req_ListStats) (*api.Resp_ListStats, error) {
+	from := time.Unix(req.From, 0)
+	if req.To == 0 {
+		req.To = time.Now().Unix()
+	}
+	to := time.Unix(req.To, 0)
+
+	stats, err := s.stats.List(ctx, req.Id, from, to)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: stats.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListStats{
+		Stats: make([]*api.Stat, 0, len(stats)),
+	}
+
+	for _, stat := range stats {
+		resp.Stats = append(resp.Stats, views.Stat(stat))
+	}
+
+	return resp, nil
+}
+
+// ListAggregatedStats godoc
+// @Summary list aggregated stats
+// @Description
+// @Tags Stats
+// @Accept  json
+// @Produce  json
+// @param request query api.Req_ListAggregatedStats false "default limit 50"
+// @Success 200 {object} api.Resp_ListAggregatedStats
+// @Router /stats [get]
+func (s *Server) ListAggregatedStats(ctx context.Context, req *api.Req_ListAggregatedStats) (*api.Resp_ListAggregatedStats, error) {
+	from := time.Unix(req.From, 0)
+	if req.To == 0 {
+		req.To = time.Now().Unix()
+	}
+	to := time.Unix(req.To, 0)
+
+	stats, err := s.stats.Aggregate(ctx, from, to)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: stats.Aggregate")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListAggregatedStats{
+		Stats: make([]*api.AggregatedStat, 0, len(stats)),
+	}
+
+	for _, stat := range stats {
+		resp.Stats = append(resp.Stats, views.AggregatedStat(stat))
 	}
 
 	return resp, nil

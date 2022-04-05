@@ -529,6 +529,71 @@ var doc = `{
                 }
             }
         },
+        "/stats": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "list aggregated stats",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListAggregatedStats"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "list stats",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "collateral id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListStats"
+                        }
+                    }
+                }
+            }
+        },
         "/time": {
             "get": {
                 "consumes": [
@@ -777,6 +842,25 @@ var doc = `{
                 "memo": {
                     "description": "payment memo",
                     "type": "string"
+                }
+            }
+        },
+        "api.AggregatedStat": {
+            "type": "object",
+            "properties": {
+                "dai_value": {
+                    "type": "string"
+                },
+                "date": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "gem_value": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
                 }
             }
         },
@@ -1073,6 +1157,17 @@ var doc = `{
                 }
             }
         },
+        "api.Resp_ListAggregatedStats": {
+            "type": "object",
+            "properties": {
+                "stats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.AggregatedStat"
+                    }
+                }
+            }
+        },
         "api.Resp_ListAssets": {
             "type": "object",
             "properties": {
@@ -1145,6 +1240,17 @@ var doc = `{
                 }
             }
         },
+        "api.Resp_ListStats": {
+            "type": "object",
+            "properties": {
+                "stats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Stat"
+                    }
+                }
+            }
+        },
         "api.Resp_ListTransactions": {
             "type": "object",
             "properties": {
@@ -1194,6 +1300,40 @@ var doc = `{
                     }
                 },
                 "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.Stat": {
+            "type": "object",
+            "properties": {
+                "collateral_id": {
+                    "type": "string"
+                },
+                "dai": {
+                    "type": "string"
+                },
+                "dai_price": {
+                    "type": "string"
+                },
+                "date": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "debt": {
+                    "type": "string"
+                },
+                "gem": {
+                    "type": "string"
+                },
+                "gem_price": {
+                    "type": "string"
+                },
+                "ink": {
+                    "type": "string"
+                },
+                "timestamp": {
                     "type": "integer"
                 }
             }

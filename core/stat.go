@@ -19,8 +19,8 @@ type (
 		Dai          string          `sql:"size:36;NOT NULL" json:"dai,omitempty"`
 		Ink          decimal.Decimal `sql:"type:decimal(32,8)" json:"ink,omitempty"`
 		Debt         decimal.Decimal `sql:"type:decimal(32,8)" json:"debt,omitempty"`
-		InkPrice     decimal.Decimal `sql:"type:decimal(32,8)" json:"ink_price,omitempty"`
-		DebtPrice    decimal.Decimal `sql:"type:decimal(32,8)" json:"debt_price,omitempty"`
+		GemPrice     decimal.Decimal `sql:"type:decimal(32,8)" json:"gem_price,omitempty"`
+		DaiPrice     decimal.Decimal `sql:"type:decimal(32,8)" json:"dai_price,omitempty"`
 	}
 
 	AggregatedStat struct {
@@ -32,7 +32,7 @@ type (
 	StatStore interface {
 		Save(ctx context.Context, stat *Stat) error
 		Find(ctx context.Context, collateralID string, date time.Time) (*Stat, error)
-		List(ctx context.Context, collateralID string, from, to time.Time) ([]Stat, error)
+		List(ctx context.Context, collateralID string, from, to time.Time) ([]*Stat, error)
 		Aggregate(ctx context.Context, from, to time.Time) ([]AggregatedStat, error)
 	}
 )

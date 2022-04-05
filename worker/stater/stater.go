@@ -92,6 +92,8 @@ func (w *Stater) run(ctx context.Context) error {
 	}
 
 	for _, t := range transactions {
+		fromID = t.ID
+
 		if t.Status != core.TransactionStatusOk {
 			continue
 		}
@@ -271,8 +273,8 @@ func (w *Stater) updateCollateral(ctx context.Context, cat *core.Collateral, t *
 		Dai:          cat.Dai,
 		Ink:          stat.Ink.Add(ink),
 		Debt:         stat.Debt.Add(debt),
-		InkPrice:     inkPrice,
-		DebtPrice:    debtPrice,
+		GemPrice:     inkPrice,
+		DaiPrice:     debtPrice,
 	}
 
 	if err := w.stats.Save(ctx, s); err != nil {
