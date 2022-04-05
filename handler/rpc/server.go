@@ -365,9 +365,9 @@ func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.
 // @Success 200 {object} api.Resp_ListVaultEvents
 // @Router /vats/{id}/events [get]
 func (s *Server) ListVaultEvents(ctx context.Context, req *api.Req_ListVaultEvents) (*api.Resp_ListVaultEvents, error) {
-	events, err := s.vaults.ListEvents(ctx, req.Id)
+	events, err := s.vaults.ListVaultEvents(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("vaults.ListEvents")
+		logger.FromContext(ctx).WithError(err).Errorln("vaults.ListVaultEvents")
 		return nil, err
 	}
 
@@ -541,7 +541,7 @@ func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.
 func (s *Server) ListFlipEvents(ctx context.Context, req *api.Req_ListFlipEvents) (*api.Resp_ListFlipEvents, error) {
 	events, err := s.flips.ListEvents(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("flips.ListEvents")
+		logger.FromContext(ctx).WithError(err).Errorln("flips.ListVaultEvents")
 		return nil, err
 	}
 
