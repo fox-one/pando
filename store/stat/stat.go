@@ -51,7 +51,6 @@ func (s *statStore) Save(ctx context.Context, stat *core.Stat) error {
 	}
 
 	if tx.RowsAffected == 0 {
-		stat.Version = 1
 		return tx.Create(stat).Error
 	}
 

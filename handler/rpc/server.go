@@ -403,7 +403,36 @@ func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip
 		return nil, twirp.NotFoundError("flip not init")
 	}
 
-	return views.Flip(flip), nil
+	var tags []api.Flip_Tag
+	if user, authorized := request.UserFrom(ctx); authorized {
+		if flip.Guy == user.MixinID {
+			tags = append(tags, api.Flip_Leading)
+			tags = append(tags, api.Flip_Participated)
+		} else {
+			events, err := s.flips.ListEvents(ctx, flip.TraceID)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, event := range events {
+				if event.Guy == user.MixinID {
+					tags = append(tags, api.Flip_Participated)
+					break
+				}
+			}
+		}
+
+		vault, err := s.vaults.Find(ctx, flip.VaultID)
+		if err != nil {
+			return nil, err
+		}
+
+		if vault.UserID == user.MixinID {
+			tags = append(tags, api.Flip_MyVault)
+		}
+	}
+
+	return views.Flip(flip, tags...), nil
 }
 
 // ListFlips godoc
