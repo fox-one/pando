@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/core"
@@ -28,6 +29,7 @@ func New(
 	transactions core.TransactionStore,
 	proposalz core.ProposalService,
 	proposals core.ProposalStore,
+	stats core.StatStore,
 ) *Server {
 	return &Server{
 		assets:       assets,
@@ -38,6 +40,7 @@ func New(
 		transactions: transactions,
 		proposals:    proposals,
 		proposalz:    proposalz,
+		stats:        stats,
 	}
 }
 
@@ -50,6 +53,7 @@ type Server struct {
 	transactions core.TransactionStore
 	proposalz    core.ProposalService
 	proposals    core.ProposalStore
+	stats        core.StatStore
 }
 
 func (s *Server) TwirpServer() api.TwirpServer {
@@ -365,9 +369,9 @@ func (s *Server) ListVaults(ctx context.Context, req *api.Req_ListVaults) (*api.
 // @Success 200 {object} api.Resp_ListVaultEvents
 // @Router /vats/{id}/events [get]
 func (s *Server) ListVaultEvents(ctx context.Context, req *api.Req_ListVaultEvents) (*api.Resp_ListVaultEvents, error) {
-	events, err := s.vaults.ListEvents(ctx, req.Id)
+	events, err := s.vaults.ListVaultEvents(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("vaults.ListEvents")
+		logger.FromContext(ctx).WithError(err).Errorln("vaults.ListVaultEvents")
 		return nil, err
 	}
 
@@ -399,7 +403,36 @@ func (s *Server) FindFlip(ctx context.Context, req *api.Req_FindFlip) (*api.Flip
 		return nil, twirp.NotFoundError("flip not init")
 	}
 
-	return views.Flip(flip), nil
+	var tags []api.Flip_Tag
+	if user, authorized := request.UserFrom(ctx); authorized {
+		if flip.Guy == user.MixinID {
+			tags = append(tags, api.Flip_Leading)
+			tags = append(tags, api.Flip_Participated)
+		} else {
+			events, err := s.flips.ListEvents(ctx, flip.TraceID)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, event := range events {
+				if event.Guy == user.MixinID {
+					tags = append(tags, api.Flip_Participated)
+					break
+				}
+			}
+		}
+
+		vault, err := s.vaults.Find(ctx, flip.VaultID)
+		if err != nil {
+			return nil, err
+		}
+
+		if vault.UserID == user.MixinID {
+			tags = append(tags, api.Flip_MyVault)
+		}
+	}
+
+	return views.Flip(flip, tags...), nil
 }
 
 // ListFlips godoc
@@ -541,7 +574,7 @@ func (s *Server) QueryFlips(ctx context.Context, req *api.Req_QueryFlips) (*api.
 func (s *Server) ListFlipEvents(ctx context.Context, req *api.Req_ListFlipEvents) (*api.Resp_ListFlipEvents, error) {
 	events, err := s.flips.ListEvents(ctx, req.Id)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("flips.ListEvents")
+		logger.FromContext(ctx).WithError(err).Errorln("flips.ListVaultEvents")
 		return nil, err
 	}
 
@@ -687,6 +720,72 @@ func (s *Server) ListProposals(ctx context.Context, req *api.Req_ListProposals) 
 			resp.Pagination.HasNext = true
 			break
 		}
+	}
+
+	return resp, nil
+}
+
+// ListStats godoc
+// @Summary list stats
+// @Description
+// @Tags Stats
+// @Accept  json
+// @Produce  json
+// @param id path string true "collateral id"
+// @Success 200 {object} api.Resp_ListStats false
+// @Router /stats/{id} [get]
+func (s *Server) ListStats(ctx context.Context, req *api.Req_ListStats) (*api.Resp_ListStats, error) {
+	from := time.Unix(req.From, 0)
+	if req.To == 0 {
+		req.To = time.Now().Unix()
+	}
+	to := time.Unix(req.To, 0)
+
+	stats, err := s.stats.List(ctx, req.Id, from, to)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: stats.List")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListStats{
+		Stats: make([]*api.Stat, 0, len(stats)),
+	}
+
+	for _, stat := range stats {
+		resp.Stats = append(resp.Stats, views.Stat(stat))
+	}
+
+	return resp, nil
+}
+
+// ListAggregatedStats godoc
+// @Summary list aggregated stats
+// @Description
+// @Tags Stats
+// @Accept  json
+// @Produce  json
+// @param request query api.Req_ListAggregatedStats false "default limit 50"
+// @Success 200 {object} api.Resp_ListAggregatedStats
+// @Router /stats [get]
+func (s *Server) ListAggregatedStats(ctx context.Context, req *api.Req_ListAggregatedStats) (*api.Resp_ListAggregatedStats, error) {
+	from := time.Unix(req.From, 0)
+	if req.To == 0 {
+		req.To = time.Now().Unix()
+	}
+	to := time.Unix(req.To, 0)
+
+	stats, err := s.stats.Aggregate(ctx, from, to)
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: stats.Aggregate")
+		return nil, err
+	}
+
+	resp := &api.Resp_ListAggregatedStats{
+		Stats: make([]*api.AggregatedStat, 0, len(stats)),
+	}
+
+	for _, stat := range stats {
+		resp.Stats = append(resp.Stats, views.AggregatedStat(stat))
 	}
 
 	return resp, nil

@@ -55,9 +55,9 @@ type (
 		List(ctx context.Context, req ListVaultRequest) ([]*Vault, error)
 		PluckUser(ctx context.Context, userID string) ([]string, error)
 		CountCollateral(ctx context.Context) (map[string]int64, error)
-		// Events
+
 		CreateEvent(ctx context.Context, event *VaultEvent) error
 		FindEvent(ctx context.Context, vaultID string, version int64) (*VaultEvent, error)
-		ListEvents(ctx context.Context, vaultID string) ([]*VaultEvent, error)
+		ListVaultEvents(ctx context.Context, vaultID string) ([]*VaultEvent, error)
 	}
 )

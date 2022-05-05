@@ -3,7 +3,7 @@ package handler
 //go:generate swag init -g doc.go --output ./docs
 
 // @title Pando API
-// @version 1.0
+// @version 1.0.
 // @description Pando Api Doc
 // @termsOfService http://pando.im/terms/
 

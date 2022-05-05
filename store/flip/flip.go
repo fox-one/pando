@@ -158,8 +158,8 @@ func (s *flipStore) ListParticipates(ctx context.Context, userID string) ([]stri
 }
 
 func (s *flipStore) QueryFlips(ctx context.Context, query core.FlipQuery) ([]*core.Flip, int64, error) {
-	db := s.db.View()
-	tx := db.Model(core.Flip{}).Order("id DESC")
+	view := s.db.View()
+	tx := view.Model(core.Flip{}).Order("id DESC")
 
 	if query.Phase > 0 {
 		if query.Phase == core.FlipPhaseDeal {
@@ -176,12 +176,12 @@ func (s *flipStore) QueryFlips(ctx context.Context, query core.FlipQuery) ([]*co
 	}
 
 	if query.VaultUserID != "" {
-		sub := db.Model(core.Vault{}).Select("trace_id").Where("user_id = ?", query.VaultUserID).QueryExpr()
+		sub := view.Model(core.Vault{}).Select("trace_id").Where("user_id = ?", query.VaultUserID).QueryExpr()
 		tx = tx.Where("vault_id IN (?)", sub)
 	}
 
 	if query.Participator != "" {
-		sub := db.Model(core.FlipEvent{}).Select("DISTINCT(flip_id)").Where("guy = ?", query.Participator).QueryExpr()
+		sub := view.Model(core.FlipEvent{}).Select("DISTINCT(flip_id)").Where("guy = ?", query.Participator).QueryExpr()
 		tx = tx.Where("trace_id IN (?)", sub)
 	}
 

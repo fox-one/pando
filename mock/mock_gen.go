@@ -1312,19 +1312,19 @@ func (mr *MockVaultStoreMockRecorder) List(arg0, arg1 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockVaultStore)(nil).List), arg0, arg1)
 }
 
-// ListEvents mocks base method
-func (m *MockVaultStore) ListEvents(arg0 context.Context, arg1 string) ([]*core.VaultEvent, error) {
+// ListVaultEvents mocks base method
+func (m *MockVaultStore) ListVaultEvents(arg0 context.Context, arg1 string) ([]*core.VaultEvent, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListEvents", arg0, arg1)
+	ret := m.ctrl.Call(m, "ListVaultEvents", arg0, arg1)
 	ret0, _ := ret[0].([]*core.VaultEvent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListEvents indicates an expected call of ListEvents
-func (mr *MockVaultStoreMockRecorder) ListEvents(arg0, arg1 interface{}) *gomock.Call {
+// ListVaultEvents indicates an expected call of ListVaultEvents
+func (mr *MockVaultStoreMockRecorder) ListVaultEvents(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEvents", reflect.TypeOf((*MockVaultStore)(nil).ListEvents), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVaultEvents", reflect.TypeOf((*MockVaultStore)(nil).ListVaultEvents), arg0, arg1)
 }
 
 // PluckUser mocks base method

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fox-one/pando/store/stat"
+
 	"github.com/fox-one/pando/cmd/pando-worker/config"
 	"github.com/fox-one/pando/store/asset"
 	"github.com/fox-one/pando/store/collateral"
@@ -34,6 +36,7 @@ var storeSet = wire.NewSet(
 	wallet.New,
 	message.New,
 	propertystore.New,
+	stat.New,
 )
 
 func connectDatabase(cfg db.Config, timeout time.Duration) (*db.DB, error) {

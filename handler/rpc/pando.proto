@@ -192,6 +192,27 @@ message Transaction {
     string parameters = 8;
 }
 
+message Stat {
+    string collateral_id = 1;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp date = 2;
+    int64 timestamp = 3;
+    string gem = 4;
+    string dai = 5;
+    string ink = 6;
+    string debt = 7;
+    string gem_price = 8;
+    string dai_price = 9;
+}
+
+message AggregatedStat {
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp date = 1;
+    int64 timestamp = 2;
+    string gem_value = 3;
+    string dai_value = 5;
+}
+
 message Req {
     message FindAsset {
         // @inject_tag: valid:"uuid,required"
@@ -233,7 +254,6 @@ message Req {
         string cursor = 1;
         int64 limit = 2;
     }
-
 
     message ListVaultEvents {
         // @inject_tag: valid:"uuid,required"
@@ -281,6 +301,19 @@ message Req {
     message FindProposal {
         // @inject_tag: valid:"uuid,required"
         string id = 1;
+    }
+
+    message ListStats {
+        // collateral id
+        // @inject_tag: valid:"uuid,required"
+        string id = 1;
+        int64 from = 2;
+        int64 to = 3;
+    }
+
+    message ListAggregatedStats {
+        int64 from = 1;
+        int64 to = 2;
     }
 }
 
@@ -333,6 +366,14 @@ message Resp {
         repeated Proposal proposals = 1;
         Pagination pagination = 2;
     }
+
+    message ListStats {
+        repeated Stat stats = 1;
+    }
+
+    message ListAggregatedStats {
+        repeated AggregatedStat stats = 1;
+    }
 }
 
 service Pando {
@@ -361,4 +402,7 @@ service Pando {
     // proposals
     rpc FindProposal(Req.FindProposal) returns (Proposal);
     rpc ListProposals(Req.ListProposals) returns (Resp.ListProposals);
+    // stats
+    rpc ListStats(Req.ListStats) returns (Resp.ListStats);
+    rpc ListAggregatedStats(Req.ListAggregatedStats) returns (Resp.ListAggregatedStats);
 }
