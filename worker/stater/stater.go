@@ -190,7 +190,7 @@ func (w *Stater) handleTransaction(ctx context.Context, t *core.Transaction) err
 	}
 
 	if len(cats) == 0 {
-		return fmt.Errorf("listCollaterals: no collaterals found for %s", collateralID)
+		return nil
 	}
 
 	for _, cat := range cats {
