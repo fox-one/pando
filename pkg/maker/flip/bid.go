@@ -126,7 +126,7 @@ func HandleBid(
 				VaultID:   v.TraceID,
 				Version:   r.Version,
 				Action:    r.Action,
-				Dink:      event.Lot.Sub(f.Lot),
+				Dink:      f.Lot.Sub(event.Lot),
 			}
 
 			if err := vaults.CreateEvent(ctx, vaultEvent); err != nil {
