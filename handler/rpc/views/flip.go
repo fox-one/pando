@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/fox-one/pando/core"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 )
 
 func Flip(flip *core.Flip, tags ...api.Flip_Tag) *api.Flip {

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/fox-one/pando/cmd/pando-cli/internal/cfg"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 	"github.com/twitchtv/twirp"
 )
 

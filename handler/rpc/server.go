@@ -12,7 +12,7 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/request"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 	"github.com/fox-one/pando/handler/rpc/views"
 	"github.com/fox-one/pkg/logger"
 	"github.com/fox-one/pkg/store"

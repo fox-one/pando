@@ -5,7 +5,7 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/cmds/pay"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/call"
 	"github.com/fox-one/pando/core"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 	"github.com/fox-one/pando/pkg/mtg/types"
 	"github.com/fox-one/pando/pkg/number"
 	"github.com/spf13/cobra"

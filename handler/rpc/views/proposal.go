@@ -2,7 +2,7 @@ package views
 
 import (
 	"github.com/fox-one/pando/core"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 )
 
 func Proposal(p *core.Proposal, items ...core.ProposalItem) *api.Proposal {

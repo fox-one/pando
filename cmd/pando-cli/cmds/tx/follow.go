@@ -9,7 +9,7 @@ import (
 	"github.com/fox-one/pando/cmd/pando-cli/internal/cfg"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/column"
 	"github.com/fox-one/pando/cmd/pando-cli/internal/jq"
-	"github.com/fox-one/pando/handler/rpc/api"
+	api "github.com/fox-one/pando/handler/rpc/pando"
 	"github.com/spf13/cobra"
 	"github.com/twitchtv/twirp"
 )
