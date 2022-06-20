@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"encoding/base64"
 	"net/http"
 	"sort"
 	"strconv"
@@ -30,6 +31,7 @@ func New(
 	proposalz core.ProposalService,
 	proposals core.ProposalStore,
 	stats core.StatStore,
+	system *core.System,
 ) *Server {
 	return &Server{
 		assets:       assets,
@@ -41,6 +43,7 @@ func New(
 		proposals:    proposals,
 		proposalz:    proposalz,
 		stats:        stats,
+		system:       system,
 	}
 }
 
@@ -54,6 +57,7 @@ type Server struct {
 	proposalz    core.ProposalService
 	proposals    core.ProposalStore
 	stats        core.StatStore
+	system       *core.System
 }
 
 func (s *Server) TwirpServer() api.TwirpServer {
@@ -789,4 +793,20 @@ func (s *Server) ListAggregatedStats(ctx context.Context, req *api.Req_ListAggre
 	}
 
 	return resp, nil
+}
+
+// GetInfo godoc
+// @Summary get system info
+// @Description
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} api.Resp_GetInfo
+// @Router /info [get]
+func (s *Server) GetInfo(ctx context.Context, req *api.Req_GetInfo) (*api.Resp_GetInfo, error) {
+	return &api.Resp_GetInfo{
+		OauthClientId: s.system.ClientID,
+		Members:       s.system.Members,
+		Threshold:     int32(s.system.Threshold),
+		PublicKey:     base64.StdEncoding.EncodeToString(s.system.PublicKey),
+	}, nil
 }

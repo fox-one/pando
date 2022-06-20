@@ -76,12 +76,13 @@ func (s *Server) Handler() http.Handler {
 	})
 
 	r.Get("/time", system.HandleTime())
-	r.Get("/info", system.HandleInfo(s.system))
 
 	r.Post("/login", user.HandleOauth(s.userz, s.sessions, s.notifier))
 
-	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions, s.proposalz, s.proposals, s.stats).TwirpServer()
+	svr := rpc.New(s.assets, s.vaults, s.flips, s.oracles, s.collaterals, s.transactions, s.proposalz, s.proposals, s.stats, s.system).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
+
+	r.Get("/info", rt.Handle("GetInfo"))
 
 	r.Route("/assets", func(r chi.Router) {
 		r.Get("/", rt.Handle("ListAssets"))

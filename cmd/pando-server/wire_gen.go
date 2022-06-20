@@ -66,7 +66,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	proposalService := proposal2.New(assetService, userService, collateralStore)
 	statStore := stat.New(db)
 	apiServer := api.New(coreSession, userService, assetStore, vaultStore, flipStore, collateralStore, transactionStore, walletService, coreNotifier, oracleStore, proposalStore, proposalService, statStore, system)
-	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore, proposalService, proposalStore, statStore)
+	rpcServer := rpc.New(assetStore, vaultStore, flipStore, oracleStore, collateralStore, transactionStore, proposalService, proposalStore, statStore, system)
 	mux := provideRoute(apiServer, rpcServer, coreSession)
 	serverServer := provideServer(mux)
 	return serverServer, nil
