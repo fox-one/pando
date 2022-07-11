@@ -48,6 +48,11 @@ type (
 		Limit        int
 	}
 
+	QueryVaultEventsRequest struct {
+		FromID int64
+		Limit  int
+	}
+
 	VaultStore interface {
 		Create(ctx context.Context, vault *Vault) error
 		Update(ctx context.Context, vault *Vault, version int64) error
@@ -59,5 +64,6 @@ type (
 		CreateEvent(ctx context.Context, event *VaultEvent) error
 		FindEvent(ctx context.Context, vaultID string, version int64) (*VaultEvent, error)
 		ListVaultEvents(ctx context.Context, vaultID string) ([]*VaultEvent, error)
+		QueryVaultEvents(ctx context.Context, req QueryVaultEventsRequest) ([]*VaultEvent, error)
 	}
 )

@@ -13,6 +13,7 @@ import (
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/auth"
 	"github.com/fox-one/pando/handler/request"
+	"github.com/fox-one/pando/handler/rpc/pando"
 	api "github.com/fox-one/pando/handler/rpc/pando"
 	"github.com/fox-one/pando/handler/rpc/views"
 	"github.com/fox-one/pkg/logger"
@@ -380,6 +381,44 @@ func (s *Server) ListVaultEvents(ctx context.Context, req *api.Req_ListVaultEven
 	}
 
 	resp := &api.Resp_ListVaultEvents{}
+	for _, event := range events {
+		resp.Events = append(resp.Events, views.VaultEvent(event))
+	}
+
+	return resp, nil
+}
+
+// QueryVaultEvents godoc
+// @Summary query vault events
+// @Description
+// @Tags Vaults
+// @Accept  json
+// @Produce  json
+// @param request query api.Req_QueryVaultEvents false "default limit 50"
+// @Success 200 {object} api.Resp_QueryVaultEvents
+// @Router /vats/query-events [get]
+func (s *Server) QueryVaultEvents(ctx context.Context, req *api.Req_QueryVaultEvents) (*api.Resp_QueryVaultEvents, error) {
+	fromID := cast.ToInt64(req.Cursor)
+	limit := 100
+	if l := int(req.Limit); l > 0 && l < limit {
+		limit = l
+	}
+
+	events, err := s.vaults.QueryVaultEvents(ctx, core.QueryVaultEventsRequest{FromID: fromID, Limit: limit})
+	if err != nil {
+		logger.FromContext(ctx).WithError(err).Error("rpc: vaults.QueryVaultEvents")
+		return nil, err
+	}
+
+	resp := &api.Resp_QueryVaultEvents{
+		Pagination: &pando.Pagination{
+			HasNext: len(events) == limit,
+		},
+	}
+	if resp.Pagination.HasNext {
+		resp.Pagination.NextCursor = cast.ToString(events[len(events)-1].ID)
+	}
+
 	for _, event := range events {
 		resp.Events = append(resp.Events, views.VaultEvent(event))
 	}

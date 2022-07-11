@@ -222,3 +222,20 @@ func (s *vaultStore) ListVaultEvents(ctx context.Context, vaultID string) ([]*co
 
 	return events, nil
 }
+
+func (s *vaultStore) QueryVaultEvents(ctx context.Context, req core.QueryVaultEventsRequest) ([]*core.VaultEvent, error) {
+	var events []*core.VaultEvent
+	tx := s.db.View()
+	if req.FromID > 0 {
+		tx = tx.Where("id > ?", req.FromID)
+	}
+	if req.Limit > 0 {
+		tx = tx.Limit(req.Limit)
+	}
+
+	if err := tx.Order("id").Find(&events).Error; err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}

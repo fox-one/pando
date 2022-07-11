@@ -1,6 +1,8 @@
 package views
 
 import (
+	"strconv"
+
 	"github.com/fox-one/pando/core"
 	api "github.com/fox-one/pando/handler/rpc/pando"
 )
@@ -24,5 +26,6 @@ func VaultEvent(event *core.VaultEvent) *api.Vault_Event {
 		Dink:      event.Dink.String(),
 		Dart:      event.Dart.String(),
 		Debt:      event.Debt.String(),
+		Id:        strconv.FormatInt(event.ID, 10),
 	}
 }
