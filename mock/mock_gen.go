@@ -9,6 +9,7 @@ import (
 	core "github.com/fox-one/pando/core"
 	number "github.com/fox-one/pando/pkg/number"
 	gomock "github.com/golang/mock/gomock"
+	decimal "github.com/shopspring/decimal"
 	http "net/http"
 	reflect "reflect"
 	time "time"
@@ -132,6 +133,21 @@ func (m *MockAssetService) List(arg0 context.Context) ([]*core.Asset, error) {
 func (mr *MockAssetServiceMockRecorder) List(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAssetService)(nil).List), arg0)
+}
+
+// ReadPrice mocks base method
+func (m *MockAssetService) ReadPrice(arg0 context.Context, arg1 string, arg2 time.Time) (decimal.Decimal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadPrice", arg0, arg1, arg2)
+	ret0, _ := ret[0].(decimal.Decimal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadPrice indicates an expected call of ReadPrice
+func (mr *MockAssetServiceMockRecorder) ReadPrice(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadPrice", reflect.TypeOf((*MockAssetService)(nil).ReadPrice), arg0, arg1, arg2)
 }
 
 // MockCollateralStore is a mock of CollateralStore interface
@@ -1340,6 +1356,21 @@ func (m *MockVaultStore) PluckUser(arg0 context.Context, arg1 string) ([]string,
 func (mr *MockVaultStoreMockRecorder) PluckUser(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PluckUser", reflect.TypeOf((*MockVaultStore)(nil).PluckUser), arg0, arg1)
+}
+
+// QueryVaultEvents mocks base method
+func (m *MockVaultStore) QueryVaultEvents(arg0 context.Context, arg1 core.QueryVaultEventsRequest) ([]*core.VaultEvent, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "QueryVaultEvents", arg0, arg1)
+	ret0, _ := ret[0].([]*core.VaultEvent)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryVaultEvents indicates an expected call of QueryVaultEvents
+func (mr *MockVaultStoreMockRecorder) QueryVaultEvents(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryVaultEvents", reflect.TypeOf((*MockVaultStore)(nil).QueryVaultEvents), arg0, arg1)
 }
 
 // Update mocks base method
