@@ -25,16 +25,6 @@ builds:
       - CGO_ENABLED=0
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}}
-  - main: ./cmd/pando-cli
-    id: cli
-    binary: cli
-    goos:
-      - linux
-      - darwin
-    env:
-      - CGO_ENABLED=0
-    ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}}
 
 dockers:
   - id: worker
