@@ -22,7 +22,9 @@ jobs:
       - name: "Docker login"
         run: docker login ghcr.io -u docker -p ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release
-        run: goreleaser --rm-dist
+      - uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
