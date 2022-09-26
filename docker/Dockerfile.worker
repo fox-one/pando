@@ -1,23 +1,8 @@
-FROM golang:1.16 AS builder
-
-WORKDIR /app
-
-RUN go install github.com/go-task/task/v3/cmd/task@latest
-
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . ./
-
-RUN task build-worker
-
 FROM frolvlad/alpine-glibc:glibc-2.34
 
 WORKDIR /app
 
-COPY --from=builder /app/builds/pando-worker .
-Add assets assets
+ADD worker worker
+ADD assets assets
 
-EXPOSE 7777
-
-ENTRYPOINT ["/app/pando-worker"]
+ENTRYPOINT ["/app/worker"]

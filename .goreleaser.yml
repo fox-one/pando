@@ -1,0 +1,62 @@
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - main: ./cmd/pando-worker
+    id: worker
+    binary: worker
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=1
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}}
+  - main: ./cmd/pando-server
+    id: server
+    binary: server
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}}
+  - main: ./cmd/pando-cli
+    id: cli
+    binary: cli
+    goos:
+      - linux
+      - darwin
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}}
+
+dockers:
+  - id: worker
+    goos: linux
+    goarch: amd64
+    dockerfile: docker/Dockerfile.worker
+    image_templates:
+    - "ghcr.io/fox-one/{{ .ProjectName }}/worker:latest"
+    - "ghcr.io/fox-one/{{ .ProjectName }}/worker:{{ .Major }}"
+    - "ghcr.io/fox-one/{{ .ProjectName }}/worker:{{ .Major }}.{{ .Minor }}"
+    - "ghcr.io/fox-one/{{ .ProjectName }}/worker:{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+    extra_files:
+      - assets
+
+  - id: server
+    goos: linux
+    goarch: amd64
+    dockerfile: docker/Dockerfile.server
+    image_templates:
+      - "ghcr.io/fox-one/{{ .ProjectName }}/server:latest"
+      - "ghcr.io/fox-one/{{ .ProjectName }}/server:{{ .Major }}"
+      - "ghcr.io/fox-one/{{ .ProjectName }}/server:{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/fox-one/{{ .ProjectName }}/server:{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+    extra_files:
+      - assets
