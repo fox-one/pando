@@ -2,10 +2,10 @@ package user
 
 import (
 	"context"
-	"time"
 
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pkg/store/db"
+	"github.com/jinzhu/gorm"
 )
 
 func init() {
@@ -38,7 +38,7 @@ func toUpdateParams(user *core.User) map[string]interface{} {
 		"avatar":       user.Avatar,
 		"access_token": user.AccessToken,
 		"lang":         user.Lang,
-		"version":      time.Now().UnixNano(),
+		"version":      gorm.Expr("version + 1"),
 	}
 }
 

@@ -3,11 +3,11 @@ package user
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/handler/param"
 	"github.com/fox-one/pando/handler/render"
 	"github.com/fox-one/pkg/logger"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/twitchtv/twirp"
 )
 

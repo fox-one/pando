@@ -14,10 +14,11 @@ import (
 
 type (
 	Config struct {
-		DB    db.Config `json:"db"`
-		Dapp  Dapp      `json:"dapp"`
-		Group Group     `json:"group,omitempty"`
-		I18n  I18n      `json:"i18n,omitempty"`
+		DB      db.Config `json:"db"`
+		Dapp    Dapp      `json:"dapp"`
+		Group   Group     `json:"group,omitempty"`
+		I18n    I18n      `json:"i18n,omitempty"`
+		Session Session   `json:"session,omitempty"`
 	}
 
 	Dapp struct {
@@ -37,6 +38,11 @@ type (
 		Path string `json:"path,omitempty"`
 		// default language
 		Language string `json:"language,omitempty"`
+	}
+
+	Session struct {
+		Issuers   []string `json:"issuers,omitempty"`
+		JwtSecret string   `json:"jwt_secret,omitempty"`
 	}
 )
 

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/base64"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/fox-one/pando/cmd/pando-server/config"
 	"github.com/fox-one/pando/session"
@@ -13,17 +15,25 @@ var sessionSet = wire.NewSet(
 )
 
 func provideSessionConfig(cfg *config.Config) session.Config {
-	var issuers []string
+	issuers := cfg.Session.Issuers
 	for _, m := range cfg.Group.Members {
-		issuers = append(issuers, m)
+		if !govalidator.IsIn(m, issuers...) {
+			issuers = append(issuers, m)
+		}
 	}
 
 	if !govalidator.IsIn(cfg.Dapp.ClientID, issuers...) {
 		issuers = append(issuers, cfg.Dapp.ClientID)
 	}
 
+	secret, err := base64.StdEncoding.DecodeString(cfg.Session.JwtSecret)
+	if err != nil {
+		panic(err)
+	}
+
 	return session.Config{
-		Capacity: 2048,
-		Issuers:  issuers,
+		Capacity:  2048,
+		Issuers:   issuers,
+		JwtSecret: secret,
 	}
 }

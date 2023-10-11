@@ -7,7 +7,6 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
 	github.com/bluele/gcache v0.0.2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fox-one/mixin-sdk-go v1.6.3
@@ -16,6 +15,7 @@ require (
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gofrs/uuid v4.2.0+incompatible
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.5

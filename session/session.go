@@ -6,24 +6,26 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/bluele/gcache"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pando/core"
 	"github.com/fox-one/pando/internal/request"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/sync/singleflight"
 )
 
 type Config struct {
-	Capacity int
-	Issuers  []string
+	Capacity  int
+	Issuers   []string
+	JwtSecret []byte
 }
 
 func New(users core.UserStore, userz core.UserService, cfg Config) core.Session {
 	var s core.Session = &session{
-		users:   users,
-		userz:   userz,
-		issuers: cfg.Issuers,
-		sf:      &singleflight.Group{},
+		users:     users,
+		userz:     userz,
+		issuers:   cfg.Issuers,
+		jwtSecret: cfg.JwtSecret,
+		sf:        &singleflight.Group{},
 	}
 
 	if cfg.Capacity > 0 {
@@ -37,10 +39,11 @@ func New(users core.UserStore, userz core.UserService, cfg Config) core.Session 
 }
 
 type session struct {
-	userz   core.UserService
-	users   core.UserStore
-	sf      *singleflight.Group
-	issuers []string
+	userz     core.UserService
+	users     core.UserStore
+	sf        *singleflight.Group
+	issuers   []string
+	jwtSecret []byte
 }
 
 func (s *session) Login(r *http.Request) (*core.User, error) {
@@ -54,9 +57,25 @@ func (s *session) Login(r *http.Request) (*core.User, error) {
 	user, err, _ := s.sf.Do(accessToken, func() (interface{}, error) {
 		var claim struct {
 			jwt.StandardClaims
-			Scope string `json:"scp,omitempty"`
+			UserID string `json:"uid"`
+			Scope  string `json:"scp,omitempty"`
 		}
-		_, _ = jwt.ParseWithClaims(accessToken, &claim, nil)
+
+		if _, err := jwt.ParseWithClaims(accessToken, &claim, func(token *jwt.Token) (interface{}, error) {
+			return s.jwtSecret, nil
+		}); err == nil {
+			user := &core.User{
+				MixinID:     claim.UserID,
+				Lang:        request.ExtractPreferLanguage(r),
+				AccessToken: accessToken,
+			}
+
+			if err := s.users.Save(ctx, user); err != nil {
+				return nil, err
+			}
+
+			return user, nil
+		}
 
 		if claim.Scope != "FULL" && !govalidator.IsIn(claim.Issuer, s.issuers...) {
 			return nil, errors.New("invalid issuer")
